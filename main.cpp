@@ -13,8 +13,8 @@ using namespace std;
 int main(){
 
     // preset data for properties
-    Property prop;
-    Property* prop_root = nullptr;
+    PropertyStructure prop;
+    PropertyStructure* prop_root = nullptr;
     vector<Property> propertyArray;
     prop_root = prop.importProperty(prop_root, "mudah-apartment-kl-selangor.csv", propertyArray);
 
