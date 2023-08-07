@@ -25,10 +25,10 @@ struct Property {
     string region;
 };
 
-struct PropertyStructure{
+struct PropertyTree{
     Property data;
-    PropertyStructure* left;
-    PropertyStructure* right;
+    PropertyTree* left;
+    PropertyTree* right;
 
 
     //void preOrder(Property* node) {
@@ -52,9 +52,9 @@ struct PropertyStructure{
     //}
 
     // BST Insertion
-    PropertyStructure* bstInsert(PropertyStructure* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
+    PropertyTree* bstInsert(PropertyTree* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
         if (root == nullptr) {
-            root = new PropertyStructure();
+            root = new PropertyTree();
             root->data.propertyID = propertyID;
             root->data.propertyName = propertyName;
             root->data.completion_year = completion_year;
@@ -80,7 +80,7 @@ struct PropertyStructure{
         return root;
     }
 
-    PropertyStructure* importProperty(PropertyStructure* root, string filename, vector<Property>& propertyArray) {
+    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray) {
         ifstream file(filename);
         if (!file.is_open()) {
             cout << "Failed to open the file: " << filename << endl;
@@ -139,7 +139,7 @@ struct PropertyStructure{
     }
 
 
-    void displayPage(PropertyStructure* root, int page) {
+    void displayPage(PropertyTree* root, int page) {
         int propertiesPerPage = 10;   //showing 10 properties at 1 page
         int start = (page - 1) * propertiesPerPage;
         int end = start + propertiesPerPage;
@@ -150,7 +150,7 @@ struct PropertyStructure{
         displayPropertiesInRange(root, start, end, count);
     }
 
-    void displayPropertiesInRange(PropertyStructure* node, int start, int end, int& count) {
+    void displayPropertiesInRange(PropertyTree* node, int start, int end, int& count) {
         if (node == nullptr || count >= end) return;
 
         displayPropertiesInRange(node->left, start, end, count);
@@ -182,14 +182,14 @@ struct PropertyStructure{
         displayPropertiesInRange(node->right, start, end, count);
     }
 
-    int countProperties(PropertyStructure* root) {
+    int countProperties(PropertyTree* root) {
         if (root == nullptr) {
             return 0;
         }
         return 1 + countProperties(root->left) + countProperties(root->right);
     }
 
-    void navigateProperties(PropertyStructure* root) {
+    void navigateProperties(PropertyTree* root) {
         int page = 1;
         int totalPages = (countProperties(root) + 9) / 10; // Calculate the total number of pages
 
@@ -218,13 +218,13 @@ struct PropertyStructure{
     }
 
     // binary search by property name
-    void bstSearchByPropName(PropertyStructure* root, string searchPropName) {
+    void bstSearchByPropName(PropertyTree* root, string searchPropName) {
         bool found = false; // Flag to track if a property is found
         cout << "\n=================\n";
         cout << "Search Result:\n";
         cout << "=================\n\n";
 
-        function<void(PropertyStructure*)> search = [&](PropertyStructure* node) {
+        function<void(PropertyTree*)> search = [&](PropertyTree* node) {
             if (node == nullptr) {
                 return;
             }
@@ -261,7 +261,7 @@ struct PropertyStructure{
         }
     }
 
-    void addPropertiesToArray(PropertyStructure* root, vector<Property>& propertyArray) {
+    void addPropertiesToArray(PropertyTree* root, vector<Property>& propertyArray) {
         if (root == nullptr) return;
 
         // Traverse left subtree
