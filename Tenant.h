@@ -13,26 +13,29 @@ struct Tenant : public User {
 	string tenantTel;
 	string tenantGender;
 	string tenantStatus;
+};
 
-	Tenant* left;
-	Tenant* right;
+struct TenantTree{
+	Tenant data;
+	TenantTree* left;
+	TenantTree* right;
 
 	//BST Tenant Data Insertion
-	Tenant* tenantDataInsert(Tenant* root, string tenantID, string username, string tenantName, string tenantEmail, string tenantPassword,
+	TenantTree* tenantDataInsert(TenantTree* root, string tenantID, string username, string tenantName, string tenantEmail, string tenantPassword,
 		string tenantTel, string tenantGender, string tenantStatus) {
 		if (root == nullptr) {
-			root = new Tenant();
-			root->tenantID = tenantID;
-			root->username = username;
-			root->tenantName = tenantName;
-			root->tenantEmail = tenantEmail;
-			root->password = password;
-			root->tenantTel = tenantTel;
-			root->tenantGender = tenantGender;
-			root->tenantStatus = tenantStatus;
+			root = new TenantTree();
+			root->data.tenantID = tenantID;
+			root->data.username = username;
+			root->data.tenantName = tenantName;
+			root->data.tenantEmail = tenantEmail;
+			root->data.password = tenantPassword;
+			root->data.tenantTel = tenantTel;
+			root->data.tenantGender = tenantGender;
+			root->data.tenantStatus = tenantStatus;
 			root->left = root->right = nullptr;
 		}
-		else if (tenantID < root->tenantID) {
+		else if (tenantID < root->data.tenantID) {
 			root->left = tenantDataInsert(root->left, tenantID, username, tenantName, tenantEmail, tenantPassword,
 				tenantTel, tenantGender, tenantStatus);
 		}
@@ -44,34 +47,34 @@ struct Tenant : public User {
 	}
 
 	// Display all tenant
-	void preOrder(Tenant* node) {
+	void preOrder(TenantTree* node) {
 	    if (node == nullptr) return;
-		cout << "Tenant ID: " << node->tenantID << endl
-			<< "Tenant Username: " << node->username << endl
-			<< "Tenant Name: " << node->tenantName << endl
-			<< "Tenant Email: " << node->tenantEmail << endl
-			<< "Tenant Tel: " << node->tenantTel << endl
-			<< "Gender: " << node->tenantGender << endl
-			<< "Status: " << node->tenantStatus << "\n\n"
+		cout << "Tenant ID: " << node->data.tenantID << endl
+			<< "Tenant Username: " << node->data.username << endl
+			<< "Tenant Name: " << node->data.tenantName << endl
+			<< "Tenant Email: " << node->data.tenantEmail << endl
+			<< "Tenant Tel: " << node->data.tenantTel << endl
+			<< "Gender: " << node->data.tenantGender << endl
+			<< "Status: " << node->data.tenantStatus << "\n\n"
 			<< "------------------------------------------------\n";
 	    preOrder(node->left);
 	    preOrder(node->right);
 	}
 
 	// Display only female tenant
-	bool preOrderFemale(Tenant* node) {
+	bool preOrderFemale(TenantTree* node) {
 		if (node == nullptr) return false;
 
-		bool found = (node->tenantGender == "female");
+		bool found = (node->data.tenantGender == "female");
 
 		if (found) {
-			cout << "Tenant ID: " << node->tenantID << endl
-				<< "Tenant Username: " << node->username << endl
-				<< "Tenant Name: " << node->tenantName << endl
-				<< "Tenant Email: " << node->tenantEmail << endl
-				<< "Tenant Tel: " << node->tenantTel << endl
-				<< "Gender: " << node->tenantGender << endl
-				<< "Status: " << node->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << node->data.tenantID << endl
+				<< "Tenant Username: " << node->data.username << endl
+				<< "Tenant Name: " << node->data.tenantName << endl
+				<< "Tenant Email: " << node->data.tenantEmail << endl
+				<< "Tenant Tel: " << node->data.tenantTel << endl
+				<< "Gender: " << node->data.tenantGender << endl
+				<< "Status: " << node->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 		}
 
@@ -82,19 +85,19 @@ struct Tenant : public User {
 	}
 
 	//Display only male tenant
-	bool preOrderMale(Tenant* node) {
+	bool preOrderMale(TenantTree* node) {
 		if (node == nullptr) return false;
 
-		bool found = (node->tenantGender == "male");
+		bool found = (node->data.tenantGender == "male");
 
 		if (found) {
-			cout << "Tenant ID: " << node->tenantID << endl
-				<< "Tenant Username: " << node->username << endl
-				<< "Tenant Name: " << node->tenantName << endl
-				<< "Tenant Email: " << node->tenantEmail << endl
-				<< "Tenant Tel: " << node->tenantTel << endl
-				<< "Gender: " << node->tenantGender << endl
-				<< "Status: " << node->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << node->data.tenantID << endl
+				<< "Tenant Username: " << node->data.username << endl
+				<< "Tenant Name: " << node->data.tenantName << endl
+				<< "Tenant Email: " << node->data.tenantEmail << endl
+				<< "Tenant Tel: " << node->data.tenantTel << endl
+				<< "Gender: " << node->data.tenantGender << endl
+				<< "Status: " << node->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 		}
 
@@ -105,22 +108,22 @@ struct Tenant : public User {
 	}
 
 	// Dispaly Tenant with active status only
-	bool preOrderActive(Tenant* node) {
+	bool preOrderActive(TenantTree* node) {
 		if (node == nullptr) return false;
 
 		// Perform the check for inactive tenants
-		bool left = preOrderInactive(node->left);
-		bool found = (node->tenantStatus == "active");
+		bool left = preOrderActive(node->left);
+		bool found = (node->data.tenantStatus == "active");
 		bool right = preOrderActive(node->right);
 
 		if (found) {
-			cout << "Tenant ID: " << node->tenantID << endl
-				<< "Tenant Username: " << node->username << endl
-				<< "Tenant Name: " << node->tenantName << endl
-				<< "Tenant Email: " << node->tenantEmail << endl
-				<< "Tenant Tel: " << node->tenantTel << endl
-				<< "Gender: " << node->tenantGender << endl
-				<< "Status: " << node->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << node->data.tenantID << endl
+				<< "Tenant Username: " << node->data.username << endl
+				<< "Tenant Name: " << node->data.tenantName << endl
+				<< "Tenant Email: " << node->data.tenantEmail << endl
+				<< "Tenant Tel: " << node->data.tenantTel << endl
+				<< "Gender: " << node->data.tenantGender << endl
+				<< "Status: " << node->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 		}
 
@@ -128,22 +131,22 @@ struct Tenant : public User {
 	}
 
 	// Display tenant with inactive status
-	bool preOrderInactive(Tenant* node) {
+	bool preOrderInactive(TenantTree* node) {
 		if (node == nullptr) return false;
 
 		// Perform the check for inactive tenants
 		bool left = preOrderInactive(node->left);
-		bool found = (node->tenantStatus == "inactive");
+		bool found = (node->data.tenantStatus == "inactive");
 		bool right = preOrderInactive(node->right);
 
 		if (found) {
-			cout << "Tenant ID: " << node->tenantID << endl
-				<< "Tenant Username: " << node->username << endl
-				<< "Tenant Name: " << node->tenantName << endl
-				<< "Tenant Email: " << node->tenantEmail << endl
-				<< "Tenant Tel: " << node->tenantTel << endl
-				<< "Gender: " << node->tenantGender << endl
-				<< "Status: " << node->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << node->data.tenantID << endl
+				<< "Tenant Username: " << node->data.username << endl
+				<< "Tenant Name: " << node->data.tenantName << endl
+				<< "Tenant Email: " << node->data.tenantEmail << endl
+				<< "Tenant Tel: " << node->data.tenantTel << endl
+				<< "Gender: " << node->data.tenantGender << endl
+				<< "Status: " << node->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 		}
 
@@ -157,7 +160,7 @@ struct Tenant : public User {
 	}
 
 	// Search tenant by ID
-	bool tenantIdSearch(Tenant* root, string searchID) {
+	bool tenantIdSearch(TenantTree* root, string searchID) {
 		if (root == nullptr) {
 			return false;
 		}
@@ -167,21 +170,21 @@ struct Tenant : public User {
 
 		// Check current node
 		// bool foundCurrent = false;
-		if (root->tenantName.find(searchID) != string::npos) { //display all the data that have the search username
+		if (root->data.tenantName.find(searchID) != string::npos) { //display all the data that have the search username
 			// Display the tenant information
-			cout << "Tenant ID: " << root->tenantID << endl
-				<< "Tenant Username: " << root->username << endl
-				<< "Tenant Name: " << root->tenantName << endl
-				<< "Tenant Email: " << root->tenantEmail << endl
-				<< "Tenant Tel: " << root->tenantTel << endl
-				<< "Gender: " << root->tenantGender << endl
-				<< "Status: " << root->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << root->data.tenantID << endl
+				<< "Tenant Username: " << root->data.username << endl
+				<< "Tenant Name: " << root->data.tenantName << endl
+				<< "Tenant Email: " << root->data.tenantEmail << endl
+				<< "Tenant Tel: " << root->data.tenantTel << endl
+				<< "Gender: " << root->data.tenantGender << endl
+				<< "Status: " << root->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 			// foundCurrent = true;
 		}
 
 		// Search in the right subtree
-		tenantNameSearch(root->right, searchID);
+		tenantIdSearch(root->right, searchID);
 
 		//remenber to add
 		/*cout << "Enter tenant ID want to search: ";
@@ -196,7 +199,7 @@ struct Tenant : public User {
 	}
 
 	// Search Tenant by username
-	bool tenantUsernameSearch(Tenant* root, string searchUsername) {
+	bool tenantUsernameSearch(TenantTree* root, string searchUsername) {
 		if (root == nullptr) {
 			return false;
 		}
@@ -206,15 +209,15 @@ struct Tenant : public User {
 
 		// Check current node
 		// bool foundCurrent = false;
-		if (root->username.find(searchUsername) != string::npos) { //display all the data that have the search username
+		if (root->data.username.find(searchUsername) != string::npos) { //display all the data that have the search username
 			// Display the tenant information
-			cout << "Tenant ID: " << root->tenantID << endl
-				<< "Tenant Username: " << root->username << endl
-				<< "Tenant Name: " << root->tenantName << endl
-				<< "Tenant Email: " << root->tenantEmail << endl
-				<< "Tenant Tel: " << root->tenantTel << endl
-				<< "Gender: " << root->tenantGender << endl
-				<< "Status: " << root->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << root->data.tenantID << endl
+				<< "Tenant Username: " << root->data.username << endl
+				<< "Tenant Name: " << root->data.tenantName << endl
+				<< "Tenant Email: " << root->data.tenantEmail << endl
+				<< "Tenant Tel: " << root->data.tenantTel << endl
+				<< "Gender: " << root->data.tenantGender << endl
+				<< "Status: " << root->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 			// foundCurrent = true;
 		}
@@ -234,7 +237,7 @@ struct Tenant : public User {
 	}
 
 	// Search tenant by name
-	bool tenantNameSearch(Tenant* root, string searchName) {
+	bool tenantNameSearch(TenantTree* root, string searchName) {
 		if (root == nullptr) {
 			return false;
 		}
@@ -244,15 +247,15 @@ struct Tenant : public User {
 
 		// Check current node
 		// bool foundCurrent = false;
-		if (root->tenantName.find(searchName) != string::npos) { //display all the data that have the search username
+		if (root->data.tenantName.find(searchName) != string::npos) { //display all the data that have the search username
 			// Display the tenant information
-			cout << "Tenant ID: " << root->tenantID << endl
-				<< "Tenant Username: " << root->username << endl
-				<< "Tenant Name: " << root->tenantName << endl
-				<< "Tenant Email: " << root->tenantEmail << endl
-				<< "Tenant Tel: " << root->tenantTel << endl
-				<< "Gender: " << root->tenantGender << endl
-				<< "Status: " << root->tenantStatus << "\n\n"
+			cout << "Tenant ID: " << root->data.tenantID << endl
+				<< "Tenant Username: " << root->data.username << endl
+				<< "Tenant Name: " << root->data.tenantName << endl
+				<< "Tenant Email: " << root->data.tenantEmail << endl
+				<< "Tenant Tel: " << root->data.tenantTel << endl
+				<< "Gender: " << root->data.tenantGender << endl
+				<< "Status: " << root->data.tenantStatus << "\n\n"
 				<< "------------------------------------------------\n";
 			// foundCurrent = true;
 		}
