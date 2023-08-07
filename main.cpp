@@ -37,8 +37,9 @@ int main(){
 
 
     // testing functions start
-    // tenancy.displayTenancyHistory(tenancy_root);
-    // fav.displayAllFavourite(fav_root);
+
+    tenancy.displayTenancyHistory(tenancy_root);
+    fav.displayAllFavourite(fav_root);
 
     //testing functions end
 

@@ -23,9 +23,12 @@ struct Property {
     string facilities;
     string additional_facilities;
     string region;
+};
 
-    Property* left;
-    Property* right;
+struct PropertyStructure{
+    Property data;
+    PropertyStructure* left;
+    PropertyStructure* right;
 
 
     //void preOrder(Property* node) {
@@ -49,26 +52,26 @@ struct Property {
     //}
 
     // BST Insertion
-    Property* bstInsert(Property* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
+    PropertyStructure* bstInsert(PropertyStructure* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
         if (root == nullptr) {
-            root = new Property();
-            root->propertyID = propertyID;
-            root->propertyName = propertyName;
-            root->completion_year = completion_year;
-            root->monthly_rental = monthly_rental;
-            root->location = location;
-            root->propertyType = propertyType;
-            root->rooms = rooms;
-            root->parking = parking;
-            root->bathroom = bathroom;
-            root->size = size;
-            root->furnished = furnished;
-            root->facilities = facilities;
-            root->additional_facilities = additional_facilities;
-            root->region = region;
+            root = new PropertyStructure();
+            root->data.propertyID = propertyID;
+            root->data.propertyName = propertyName;
+            root->data.completion_year = completion_year;
+            root->data.monthly_rental = monthly_rental;
+            root->data.location = location;
+            root->data.propertyType = propertyType;
+            root->data.rooms = rooms;
+            root->data.parking = parking;
+            root->data.bathroom = bathroom;
+            root->data.size = size;
+            root->data.furnished = furnished;
+            root->data.facilities = facilities;
+            root->data.additional_facilities = additional_facilities;
+            root->data.region = region;
             root->left = root->right = nullptr;
         }
-        else if (propertyID < root->propertyID) {
+        else if (propertyID < root->data.propertyID) {
             root->left = bstInsert(root->left, propertyID, propertyName, completion_year, monthly_rental, location, propertyType, rooms, parking, bathroom, size, furnished, facilities, additional_facilities, region);
         }
         else {
@@ -77,46 +80,7 @@ struct Property {
         return root;
     }
 
-    //// Import Property data from CSV
-    //Property* importProperty(Property* root, string filename) {
-    //    ifstream file(filename);
-    //    if (!file.is_open()) {
-    //        cout << "Failed to open the file: " << filename << endl;
-    //        return root;
-    //    }
-
-    //    string line;
-    //    getline(file, line);    //skip the first row
-
-    //    while (getline(file, line)) {
-    //        stringstream ss(line);
-    //        string propertyID, propertyName, completion_year, monthly_rental, location, propertyType, bathroom, size, furnished, facilities, additional_facilities, region, rooms, parking;
-
-    //        propertyID = getNextField(ss);
-    //        propertyName = getNextField(ss);
-    //        completion_year = getNextField(ss);
-    //        monthly_rental = getNextField(ss);
-    //        location = getNextField(ss);
-    //        propertyType = getNextField(ss);
-    //        rooms = getNextField(ss);
-    //        parking = getNextField(ss);
-    //        bathroom = getNextField(ss);
-    //        size = getNextField(ss);
-    //        furnished = getNextField(ss);
-    //        facilities = getNextField(ss);
-    //        additional_facilities = getNextField(ss);
-    //        region = getNextField(ss);
-
-    //        // the propertyID as the key for the BST.
-    //        // object being inserted into the BST based on propertyID
-    //        root = bstInsert(root, propertyID, propertyName, completion_year, monthly_rental, location, propertyType, rooms, parking, bathroom, size, furnished, facilities, additional_facilities, region);
-    //    }
-
-    //    file.close();
-    //    return root;
-    //}
-
-    Property* importProperty(Property* root, string filename, vector<Property>& propertyArray) {
+    PropertyStructure* importProperty(PropertyStructure* root, string filename, vector<Property>& propertyArray) {
         ifstream file(filename);
         if (!file.is_open()) {
             cout << "Failed to open the file: " << filename << endl;
@@ -175,7 +139,7 @@ struct Property {
     }
 
 
-    void displayPage(Property* root, int page) {
+    void displayPage(PropertyStructure* root, int page) {
         int propertiesPerPage = 10;   //showing 10 properties at 1 page
         int start = (page - 1) * propertiesPerPage;
         int end = start + propertiesPerPage;
@@ -186,28 +150,28 @@ struct Property {
         displayPropertiesInRange(root, start, end, count);
     }
 
-    void displayPropertiesInRange(Property* node, int start, int end, int& count) {
+    void displayPropertiesInRange(PropertyStructure* node, int start, int end, int& count) {
         if (node == nullptr || count >= end) return;
 
         displayPropertiesInRange(node->left, start, end, count);
 
         if (count >= start && count < end) {
             // Display the property information
-            cout << "Property ID: " << node->propertyID << endl
-                << "Property Name: " << node->propertyName << endl
-                << "completion Year: " << node->completion_year << endl
-                << "Monthly Year: " << node->monthly_rental << endl
-                << "Location: " << node->location << endl
-                << "Property Type: " << node->propertyType << endl
-                << "Rooms: " << node->rooms << endl
-                << "Parking: " << node->parking << endl
-                << "Bathroom: " << node->bathroom << endl
-                << "Size: " << node->size << endl
-                << "Furnished: " << node->furnished << endl
-                << "Facilities: " << node->facilities << endl
-                << "Additional Facilities: " << node->additional_facilities << endl
-                << "Region: " << node->region << endl
-                << "----------------------------------------------------------------------------------------------------------------------\n";
+            cout << "Property ID: " << node->data.propertyID << endl
+                << "Property Name: " << node->data.propertyName << endl
+                << "completion Year: " << node->data.completion_year << endl
+                << "Monthly Year: " << node->data.monthly_rental << endl
+                << "Location: " << node->data.location << endl
+                << "Property Type: " << node->data.propertyType << endl
+                << "Rooms: " << node->data.rooms << endl
+                << "Parking: " << node->data.parking << endl
+                << "Bathroom: " << node->data.bathroom << endl
+                << "Size: " << node->data.size << endl
+                << "Furnished: " << node->data.furnished << endl
+                << "Facilities: " << node->data.facilities << endl
+                << "Additional Facilities: " << node->data.additional_facilities << endl
+                << "Region: " << node->data.region << endl
+                << "----------------------------------------------------------------------------------------------------------------------\n\n\n\n\n";
 
         }
 
@@ -218,20 +182,20 @@ struct Property {
         displayPropertiesInRange(node->right, start, end, count);
     }
 
-    int countProperties(Property* root) {
+    int countProperties(PropertyStructure* root) {
         if (root == nullptr) {
             return 0;
         }
         return 1 + countProperties(root->left) + countProperties(root->right);
     }
 
-    void navigateProperties(Property* root) {
+    void navigateProperties(PropertyStructure* root) {
         int page = 1;
         int totalPages = (countProperties(root) + 9) / 10; // Calculate the total number of pages
 
         while (true) {
-            cout << "Page " << page << " of " << totalPages << endl << endl;
             displayPage(root, page); 
+            cout << "Page " << page << " of " << totalPages << endl << endl;
 
             cout << "1. Next 10 properties\n2. Previous 10 Properties\n3. Add to favourite\n4. Back to Main Menu" << endl;
             cout << "Please select an option: ";
@@ -254,35 +218,35 @@ struct Property {
     }
 
     // binary search by property name
-    void bstSearchByPropName(Property* root, string searchPropName) {
+    void bstSearchByPropName(PropertyStructure* root, string searchPropName) {
         bool found = false; // Flag to track if a property is found
         cout << "\n=================\n";
         cout << "Search Result:\n";
         cout << "=================\n\n";
 
-        function<void(Property*)> search = [&](Property* node) {
+        function<void(PropertyStructure*)> search = [&](PropertyStructure* node) {
             if (node == nullptr) {
                 return;
             }
 
             search(node->left);
 
-            if (node->propertyName.find(searchPropName) != string::npos) {
+            if (node->data.propertyName.find(searchPropName) != string::npos) {
                 // Display the property information
-                cout << "Property ID: " << node->propertyID << endl
-                    << "Property Name: " << node->propertyName << endl
-                    << "completion Year: " << node->completion_year << endl
-                    << "Monthly Year: " << node->monthly_rental << endl
-                    << "Location: " << node->location << endl
-                    << "Property Type: " << node->propertyType << endl
-                    << "Rooms: " << node->rooms << endl
-                    << "Parking: " << node->parking << endl
-                    << "Bathroom: " << node->bathroom << endl
-                    << "Size: " << node->size << endl
-                    << "Furnished: " << node->furnished << endl
-                    << "Facilities: " << node->facilities << endl
-                    << "Additional Facilities: " << node->additional_facilities << endl
-                    << "Region: " << node->region << endl
+                cout << "Property ID: " << node->data.propertyID << endl
+                    << "Property Name: " << node->data.propertyName << endl
+                    << "completion Year: " << node->data.completion_year << endl
+                    << "Monthly Year: " << node->data.monthly_rental << endl
+                    << "Location: " << node->data.location << endl
+                    << "Property Type: " << node->data.propertyType << endl
+                    << "Rooms: " << node->data.rooms << endl
+                    << "Parking: " << node->data.parking << endl
+                    << "Bathroom: " << node->data.bathroom << endl
+                    << "Size: " << node->data.size << endl
+                    << "Furnished: " << node->data.furnished << endl
+                    << "Facilities: " << node->data.facilities << endl
+                    << "Additional Facilities: " << node->data.additional_facilities << endl
+                    << "Region: " << node->data.region << endl
                     << "----------------------------------------------------------------------------------------------------------------------\n\n";
                 found = true; // Set the flag to true as property is found
             }
@@ -297,7 +261,7 @@ struct Property {
         }
     }
 
-    void addPropertiesToArray(Property* root, vector<Property>& propertyArray) {
+    void addPropertiesToArray(PropertyStructure* root, vector<Property>& propertyArray) {
         if (root == nullptr) return;
 
         // Traverse left subtree
@@ -305,20 +269,20 @@ struct Property {
 
         // Create a property object and populate it with the data from the current node
         Property property;
-        property.propertyID = root->propertyID;
-        property.propertyName = root->propertyName;
-        property.completion_year = root->completion_year;
-        property.monthly_rental = root->monthly_rental;
-        property.location = root->location;
-        property.propertyType = root->propertyType;
-        property.rooms = root->rooms;
-        property.parking = root->parking;
-        property.bathroom = root->bathroom;
-        property.size = root->size;
-        property.furnished = root->furnished;
-        property.facilities = root->facilities;
-        property.additional_facilities = root->additional_facilities;
-        property.region = root->region;
+        property.propertyID = root->data.propertyID;
+        property.propertyName = root->data.propertyName;
+        property.completion_year = root->data.completion_year;
+        property.monthly_rental = root->data.monthly_rental;
+        property.location = root->data.location;
+        property.propertyType = root->data.propertyType;
+        property.rooms = root->data.rooms;
+        property.parking = root->data.parking;
+        property.bathroom = root->data.bathroom;
+        property.size = root->data.size;
+        property.furnished = root->data.furnished;
+        property.facilities = root->data.facilities;
+        property.additional_facilities = root->data.additional_facilities;
+        property.region = root->data.region;
 
         // Add the property to the array
         propertyArray.push_back(property);
