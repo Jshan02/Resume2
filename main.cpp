@@ -13,6 +13,7 @@ using namespace std;
 int main(){
 
     // preset data for properties
+    // try push
     Property prop;
     Property* prop_root = nullptr;
     vector<Property> propertyArray;
