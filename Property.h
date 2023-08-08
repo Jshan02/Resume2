@@ -292,7 +292,7 @@ struct PropertyTree{
     }
 
 
-    void displayProperties(const vector<Property>& propertyArray) {
+    void displayPropertiesVector(const vector<Property>& propertyArray) {
         cout << "Properties:\n";
         for (const Property& property : propertyArray) {
             cout << "Property ID: " << property.propertyID << endl
@@ -309,7 +309,7 @@ struct PropertyTree{
                 << "Facilities: " << property.facilities << endl
                 << "Additional Facilities: " << property.additional_facilities << endl
                 << "Region: " << property.region << endl
-                << "---------------------------------------------\n";
+                << "---------------------------------------------\n\n";
         }
     }
 };
