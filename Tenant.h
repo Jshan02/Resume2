@@ -120,12 +120,19 @@ struct TenantTree {
     }
 
     string checkStatus (TenantTree* root, string uname) {
+
+        // Check current username same with the entered username
         int cmp = strcmp(uname.c_str(), root->data.username.c_str());
 
+        // Username is same, return its status
         if (cmp == 0) {
             return root->data.tenantStatus;
+
+        // Result is negative, means username entered is smaller then current username, go to check its left node
         } else if (cmp < 0) {
             return checkStatus(root->left, uname);
+
+        // Result is positive, means username entered is greater then current username, go to check its right node
         } else {
             return checkStatus(root->right, uname);
         }
@@ -140,12 +147,8 @@ struct TenantTree {
         // Username is same, return its password
         if (cmp == 0) {
             return root->data.password;
-
-        // Result is negative, means username entered is smaller then current username, go to check its left node
         } else if (cmp < 0) {
             return bstGetPassword(root->left, uname);
-
-        // Result is positive, means username entered is greater then current username, go to check its right node
         } else {
             return bstGetPassword(root->right, uname);
         }
