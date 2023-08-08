@@ -2,12 +2,12 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <string.h>
 using namespace std;
 
-#include "User.h";
-
-struct Tenant : public User {
-	string tenantID;
+struct Tenant {
+    string username;
+    string password;
 	string tenantName;
 	string tenantEmail;
 	string tenantTel;
@@ -15,264 +15,139 @@ struct Tenant : public User {
 	string tenantStatus;
 };
 
-struct TenantTree{
-	Tenant data;
-	TenantTree* left;
-	TenantTree* right;
+struct TenantTree {
+    Tenant data;
+    TenantTree* left;
+    TenantTree* right;
 
-	//BST Tenant Data Insertion
-	TenantTree* tenantDataInsert(TenantTree* root, string tenantID, string username, string tenantName, string tenantEmail, string tenantPassword,
-		string tenantTel, string tenantGender, string tenantStatus) {
-		if (root == nullptr) {
-			root = new TenantTree();
-			root->data.tenantID = tenantID;
-			root->data.username = username;
-			root->data.tenantName = tenantName;
-			root->data.tenantEmail = tenantEmail;
-			root->data.password = tenantPassword;
-			root->data.tenantTel = tenantTel;
-			root->data.tenantGender = tenantGender;
-			root->data.tenantStatus = tenantStatus;
-			root->left = root->right = nullptr;
-		}
-		else if (tenantID < root->data.tenantID) {
-			root->left = tenantDataInsert(root->left, tenantID, username, tenantName, tenantEmail, tenantPassword,
-				tenantTel, tenantGender, tenantStatus);
-		}
-		else {
-			root->right = tenantDataInsert(root->right, tenantID, username, tenantName, tenantEmail, tenantPassword,
-				tenantTel, tenantGender, tenantStatus);
-		}
-		return root;
-	}
+    // Create new tenant account
+    TenantTree* bstNewTenant(TenantTree* root, string tUName, string tPassword, string tName, string tEmail, string tTel, string tGender, string tStatus) {
 
-	// Display all tenant
-	void preOrder(TenantTree* node) {
-	    if (node == nullptr) return;
-		cout << "Tenant ID: " << node->data.tenantID << endl
-			<< "Tenant Username: " << node->data.username << endl
-			<< "Tenant Name: " << node->data.tenantName << endl
-			<< "Tenant Email: " << node->data.tenantEmail << endl
-			<< "Tenant Tel: " << node->data.tenantTel << endl
-			<< "Gender: " << node->data.tenantGender << endl
-			<< "Status: " << node->data.tenantStatus << "\n\n"
-			<< "------------------------------------------------\n";
-	    preOrder(node->left);
-	    preOrder(node->right);
-	}
+        // If root is null, direct add in the new account into BST
+        if (root == nullptr) {
+            root = new TenantTree();
+            root->data.username = tUName;
+            root->data.password = tPassword;
+            root->data.tenantName = tName;
+            root->data.tenantEmail = tEmail;
+            root->data.tenantTel = tTel;
+            root->data.tenantGender = tGender;
+            root->data.tenantStatus = tStatus;
 
-	// Display only female tenant
-	bool preOrderFemale(TenantTree* node) {
-		if (node == nullptr) return false;
+        // If new username is lower (in alphabet) than root's username, call again this function to check if it should be enter to the left of this root or not
+        } else if (tUName < root->data.username) {
+            root->left = bstNewTenant(root->left, tUName, tPassword, tName, tEmail, tTel, tGender, tStatus);
 
-		bool found = (node->data.tenantGender == "female");
+        // If new username is higher (in alphabet) than root's username, call again this function to check if it should be enter to the right of this root or not
+        } else {
+            root->right = bstNewTenant(root->right, tUName, tPassword, tName, tEmail, tTel, tGender, tStatus);
+        }
+        return root;
+    }
 
-		if (found) {
-			cout << "Tenant ID: " << node->data.tenantID << endl
-				<< "Tenant Username: " << node->data.username << endl
-				<< "Tenant Name: " << node->data.tenantName << endl
-				<< "Tenant Email: " << node->data.tenantEmail << endl
-				<< "Tenant Tel: " << node->data.tenantTel << endl
-				<< "Gender: " << node->data.tenantGender << endl
-				<< "Status: " << node->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-		}
+    // Display All Tenant Details Function
+    void dispAllTenant(TenantTree* root) {
+        cout << "All Tenant Details\n";
+        cout << "==================\n";
+        dispInOrder(root);
+    }
 
-		bool left = preOrderFemale(node->left);
-		bool right = preOrderFemale(node->right);
+    // Display Tenant Details from Username A to Z order
+    void dispInOrder (TenantTree* root) {
+        if (root == nullptr) return;
+        dispInOrder (root->left);
+        cout << "Username: " << root->data.username << endl;
+        cout << "Name\t: " << root->data.tenantName << endl;
+        cout << "Email\t: " << root->data.tenantEmail << endl;
+        cout << "Tel\t: " << root->data.tenantTel << endl;
+        cout << "Gender\t: " << root->data.tenantGender << endl;
+        cout << "Status\t: " << root->data.tenantStatus << endl;
+        cout << "---------------------------------------\n\n";
+        dispInOrder (root->right);
+    }
 
-		return found || left || right;
-	}
+    // Login function
+    bool login(TenantTree* root, string uname, string password) {
 
-	//Display only male tenant
-	bool preOrderMale(TenantTree* node) {
-		if (node == nullptr) return false;
+        // Search if username entered exists
+        if (bstSearchUsername(root, uname)) {
 
-		bool found = (node->data.tenantGender == "male");
+            // check if status is active, allow log in
+            if (checkStatus(root, uname) == "Active") {
 
-		if (found) {
-			cout << "Tenant ID: " << node->data.tenantID << endl
-				<< "Tenant Username: " << node->data.username << endl
-				<< "Tenant Name: " << node->data.tenantName << endl
-				<< "Tenant Email: " << node->data.tenantEmail << endl
-				<< "Tenant Tel: " << node->data.tenantTel << endl
-				<< "Gender: " << node->data.tenantGender << endl
-				<< "Status: " << node->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-		}
+                // if exists, get its password and compare with password entered
+                if (bstGetPassword(root, uname) == password) {
 
-		bool left = preOrderMale(node->left);
-		bool right = preOrderMale(node->right);
+                    // If same, login success
+                    cout << "\nLogin Successful!\nWelcome Back " << uname << "!\n";
 
-		return found || left || right;
-	}
+                    // If login success, record the username in text file for future use
+                    ofstream Myfile("loggedInUser.txt");
+                    Myfile << uname;
+                    Myfile.close();
+                    return true;
+                    
+                // If not same, login fail
+                } else {
+                    cout << "\nLogin Fail, Wrong Password Entered.\n";
+                    return false;
+                }
 
-	// Dispaly Tenant with active status only
-	bool preOrderActive(TenantTree* node) {
-		if (node == nullptr) return false;
+            // if status is not active, reject login
+            } else {
+                cout << "\nLogin fail. Your account status is inactive, request admin to change status before login.\n";
+                return false;
+            }
+            
+        // If username not exists, login fail
+        } else {
+            cout << "\nLogin Fail, Username Not Exists.\n";
+            return false;
+        }
+    }
 
-		// Perform the check for inactive tenants
-		bool left = preOrderActive(node->left);
-		bool found = (node->data.tenantStatus == "active");
-		bool right = preOrderActive(node->right);
+    // Check if username entered registered in the system
+    bool bstSearchUsername(TenantTree* root, string uname) {
 
-		if (found) {
-			cout << "Tenant ID: " << node->data.tenantID << endl
-				<< "Tenant Username: " << node->data.username << endl
-				<< "Tenant Name: " << node->data.tenantName << endl
-				<< "Tenant Email: " << node->data.tenantEmail << endl
-				<< "Tenant Tel: " << node->data.tenantTel << endl
-				<< "Gender: " << node->data.tenantGender << endl
-				<< "Status: " << node->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-		}
+        // If the root of BST has nothing, means no username is registered.
+        if (root == nullptr) return false;
 
-		return left || found || right;
-	}
+        // If username matches, return username exists.
+        if (root->data.username == uname) return true;
 
-	// Display tenant with inactive status
-	bool preOrderInactive(TenantTree* node) {
-		if (node == nullptr) return false;
+        // If username of root not matches, go check the root's left and right node.
+        return bstSearchUsername(root->left, uname) || bstSearchUsername(root->right, uname);
+    }
 
-		// Perform the check for inactive tenants
-		bool left = preOrderInactive(node->left);
-		bool found = (node->data.tenantStatus == "inactive");
-		bool right = preOrderInactive(node->right);
+    string checkStatus (TenantTree* root, string uname) {
+        int cmp = strcmp(uname.c_str(), root->data.username.c_str());
 
-		if (found) {
-			cout << "Tenant ID: " << node->data.tenantID << endl
-				<< "Tenant Username: " << node->data.username << endl
-				<< "Tenant Name: " << node->data.tenantName << endl
-				<< "Tenant Email: " << node->data.tenantEmail << endl
-				<< "Tenant Tel: " << node->data.tenantTel << endl
-				<< "Gender: " << node->data.tenantGender << endl
-				<< "Status: " << node->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-		}
+        if (cmp == 0) {
+            return root->data.tenantStatus;
+        } else if (cmp < 0) {
+            return checkStatus(root->left, uname);
+        } else {
+            return checkStatus(root->right, uname);
+        }
+    }
 
-		return left || found || right;
+    // Get the entered username's correct password
+    string bstGetPassword(TenantTree* root, string uname) {
 
-		//Rember to add
-		// If no matching tenants were found, print "No Result Found"
-		/*if (!found) {
-			cout << "No Result Found" << endl;
-		}*/
-	}
+        // Check current username same with the entered username
+        int cmp = strcmp(uname.c_str(), root->data.username.c_str());
 
-	// Search tenant by ID
-	bool tenantIdSearch(TenantTree* root, string searchID) {
-		if (root == nullptr) {
-			return false;
-		}
+        // Username is same, return its password
+        if (cmp == 0) {
+            return root->data.password;
 
-		// Search in the left subtree
-		tenantIdSearch(root->left, searchID);
+        // Result is negative, means username entered is smaller then current username, go to check its left node
+        } else if (cmp < 0) {
+            return bstGetPassword(root->left, uname);
 
-		// Check current node
-		// bool foundCurrent = false;
-		if (root->data.tenantName.find(searchID) != string::npos) { //display all the data that have the search username
-			// Display the tenant information
-			cout << "Tenant ID: " << root->data.tenantID << endl
-				<< "Tenant Username: " << root->data.username << endl
-				<< "Tenant Name: " << root->data.tenantName << endl
-				<< "Tenant Email: " << root->data.tenantEmail << endl
-				<< "Tenant Tel: " << root->data.tenantTel << endl
-				<< "Gender: " << root->data.tenantGender << endl
-				<< "Status: " << root->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-			// foundCurrent = true;
-		}
-
-		// Search in the right subtree
-		tenantIdSearch(root->right, searchID);
-
-		//remenber to add
-		/*cout << "Enter tenant ID want to search: ";
-		string searchID;
-		getline(cin, searchName);
-		bool found = tenant.tenantNameSearch(root, searchID);
-
-		if (!found) {
-			cout << "No result found" << endl;
-		}*/
-
-	}
-
-	// Search Tenant by username
-	bool tenantUsernameSearch(TenantTree* root, string searchUsername) {
-		if (root == nullptr) {
-			return false;
-		}
-
-		// Search in the left subtree
-		tenantUsernameSearch(root->left, searchUsername);
-
-		// Check current node
-		// bool foundCurrent = false;
-		if (root->data.username.find(searchUsername) != string::npos) { //display all the data that have the search username
-			// Display the tenant information
-			cout << "Tenant ID: " << root->data.tenantID << endl
-				<< "Tenant Username: " << root->data.username << endl
-				<< "Tenant Name: " << root->data.tenantName << endl
-				<< "Tenant Email: " << root->data.tenantEmail << endl
-				<< "Tenant Tel: " << root->data.tenantTel << endl
-				<< "Gender: " << root->data.tenantGender << endl
-				<< "Status: " << root->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-			// foundCurrent = true;
-		}
-
-		// Search in the right subtree
-		tenantUsernameSearch(root->right, searchUsername);
-
-		//remenber to add
-		/*cout << "Enter username want to search: ";
-		string searchUsername;
-		getline(cin, searchUsername);
-		bool found = tenant.bstSearch(root, searchUsername);
-
-		if (!found) {
-			cout << "No result found" << endl;
-		}*/
-	}
-
-	// Search tenant by name
-	bool tenantNameSearch(TenantTree* root, string searchName) {
-		if (root == nullptr) {
-			return false;
-		}
-
-		// Search in the left subtree
-		tenantNameSearch(root->left, searchName);
-
-		// Check current node
-		// bool foundCurrent = false;
-		if (root->data.tenantName.find(searchName) != string::npos) { //display all the data that have the search username
-			// Display the tenant information
-			cout << "Tenant ID: " << root->data.tenantID << endl
-				<< "Tenant Username: " << root->data.username << endl
-				<< "Tenant Name: " << root->data.tenantName << endl
-				<< "Tenant Email: " << root->data.tenantEmail << endl
-				<< "Tenant Tel: " << root->data.tenantTel << endl
-				<< "Gender: " << root->data.tenantGender << endl
-				<< "Status: " << root->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-			// foundCurrent = true;
-		}
-
-		// Search in the right subtree
-		tenantNameSearch(root->right, searchName);
-
-		//remenber to add
-		/*cout << "Enter name want to search: ";
-		string searchName;
-		getline(cin, searchName);
-		bool found = tenant.tenantNameSearch(root, searchName);
-
-		if (!found) {
-			cout << "No result found" << endl;
-		}*/
-
-	}
-
+        // Result is positive, means username entered is greater then current username, go to check its right node
+        } else {
+            return bstGetPassword(root->right, uname);
+        }
+    }
 };
