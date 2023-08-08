@@ -4,19 +4,22 @@
 #include <sstream>
 using namespace std;
 
+struct FavouriteProperty{
+    string username;
+    string password;
+};
+
 struct FavouritePropertyLinkedList
 {
-    string username;
-    string propertyID;
-
+    FavouriteProperty data;
     FavouritePropertyLinkedList* prev;
     FavouritePropertyLinkedList* next;
 
     // Preset Favourite Property Data
     void presetData(FavouritePropertyLinkedList** head, string uName, string pID) {
         FavouritePropertyLinkedList* newFav = new FavouritePropertyLinkedList;
-        newFav->username = uName;
-        newFav->propertyID = pID;
+        newFav->data.username = uName;
+        newFav->data.password = pID;
         newFav->prev = nullptr;
         newFav->next = nullptr;
 
@@ -38,8 +41,8 @@ struct FavouritePropertyLinkedList
         cout << "All Favourite Properties\n";
         cout << "========================\n";
         while (current != nullptr) {
-            cout << "Username\t\t\t\t: " << current->username << endl;
-            cout << "Favourite Property ID\t: " << current->propertyID << endl;
+            cout << "Username\t\t\t\t: " << current->data.username << endl;
+            cout << "Favourite Property ID\t: " << current->data.password << endl;
             cout << "---------------------------------------\n\n";
             current = current->next;
         }
