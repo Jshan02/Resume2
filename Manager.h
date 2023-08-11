@@ -47,8 +47,6 @@ struct ManagerTree {
         if (bstSearchManagerUsername(root, uname)) {
             if (checkManagerStatus(root, uname) == "Active") {
                 if (bstGetManagerPassword(root, uname) == pw) {
-                    cout << "\nLogin Successful! Welcome Back Manager " << uname << "!\n";
-
                     ofstream Myfile("loggedInUser.txt");
                     Myfile << uname;
                     Myfile.close();

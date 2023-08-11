@@ -12,8 +12,6 @@ using namespace std;
 #include "Property.h"
 #include "TenancyHistory.h"
 #include "FavouriteProperty.h"
-#include "Manager.h"
-#include "Admin.h"
 #include "Interface.h"
 
 int main(){
@@ -23,6 +21,30 @@ int main(){
     PropertyTree* prop_root = nullptr;
     vector<Property> propertyArray;
     prop_root = prop.importProperty(prop_root, "mudah-apartment-kl-selangor.csv", propertyArray);
+
+    // preset data for tenant account
+    TenantTree tenant;
+    TenantTree* tenant_root = nullptr;
+    tenant_root = tenant.bstNewTenant(tenant_root, "Js0207", "123", "Low Jye Shan", "js@gmail.com", "012-7173702", "F", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "Hjw02", "456", "Hoong Jhen Wei", "hjw@gmail.com", "012-4501715", "M", "Inactive");
+    tenant_root = tenant.bstNewTenant(tenant_root, "Suyinsss", "789", "Teo Su Yin", "tsy@gmail.com", "011-11281358", "F", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "ericdiew", "abc", "Eric Diew", "ericdiew@gmail.com", "012-53575928", "M", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "angangpuds", "def", "Ang Chan Fwu", "angang22@gmail.com", "014-33785321", "M", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "shadoww", "ghi", "Shad Ng", "shadng78@gmail.com", "016-50247831", "M", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "seanw98", "jkl", "Sean Wong", "seanw33@gmail.com", "012-23348964", "M", "Inactive");
+    tenant_root = tenant.bstNewTenant(tenant_root, "noobmaster", "mno", "Thor Lee", "thormaster@gmail.com", "011-66249617", "M", "Inactive");
+    tenant_root = tenant.bstNewTenant(tenant_root, "kriko", "pqr", "Saeshav Subash", "kriko332@gmail.com", "010-13443015", "M", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "kante", "stu", "Shasivarman", "shasivarman@gmail.com", "019-94235764", "M", "Active");
+
+    // preset data for manager account
+    ManagerTree manager;
+    ManagerTree* manager_root = nullptr;
+    manager_root = manager.bstNewManager(manager_root, "hua27", "27", "M001", "Hua Chen Yu", "011-9092313", "chenyu@gmail.com", "Inactive");
+    manager_root = manager.bstNewManager(manager_root, "liu03", "0315", "M002", "Liu Shi Shi", "011-8882313", "cecelia@gmail.com", "Active");
+
+    // preset data for admin account
+    Admin admin;
+    admin.presetAdmin("admin", "admin123");
 
     //preset data for tenancy history
     TenancyLinkedList tenancy;
@@ -38,121 +60,46 @@ int main(){
     fav.presetData(&fav_root, "Js0207", "87950203");
     fav.presetData(&fav_root, "Hjw02", "100322962");
     fav.presetData(&fav_root, "Suyinsss", "100273500");
-
-    // preset data for tenant account
-    TenantTree tenant;
-    TenantTree* tenant_root = nullptr;
-    tenant_root = tenant.bstNewTenant(tenant_root, "Js0207", "123", "Low Jye Shan", "js@gmail.com", "012-7173702", "F", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "Hjw02", "456", "Hoong Jhen Wei", "hjw@gmail.com", "012-4501715", "M", "Inactive");
-    tenant_root = tenant.bstNewTenant(tenant_root, "Suyinsss", "789", "Teo Su Yin", "tsy@gmail.com", "011-11281358", "F", "Active");
-
-    // preset data for manager account
-    ManagerTree manager;
-    ManagerTree* manager_root = nullptr;
-    manager_root = manager.bstNewManager(manager_root, "hua27", "27", "M001", "Hua Chen Yu", "011-9092313", "chenyu@gmail.com", "Inactive");
-    manager_root = manager.bstNewManager(manager_root, "liu03", "0315", "M002", "Liu Shi Shi", "011-8882313", "cecelia@gmail.com", "Active");
-
-    // preset data for admin account
-    Admin admin("admin", "admin123");
+    fav.presetData(&fav_root, "Hjw02", "100493997");
+    fav.presetData(&fav_root, "Hjw02", "100239196");
+    fav.presetData(&fav_root, "Hjw02", "100202252");
+    fav.presetData(&fav_root, "ericdiew", "100322962");
+    fav.presetData(&fav_root, "ericdiew", "100321021");
+    fav.presetData(&fav_root, "ericdiew", "100170082");
+    fav.presetData(&fav_root, "angangpuds", "100322962");
+    fav.presetData(&fav_root, "angangpuds", "100321021");
+    fav.presetData(&fav_root, "angangpuds", "100493687");
+    fav.presetData(&fav_root, "shadoww", "100322962");
+    fav.presetData(&fav_root, "shadoww", "100170082");
+    fav.presetData(&fav_root, "shadoww", "100493997");
+    fav.presetData(&fav_root, "seanw98", "100322962");
+    fav.presetData(&fav_root, "seanw98", "100202252");
+    fav.presetData(&fav_root, "seanw98", "100170082");
+    fav.presetData(&fav_root, "kriko", "100322962");
+    fav.presetData(&fav_root, "kriko", "100239196");
+    fav.presetData(&fav_root, "kriko", "100493997");
+    fav.presetData(&fav_root, "kante", "100322962");
+    fav.presetData(&fav_root, "kante", "100170082");
+    fav.presetData(&fav_root, "kante", "100494721");
+    fav.presetData(&fav_root, "Js0207", "100088258");
+    fav.presetData(&fav_root, "Js0207", "100493687");
+    fav.presetData(&fav_root, "Js0207", "100494721");
+    fav.presetData(&fav_root, "noobmaster", "100322962");
+    fav.presetData(&fav_root, "noobmaster", "100239196");
+    fav.presetData(&fav_root, "noobmaster", "100321021");
+    fav.presetData(&fav_root, "Suyinsss", "100088258");
+    fav.presetData(&fav_root, "Suyinsss", "100493687");
+    fav.presetData(&fav_root, "Suyinsss", "100202252");
 
     // Struct Declaration
-    ManagerInterface manager_interface;
+    GeneralInterface general_interface;
 
 
     // homepage
-    int homepageOpt, userOpt;
-    string uname, pw;
-    bool valid;
-    system("CLS");
-    cout << "\n Welcom to Asia Pacific Home (APH)\n";
-    cout << "===================================\n";
-    while (true) {
-        cout << "1. Log In\n2. Sign Up\n0. Quit Program\n\n";
-        cout << "Select your Option: ";
-        cin >> homepageOpt;
-
-        if (homepageOpt == 1) {
-            valid = false;
-            system("CLS");
-            cout << "\nLog In As\n-----------\n";
-            cout << "1. Tenant\n2. Manager\n3. Admin\n\n";
-
-            while (valid == false) {
-                cout << "Select you user role: ";
-                cin >> userOpt;
-
-                if (userOpt == 1) {
-                    system("CLS");
-                    valid = true;
-                    cout << "\n Tenant Login\n";
-                    cout << "--------------\n";
-                    cout << "Enter Your Username: ";
-                    cin >> uname;
-                    cout << "Enter Your Password: ";
-                    cin >> pw;
-
-                    if (tenant.login(tenant_root, uname, pw)) {
-                        cout << "\n";                       
-                    }
-                    
-                } else if (userOpt == 2) {
-                    system("CLS");
-                    valid = true;
-                    cout << "\n Manager Login\n";
-                    cout << "---------------\n";
-                    cout << "Enter Your Username: ";
-                    cin >> uname;
-                    cout << "Enter Your Password: ";
-                    cin >> pw;
-
-                    if (manager.login(manager_root, uname, pw)) {
-                        system("CLS");
-                        manager_interface.managerDashboard(tenant_root);
-                    }
-                    
-                } else if (userOpt == 3) {
-                    system("CLS");
-                    valid = true;
-                    cout << "\n Admin Login\n";
-                    cout << "-------------\n";
-                    cout << "Enter Your Username: ";
-                    cin >> uname;
-                    cout << "Enter Your Password: ";
-                    cin >> pw;
-
-                    if (admin.login(uname, pw)) {
-                        cout << "\nLogin Success!\nWelcome Back, Admin!\n\n";
-                    } else {
-                        cout << "\nLogin Fail. Username or Password Wrong.\n\n";
-                    }
-
-                } else {
-                    cout << "\nInvalid Option! Please choose again.\n";
-                }
-            }
-            break;
-        } else if (homepageOpt == 2) {
-            system("CLS");
-            cout << "\n New Account Registration\n";
-            cout << "--------------------------\n";
-            // tenant.signup(tenant_root);
-            break;
-        } else if (homepageOpt == 0) {
-            cout << "\n===================================================\n";
-            cout << " Thank You for Using APH Accomodation Rent System!\n";
-            cout << "===================================================\n\n";
-            break;
-        } else {
-            cout << "\nInvalid Option! Please Choose Again.\n\n";
-        }
-    }
+    general_interface.homepage(tenant_root, manager_root);
     
 
-
-
-
     /*// testing functions start
-    tenant.dispAllTenant(tenant_root);
 
     //testing functions end*/
 

@@ -8,13 +8,13 @@ using namespace std;
 struct Admin {
     string username;
     string password;
-
-    Admin(string uname, string pw) {
+    
+    void presetAdmin(string uname, string pw) {
         username = uname;
         password = pw;
     }
 
     bool login(string uname, string pw) {
-        return (uname == username && pw == password);
+        return (uname == "admin" && pw == "admin123");
     }
 };

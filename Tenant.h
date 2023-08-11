@@ -67,6 +67,32 @@ struct TenantTree {
         dispInOrder (root->right);
     }
 
+    // Sign Up Function
+    bool signUp(TenantTree* root, string uname, string pw, string name, string email, string tel, string gender) {
+        // If root is null, direct add in the new account into BST
+        if (root == nullptr) {
+            root = new TenantTree();
+            root->data.username = uname;
+            root->data.password = pw;
+            root->data.tenantName = name;
+            root->data.tenantEmail = email;
+            root->data.tenantTel = tel;
+            root->data.tenantGender = gender;
+            root->data.tenantStatus = "Active";
+            return true;
+
+        // If new username is lower (in alphabet) than root's username, call again this function to check if it should be enter to the left of this root or not
+        } else if (uname < root->data.username) {
+            root->left = bstNewTenant(root->left, uname, pw, name, email, tel, gender, "Active");
+            return true;
+
+        // If new username is higher (in alphabet) than root's username, call again this function to check if it should be enter to the right of this root or not
+        } else {
+            root->right = bstNewTenant(root->right, uname, pw, name, email, tel, gender, "Active");
+            return true;
+        }        
+    }
+
     // Login function
     bool login(TenantTree* root, string uname, string password) {
 
@@ -78,9 +104,6 @@ struct TenantTree {
 
                 // if exists, get its password and compare with password entered
                 if (bstGetPassword(root, uname) == password) {
-
-                    // If same, login success
-                    cout << "\nLogin Successful!\nWelcome Back " << uname << "!\n";
 
                     // If login success, record the username in text file for future use
                     ofstream Myfile("loggedInUser.txt");
