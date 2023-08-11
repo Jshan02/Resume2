@@ -60,6 +60,7 @@ int main(){
     int homepageOpt, userOpt;
     string uname, pw;
     bool valid;
+    system("CLS");
     cout << "\n Welcom to Asia Pacific Home (APH)\n";
     cout << "===================================\n";
     while (true) {
@@ -70,12 +71,14 @@ int main(){
         if (homepageOpt == 1) {
             valid = false;
             while (valid == false) {
+                system("CLS");
                 cout << "\nLog In As\n-----------\n";
                 cout << "1. Tenant\n2. Manager\n3. Admin\n\n";
                 cout << "Select you user role: ";
                 cin >> userOpt;
 
                 if (userOpt == 1) {
+                    system("CLS");
                     valid = true;
                     cout << "\n Tenant Login\n";
                     cout << "--------------\n";
@@ -89,6 +92,7 @@ int main(){
                     }
                     
                 } else if (userOpt == 2) {
+                    system("CLS");
                     valid = true;
                     cout << "\n Manager Login\n";
                     cout << "---------------\n";
