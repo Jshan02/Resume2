@@ -11,9 +11,9 @@ using namespace std;
 #include "Property.h"
 #include "TenancyHistory.h"
 #include "FavouriteProperty.h"
-#include "Tenant.h"
 #include "Manager.h"
 #include "Admin.h"
+#include "Interface.h"
 
 int main(){
 

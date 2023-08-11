@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#include "Tenant.h"
+
 using namespace std;
 
 struct Interface {
