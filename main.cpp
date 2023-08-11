@@ -55,6 +55,9 @@ int main(){
     // preset data for admin account
     Admin admin("admin", "admin123");
 
+    // Struct Declaration
+    ManagerInterface manager_interface;
+
 
     // homepage
     int homepageOpt, userOpt;
@@ -104,11 +107,11 @@ int main(){
 
                     if (manager.login(manager_root, uname, pw)) {
                         system("CLS");
-                        Interface interface;
-                        interface.managerDashboard(tenant_root);
+                        manager_interface.managerDashboard(tenant_root);
                     }
                     
                 } else if (userOpt == 3) {
+                    system("CLS");
                     valid = true;
                     cout << "\n Admin Login\n";
                     cout << "-------------\n";
@@ -129,6 +132,10 @@ int main(){
             }
             break;
         } else if (homepageOpt == 2) {
+            system("CLS");
+            cout << "\n New Account Registration\n";
+            cout << "--------------------------\n";
+            // tenant.signup(tenant_root);
             break;
         } else if (homepageOpt == 0) {
             cout << "\n===================================================\n";

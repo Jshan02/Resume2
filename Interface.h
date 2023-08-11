@@ -5,7 +5,7 @@
 
 using namespace std;
 
-struct Interface {
+struct ManagerInterface {
     void managerDashboard(TenantTree* root) {
         cout << "Welcome to Manager Dashboard\n";
         cout << "=============================\n\n";
