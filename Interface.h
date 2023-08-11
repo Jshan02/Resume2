@@ -11,27 +11,6 @@ using namespace std;
 #include "FavouriteProperty.h"
 #include "TenancyHistory.h"
 
-// struct LogOutAndQuit {
-//     void logOut() {
-//         int status;
-//         char yesNo;
-//         status = remove("loggedInUser.txt");
-//         if (status == 0) {
-//             cout << "\nYou are logged out.\n";
-//             quitProgram();
-//         } else {
-//             cout << "\nNo logged in account.\n";
-//             quitProgram();
-//         }
-//     }
-
-//     void quitProgram() {
-//         cout << "\n===================================================\n";
-//         cout << " Thank You for Using APH Accomodation Rent System!\n";
-//         cout << "===================================================\n\n";
-//     }
-// };
-
 struct ManagerInterface {
     void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         int dashboardOption;
@@ -41,14 +20,15 @@ struct ManagerInterface {
         cout << "2. Search Tenant\n";
         cout << "3. Delete Tenant Account\n";
         cout << "4. Manage Tenancy\n";
-        cout << "5. View Report\n\n";
+        cout << "5. View Report\n";
+        cout << "6. Logout\n\n";
         while (true) {
             
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 5) {
-                cout << "\n\nInvalid input. Please enter a number between 1 and 5.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
+                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
@@ -59,6 +39,12 @@ struct ManagerInterface {
 
             } else if (dashboardOption == 2) {
                 managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+
+            } else if (dashboardOption == 3) {
+
+            } else if (dashboardOption == 4) {
+
+            } else if (dashboardOption == 5) {
 
             }
             
@@ -194,7 +180,7 @@ struct AdminInterface {
             cin >> dashboardOption;
 
             if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
-                cout << "\n\nInvalid input. Please enter a number between 1 and 6.\n";
+                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
@@ -210,11 +196,11 @@ struct AdminInterface {
 
             } else if (dashboardOption == 5) {
 
-            } else {
-                // logOut();
-            }
+            } 
+            break;
         }
     }
+};
 
 struct TenantInterface {
     TenantTree* tenant;

@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "GeneralInterface.h"
+// #include "Interface.h"
 
 int main(){
 
@@ -89,11 +90,124 @@ int main(){
 
     // Struct Declaration
     GeneralInterface general_interface;
-
-
-    // homepage
-    general_interface.homepage(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+    AdminInterface admin_interface;
+    ManagerInterface manager_interface;
     
+
+    // Main Program Starts Here
+    int homepgOpt, roleOpt, logoutOpt, quitOpt;
+    bool authenticated, registered, goLogin;
+
+    while (true) {
+        homepgOpt = general_interface.homepage();                               // Login, Sign Up, or Quit Program
+        if (homepgOpt == 1) {                                                   // Login Selected
+            roleOpt = general_interface.userLogIn();                            // Login as Tenant, Manager, or Admin
+            if (roleOpt == 1) {                                                 // Tenant Selected
+                authenticated = general_interface.tenantLogIn(tenant_root);     // Verify Username and Password
+
+                if (authenticated) {                                            // Correct
+                    cout << "Display Tenant Dashboard";                         // Call Tenant Dashboard
+                    general_interface.logOut();                                 // If log out is selected
+                    quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
+                    if (quitOpt == 0) {                                         // Quit Program is Selected
+                        general_interface.quitProgram();                        // Terminate
+                        break;                                                  // End Loop
+                    } else {                                                    // Back to Homepage is Selected
+                        continue;                                               // Continue Loop
+                    }
+                } else {                                                        // Incorrect
+                    quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
+                    if (quitOpt == 0) {                                         // Quit Program is Selected
+                        general_interface.quitProgram();                        // Terminate
+                        break;                                                  // End Loop
+                    } else {                                                    // Back to Homepage is Selected
+                        continue;                                               // Continue Loop
+                    }
+                }
+            } else if (roleOpt == 2) {                                          // Manager Selected
+                authenticated = general_interface.managerLogIn(manager_root);
+                if (authenticated) {
+                    manager_interface.managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                    general_interface.logOut();
+                    quitOpt = general_interface.backHomepage();
+                    if (quitOpt == 0) {
+                        general_interface.quitProgram();
+                        break;
+                    } else {
+                        continue;
+                    }
+                } else {
+                    quitOpt = general_interface.backHomepage();
+                    if (quitOpt == 0) {
+                        general_interface.quitProgram();
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+            } else {                                                            // Admin Selected
+                authenticated = general_interface.adminLogIn();
+                if (authenticated) {
+                    admin_interface.adminDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                    general_interface.logOut();
+                    quitOpt = general_interface.backHomepage();
+                    if (quitOpt == 0) {
+                        general_interface.quitProgram();
+                        break;
+                    } else {
+                        continue;
+                    }
+                } else {
+                    quitOpt = general_interface.backHomepage();
+                    if (quitOpt == 0) {
+                        general_interface.quitProgram();
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        } else if (homepgOpt == 2) {                                            // Sign Up is selected
+            registered = general_interface.newAccDetails(tenant_root);          // Check if registered successfully
+            if (registered) {                                                   // Success
+                goLogin = general_interface.proceedLogin();                     // Check whether to log in as tenant
+                if (goLogin) {                                                  // go login
+                    authenticated = general_interface.tenantLogIn(tenant_root);
+                    if (authenticated) {
+                        cout << "Display Tenant Dashboard";
+                        general_interface.logOut();
+                        quitOpt = general_interface.backHomepage();
+                        if (quitOpt == 0) {
+                            general_interface.quitProgram();
+                            break;
+                        } else { 
+                            continue;
+                        }
+                    } else {
+                        quitOpt = general_interface.backHomepage();
+                        if (quitOpt == 0) { 
+                            general_interface.quitProgram();
+                            break;
+                        } else { 
+                            continue;
+                        }
+                    }
+                } else {                                                        // dont want login
+                    quitOpt = general_interface.backHomepage();                 // ask whether back to homepage or quit
+                    if (quitOpt == 0) {
+                        general_interface.quitProgram();
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        } else {
+            general_interface.quitProgram();
+            break;
+        }
+    }
+
 
     /*// testing functions start
 

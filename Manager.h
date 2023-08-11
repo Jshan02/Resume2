@@ -60,7 +60,7 @@ struct ManagerTree {
                 return false;
             }
         } else {
-            cout << "Login Fail, Username Not Exists.\n";
+            cout << "\nLogin Fail, Username Not Exists.\n";
             return false;
         }
     }

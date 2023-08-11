@@ -25,12 +25,11 @@ struct TenancyLinkedList
     TenancyLinkedList* next;
 
     // Preset Tenancy History Data
-    void presetData(TenancyLinkedList** head, string tID, string tUName, string tName, string pID, string pName, string sDate, string duration, string eDate, string rental, string status){
+    void presetData(TenancyLinkedList** head, string tID, string tUName, string tName,  string pName, string sDate, string duration, string eDate, string rental, string status){
         TenancyLinkedList* newTenancy = new TenancyLinkedList;
         newTenancy->data.tenancyID = tID;
         newTenancy->data.username = tUName;
         newTenancy->data.tenant_name = tName;
-        newTenancy->data.property_id = pID;
         newTenancy->data.property_name = pName;
         newTenancy->data.start_date = sDate;
         newTenancy->data.duration = duration;

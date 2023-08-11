@@ -59,7 +59,7 @@ struct FavouritePropertyLinkedList
     
     while (current != nullptr) {
         if (current->data.username == username) {
-            string propertyID = current->data.propertyID;
+            string propertyID = current->data.propId;
             // Search for the property in the binary search tree
             PropertyTree* propertyNode = property.getPropertyInfo(root, propertyID);
             if (propertyNode != nullptr) {

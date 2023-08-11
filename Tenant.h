@@ -259,7 +259,7 @@ void inOrderFemale(TenantTree* node) {
 	inOrderFemale(node->left);
 
 	// Process the current node if the tenant is female
-	if (node->data.tenantGender == "female") {
+	if (node->data.tenantGender == 'F') {
 		cout << "Tenant Username: " << node->data.username << endl
 			<< "Tenant Name: " << node->data.tenantName << endl
 			<< "Tenant Email: " << node->data.tenantEmail << endl
