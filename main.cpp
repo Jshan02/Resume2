@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <functional>
 #include <chrono>
+#include <stdlib.h>
 using namespace std;
 
 
@@ -97,7 +98,7 @@ int main(){
                     cin >> pw;
 
                     if (manager.login(manager_root, uname, pw)) {
-                        cout << "\n";
+                        system("CLS");
                         Interface interface;
                         interface.managerDashboard(tenant_root);
                     }
