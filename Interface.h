@@ -377,4 +377,4 @@ struct AdminInterface {
             break;
         }
     }
-}
+};
