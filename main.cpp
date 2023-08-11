@@ -127,7 +127,7 @@ int main(){
             } else if (roleOpt == 2) {                                          // Manager Selected
                 authenticated = general_interface.managerLogIn(manager_root);
                 if (authenticated) {
-                    manager_interface.managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                    manager_interface.managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
                     general_interface.logOut();
                     quitOpt = general_interface.backHomepage();
                     if (quitOpt == 0) {
@@ -148,7 +148,7 @@ int main(){
             } else {                                                            // Admin Selected
                 authenticated = general_interface.adminLogIn();
                 if (authenticated) {
-                    admin_interface.adminDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                    admin_interface.adminDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
                     general_interface.logOut();
                     quitOpt = general_interface.backHomepage();
                     if (quitOpt == 0) {

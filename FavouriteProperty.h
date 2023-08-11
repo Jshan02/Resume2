@@ -1,5 +1,7 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
+#include <map>
 #include <fstream>
 #include <sstream>
 using namespace std;
@@ -8,6 +10,14 @@ struct FavouriteProperty{
     string username;
     string propId;
 };
+
+map<string, string> createPropertyMap(const vector<Property>& propertyArray) {
+    map<string, string> propertyMap;
+    for (const auto& property : propertyArray) {
+        propertyMap[property.propertyID] = property.propertyName;
+    }
+    return propertyMap;
+}
 
 struct FavouritePropertyLinkedList
 {
@@ -93,4 +103,36 @@ struct FavouritePropertyLinkedList
     // FavouritePropertyLinkedList favourite;
     // favourite.displayUserFavourite(fav_root, "Suyinsss", prop_root);
 }
+
+    void displayTop10Favourite(FavouritePropertyLinkedList* head, const map<string, string>& propertyNames) {
+        map<string, int> propertyCounts;
+
+        // Counting the favorites for each property ID
+        FavouritePropertyLinkedList* current = head;
+        int maxIDLength = 0, maxNameLength = 0;
+        while (current != nullptr) {
+            propertyCounts[current->data.propId]++; // Increment count for this property ID
+            maxIDLength = max(maxIDLength, (int)current->data.propId.length());
+            maxNameLength = max(maxNameLength, (int)propertyNames.at(current->data.propId).length());
+            current = current->next;
+        }
+
+        // Sorting the property counts
+        vector<pair<string, int>> sortedCounts(propertyCounts.begin(), propertyCounts.end());
+        sort(sortedCounts.begin(), sortedCounts.end(),
+            [](const pair<string, int>& a, const pair<string, int>& b) {
+                return b.second < a.second;
+            });
+
+        // Displaying the top 10 favorite properties
+        cout << "Top 10 Favourite Properties\n";
+        cout << "==========================================================\n";
+        cout << left << setw(maxIDLength + 5) << "Property ID" << setw(maxNameLength + 5) << "Name" << setw(12) << "Total Favorites\n";
+        cout << string(maxIDLength + maxNameLength + 25, '=') << '\n';
+        for (int i = 0; i < 10 && i < sortedCounts.size(); i++) {
+            string propertyID = sortedCounts[i].first;
+            string propertyName = propertyNames.at(propertyID); // Retrieve the property name using the map
+            cout << left << setw(maxIDLength + 5) << propertyID << setw(maxNameLength + 5) << propertyName << setw(12) << sortedCounts[i].second << endl;
+        }
+    }
 };
