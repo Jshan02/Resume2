@@ -8,11 +8,7 @@
 #include <stdlib.h>
 using namespace std;
 
-
-#include "Property.h"
-#include "TenancyHistory.h"
-#include "FavouriteProperty.h"
-#include "Interface.h"
+#include "GeneralInterface.h"
 
 int main(){
 
@@ -96,7 +92,7 @@ int main(){
 
 
     // homepage
-    general_interface.homepage(tenant_root, manager_root);
+    general_interface.homepage(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
     
 
     /*// testing functions start

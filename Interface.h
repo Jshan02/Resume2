@@ -2,17 +2,39 @@
 #include <string>
 #include <stdlib.h>
 #include <limits>
+using namespace std;
 
 #include "Tenant.h"
 #include "Manager.h"
 #include "Admin.h"
+#include "Property.h"
+#include "FavouriteProperty.h"
+#include "TenancyHistory.h"
 
-using namespace std;
+// struct LogOutAndQuit {
+//     void logOut() {
+//         int status;
+//         char yesNo;
+//         status = remove("loggedInUser.txt");
+//         if (status == 0) {
+//             cout << "\nYou are logged out.\n";
+//             quitProgram();
+//         } else {
+//             cout << "\nNo logged in account.\n";
+//             quitProgram();
+//         }
+//     }
+
+//     void quitProgram() {
+//         cout << "\n===================================================\n";
+//         cout << " Thank You for Using APH Accomodation Rent System!\n";
+//         cout << "===================================================\n\n";
+//     }
+// };
 
 struct ManagerInterface {
-    void managerDashboard(TenantTree* root) {
+    void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         int dashboardOption;
-        system("CLS");
         cout << "Welcome to Manager Dashboard\n";
         cout << "=============================\n\n";
         cout << "1. View All Tenant\n";
@@ -33,10 +55,10 @@ struct ManagerInterface {
             }
 
             if (dashboardOption == 1) {
-                managerViewAllTenantMenu(root);
+                managerViewAllTenantMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
             } else if (dashboardOption == 2) {
-                managerSearchMenu(root);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
             }
             
@@ -44,10 +66,10 @@ struct ManagerInterface {
         }
     }
 
-    void managerViewAllTenantMenu(TenantTree* root){
+    void managerViewAllTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root){
         system("CLS");
         TenantTree tenant;
-        tenant.dispAllTenant(root);
+        tenant.dispAllTenant(tenant_root);
 
         cout << "1. Back to Main Menu\n\n";
 
@@ -56,13 +78,13 @@ struct ManagerInterface {
         cin >> option;
 
         if (option == 1){
-            managerDashboard(root);
+            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
         }
 
     }
 
 
-    void managerSearchMenu(TenantTree* root){
+    void managerSearchMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root){
         int searchOption;
         system("CLS");
         cout << "Search Tenant\n";
@@ -98,7 +120,7 @@ struct ManagerInterface {
                     cout << "................................................\n\n";
                 
                     TenantTree tenant;
-                    bool found = tenant.tenantUsernameSearch(root, searchUsername);
+                    bool found = tenant.tenantUsernameSearch(tenant_root, searchUsername);
                 
                     if (!found) {
                     cout << "No result found" << endl;
@@ -108,7 +130,7 @@ struct ManagerInterface {
                     cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
                 } 
                 while (toupper(continueSearch) == 'Y');
-                managerSearchMenu(root);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
                 
                 
             }
@@ -127,7 +149,7 @@ struct ManagerInterface {
                     cout << "................................................\n\n";
                 
                     TenantTree tenant;
-                    bool found = tenant.tenantNameSearch(root, searchName);
+                    bool found = tenant.tenantNameSearch(tenant_root, searchName);
                 
                     if (!found) {
                     cout << "No result found" << endl;
@@ -138,275 +160,59 @@ struct ManagerInterface {
 
                 } 
                 while (toupper(continueSearchName) == 'Y');
-                managerSearchMenu(root);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
                 
                 
                 
             } else if (searchOption == 3) {
                 system("CLS");
-                managerDashboard(root);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             }
         }
-    }
-};
-
-struct GeneralInterface {
-    TenantTree tenant;
-    ManagerTree manager;
-    Admin admin;
-    ManagerInterface manager_interface;
-
-    void homepage(TenantTree* root1, ManagerTree* root2) {
-        system("CLS");
-        int homepgOpt;
-        cout << "\n Welcome to Asia Pacific Home (APH)\n";
-        cout << "===================================\n";
-        cout << "1. Log In\n2. Sign Up\n0. Quit Program\n\n";
-
-        while (true) {
-            cout << "Select Your Option: ";
-            cin >> homepgOpt;
-
-            if (homepgOpt == 1) {
-                logInUser(root1, root2);
-                break;
-            } else if (homepgOpt == 2) {
-                newAccDetails(root1, root2);
-                break;
-            } else if (homepgOpt == 0) {
-                quitProgram();
-                break;
-            } else {
-                cout << "\nInvalid option. Please choose again.\n";
-            }
-        }
-    }
-
-    void logInUser(TenantTree* root1, ManagerTree* root2) {
-        system("CLS");
-        int userOpt;
-        cout << "\nLog In As\n-----------\n";
-        cout << "1. Tenant\n2. Manager\n3. Admin\n\n";
-        
-        while (true) {
-            cout << "Select Your User Role: ";
-            cin >> userOpt;
-
-            if (userOpt == 1) {
-                tenantLogIn(root1, root2);
-                break;
-            } else if (userOpt == 2) {
-                managerLogin(root1, root2);
-                break;
-            } else if (userOpt == 3) {
-                adminLogin(root1,root2);
-                break;
-            } else {
-                cout << "\nInvalid option. Please choose again.\n";
-            }
-        }
-    }
-
-    void tenantLogIn(TenantTree* tenant_root, ManagerTree* root2) {
-        system("CLS");
-        string uname, pw;
-        cout << "\n Tenant Login\n";
-        cout << "--------------\n";
-        cout << "Enter Your Username: ";
-        cin >> uname;
-        cout << "Enter Your Password: ";
-        cin >> pw;
-
-        if (tenant.login(tenant_root, uname, pw)) {
-            system("CLS");
-            cout << "Login Successful!\n";
-            cout << "Welcome Back " << uname << "!\n\n";
-            cout << "Display Tenant Dashboard\n";
-        } else {
-            loginFail(tenant_root, root2);
-        }
-    }
-
-    void managerLogin(TenantTree* tenant_root, ManagerTree* manager_root) {
-        system("CLS");
-        string uname, pw;
-        cout << "\n Manager Login\n";
-        cout << "---------------\n";
-        cout << "Enter Your Username: ";
-        cin >> uname;
-        cout << "Enter Your Password: ";
-        cin >> pw;
-
-        if (manager.login(manager_root, uname, pw)) {
-            system("CLS");
-            cout << "Login Successful!\n";
-            cout << "Welcome Back Manager " << uname << "!\n\n";
-            manager_interface.managerDashboard(tenant_root);
-        } else {
-            loginFail(tenant_root, manager_root);
-        }
-    }
-
-    void adminLogin(TenantTree* root1, ManagerTree* root2) {
-        system("CLS");
-        string uname, pw;
-        cout << "\n Admin Login\n";
-        cout << "-------------\n";
-        cout << "Enter Your Username: ";
-        cin >> uname;
-        cout << "Enter Your Password: ";
-        cin >> pw;
-
-        if (admin.login(uname, pw)) {
-            ofstream Myfile("loggedInUser.txt");
-            Myfile << uname;
-            Myfile.close();
-            
-            system("CLS");
-            cout << "Login Success!\n";
-            cout << "Welcome Back Admin!\n\n";
-            cout << "Display Admin Dashboard\n";
-        } else {
-            cout << "Login Fail. Username or Password Wrong.\n\n";
-            loginFail(root1, root2);
-        }
-    }
-
-    void loginFail(TenantTree* root1, ManagerTree* root2) {
-        char yesNo;
-        cout << "Back to Homepage? (Y/N) - ";
-        cin >> yesNo;
-
-        if (toupper(yesNo) == 89) {
-            homepage(root1, root2);
-        } else if (toupper(yesNo) == 78) {
-            quitProgram();
-        } else {
-            cout << "\nInvalid option. Please choose again.\n";
-            loginFail(root1, root2);
-        }
-    }
-
-    void newAccDetails(TenantTree* root1, ManagerTree* root2) {
-        system("CLS");
-        char yesNo;
-        cout << "\n New Account Registration\n";
-        cout << "--------------------------\n";
-        cout << "Please fill in the following details: \n";
-        string uname, pw, name, email, tel;
-        char gender, format_gender;
-        cout << "Username - ";
-        cin >> uname;
-        cout << "Password - ";
-        cin >> pw;
-        cout << "Full Name as per IC - ";
-        cin >> name;
-        cout << "Email - ";
-        cin >> email;
-        cout << "Contact Number - ";
-        cin >> tel;
-        cout << "Gender (M/F) - ";
-        cin >> gender;
-        format_gender = toupper(gender);
-
-        while (true) {
-            if (tenant.signUp(root1, uname, pw, name, email, tel, format_gender)) {
-                cout << "\nSuccessfully Sign Up. Proceed to Login? (Y/N) - ";
-                cin >> yesNo;
-
-                if (toupper(yesNo) == 89) {
-                    tenantLogIn(root1, root2);
-                    break;
-                } else if (toupper(yesNo) == 78) {
-                    homepage(root1, root2);
-                    break;
-                } else {
-                    cout << "\nInvalid option. Please choose again.\n";
-                }
-
-            } else {
-                cout << "\nSign Up Fail. Try Sign Up Again? (Y/N) - ";
-                cin >> yesNo;
-
-                if (toupper(yesNo) == 89) {
-                    newAccDetails(root1, root2);
-                    break;
-                } else if (toupper(yesNo) == 78) {
-                    quitProgram();
-                    break;
-                } else {
-                    cout << "\nInvalid option. Please choose again.\n";
-                }
-            }
-        }
-    }
-
-    void logOut(TenantTree* root1, ManagerTree* root2) {
-        int status;
-        char yesNo;
-        status = remove("loggedInUser.txt");
-        if (status == 0) {
-            cout << "\nYou are logged out.\n";
-
-            while (true) {
-                cout << "Proceed to Homepage? (Y/N) - ";
-                cin >> yesNo;
-
-                if (toupper(yesNo) == 89) {
-                    homepage(root1, root2);
-                    break;
-                } else if (toupper(yesNo) == 78) {
-                    quitProgram();
-                    break;
-                } else {
-                    cout << "\nInvalid option. Please choose again.\n";
-                }
-            }
-        } else {
-            cout << "\nNo logged in account.\n";
-            quitProgram();
-        }
-    }
-
-    void quitProgram() {
-        cout << "\n===================================================\n";
-        cout << " Thank You for Using APH Accomodation Rent System!\n";
-        cout << "===================================================\n\n";
     }
 };
 
 struct AdminInterface {
-    void adminDashboard(TenantTree* root) {
+    TenantTree tenant;
+    ManagerTree manager;
+    Admin admin;
+    
+    void adminDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         int dashboardOption;
-        system("CLS");
-        cout << "Welcome to Admin Dashboard\n";
-        cout << "=============================\n\n";
-        cout << "1. Manage Manager User\n";
-        cout << "2. Display\n";
-        cout << "3. Delete Tenant Account\n";
-        cout << "4. Manage Tenancy\n";
-        cout << "5. View Report\n\n";
+
+        cout << " Welcome to Admin Dashboard\n";
+        cout << "============================\n\n";
+        cout << "1. Add New Manager\n";
+        cout << "2. Modify Manager Status\n";
+        cout << "3. Modify Tenant Status\n";
+        cout << "4. View Tenant\n";
+        cout << "5. View Property\n";
+        cout << "6. Log Out\n";
+
         while (true) {
-            
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 5) {
-                cout << "\n\nInvalid input. Please enter a number between 1 and 5.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
+                cout << "\n\nInvalid input. Please enter a number between 1 and 6.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
             }
 
             if (dashboardOption == 1) {
-                
 
             } else if (dashboardOption == 2) {
-               
 
+            } else if (dashboardOption == 3) {
+
+            } else if (dashboardOption == 4) {
+
+            } else if (dashboardOption == 5) {
+
+            } else {
+                // logOut();
             }
-            
-            break;
         }
     }
 };
