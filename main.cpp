@@ -70,10 +70,11 @@ int main(){
 
         if (homepageOpt == 1) {
             valid = false;
+            system("CLS");
+            cout << "\nLog In As\n-----------\n";
+            cout << "1. Tenant\n2. Manager\n3. Admin\n\n";
+
             while (valid == false) {
-                system("CLS");
-                cout << "\nLog In As\n-----------\n";
-                cout << "1. Tenant\n2. Manager\n3. Admin\n\n";
                 cout << "Select you user role: ";
                 cin >> userOpt;
 
