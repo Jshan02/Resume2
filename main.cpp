@@ -4,7 +4,9 @@
 #include <sstream>
 #include <algorithm>
 #include <functional>
+#include <chrono>
 using namespace std;
+
 
 #include "Property.h"
 #include "TenancyHistory.h"
@@ -96,6 +98,8 @@ int main(){
 
                     if (manager.login(manager_root, uname, pw)) {
                         cout << "\n";
+                        Interface interface;
+                        interface.managerDashboard(tenant_root);
                     }
                     
                 } else if (userOpt == 3) {
@@ -132,10 +136,12 @@ int main(){
     
 
 
+
+
     /*// testing functions start
     tenant.dispAllTenant(tenant_root);
 
     //testing functions end*/
 
     return 0;
-}
+};

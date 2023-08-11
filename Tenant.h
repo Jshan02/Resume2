@@ -153,4 +153,43 @@ struct TenantTree {
             return bstGetPassword(root->right, uname);
         }
     }
+
+
+    // Search tenant by name
+	bool tenantNameSearch(TenantTree* root, string searchName) {
+		if (root == nullptr) {
+			return false;
+		}
+
+		// Search in the left subtree
+		tenantNameSearch(root->left, searchName);
+
+		// Check current node
+		// bool foundCurrent = false;
+		if (root->data.tenantName.find(searchName) != string::npos) { //display all the data that have the search username
+			// Display the tenant information
+			cout << "Tenant Username: " << root->data.username << endl
+                << "Tenant Name: " << root->data.tenantName << endl
+                << "Tenant Email: " << root->data.tenantEmail << endl
+				<< "Tenant Tel: " << root->data.tenantTel << endl
+				<< "Gender: " << root->data.tenantGender << endl
+				<< "Status: " << root->data.tenantStatus << "\n\n"
+				<< "------------------------------------------------\n";
+			// foundCurrent = true;
+		}
+
+		// Search in the right subtree
+		tenantNameSearch(root->right, searchName);
+
+		//remenber to add
+		/*cout << "Enter name want to search: ";
+		string searchName;
+		getline(cin, searchName);
+		bool found = tenant.tenantNameSearch(root, searchName);
+
+		if (!found) {
+			cout << "No result found" << endl;
+		}*/
+
+	}
 };
