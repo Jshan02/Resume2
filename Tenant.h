@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <string.h>
+#include <algorithm>
+#include <cctype>
 using namespace std;
 
 struct Tenant {
@@ -178,42 +180,75 @@ struct TenantTree {
         }
     }
 
+    // Search tenant by username
+	bool tenantUsernameSearch(TenantTree* root, string searchUsername) {
+    if (root == nullptr) return false;
+
+    // Convert the search name to lowercase
+    string searchUsernameLower = toLower(searchUsername);
+
+    // Search in the left subtree
+    bool foundLeft = tenantUsernameSearch(root->left, searchUsername);
+
+    // Check current node
+    bool foundCurrent = false;
+    string tenantUsernameLower = toLower(root->data.username);
+    if (tenantUsernameLower.find(searchUsernameLower) != string::npos) {
+        // Display the tenant information
+        cout << "Tenant Username: " << root->data.username << endl
+             << "Tenant Name: " << root->data.tenantName << endl
+             << "Tenant Email: " << root->data.tenantEmail << endl
+             << "Tenant Tel: " << root->data.tenantTel << endl
+             << "Gender: " << root->data.tenantGender << endl
+             << "Status: " << root->data.tenantStatus << "\n\n"
+             << "------------------------------------------------\n";
+        foundCurrent = true;
+    }
+
+    // Search in the right subtree
+    bool foundRight = tenantUsernameSearch(root->right, searchUsername);
+
+    return foundLeft || foundCurrent || foundRight;
+}
 
     // Search tenant by name
 	bool tenantNameSearch(TenantTree* root, string searchName) {
-		if (root == nullptr) {
-			return false;
-		}
+    if (root == nullptr) return false;
 
-		// Search in the left subtree
-		tenantNameSearch(root->left, searchName);
+    // Convert the search name to lowercase
+    string searchNameLower = toLower(searchName);
 
-		// Check current node
-		// bool foundCurrent = false;
-		if (root->data.tenantName.find(searchName) != string::npos) { //display all the data that have the search username
-			// Display the tenant information
-			cout << "Tenant Username: " << root->data.username << endl
-                << "Tenant Name: " << root->data.tenantName << endl
-                << "Tenant Email: " << root->data.tenantEmail << endl
-				<< "Tenant Tel: " << root->data.tenantTel << endl
-				<< "Gender: " << root->data.tenantGender << endl
-				<< "Status: " << root->data.tenantStatus << "\n\n"
-				<< "------------------------------------------------\n";
-			// foundCurrent = true;
-		}
+    // Search in the left subtree
+    bool foundLeft = tenantNameSearch(root->left, searchName);
 
-		// Search in the right subtree
-		tenantNameSearch(root->right, searchName);
+    // Check current node
+    bool foundCurrent = false;
+    string tenantNameLower = toLower(root->data.tenantName);
+    if (tenantNameLower.find(searchNameLower) != string::npos) {
+        // Display the tenant information
+        cout << "Tenant Username: " << root->data.username << endl
+             << "Tenant Name: " << root->data.tenantName << endl
+             << "Tenant Email: " << root->data.tenantEmail << endl
+             << "Tenant Tel: " << root->data.tenantTel << endl
+             << "Gender: " << root->data.tenantGender << endl
+             << "Status: " << root->data.tenantStatus << "\n\n"
+             << "------------------------------------------------\n";
+        foundCurrent = true;
+    }
 
-		//remenber to add
-		/*cout << "Enter name want to search: ";
-		string searchName;
-		getline(cin, searchName);
-		bool found = tenant.tenantNameSearch(root, searchName);
+    // Search in the right subtree
+    bool foundRight = tenantNameSearch(root->right, searchName);
 
-		if (!found) {
-			cout << "No result found" << endl;
-		}*/
+    return foundLeft || foundCurrent || foundRight;
+}
 
-	}
+
+string toLower(const std::string &input) {
+    std::string result = input;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    return result;
+}
+
 };
+

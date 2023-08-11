@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <limits>
 
 #include "Tenant.h"
 #include "Manager.h"
@@ -10,58 +11,143 @@ using namespace std;
 
 struct ManagerInterface {
     void managerDashboard(TenantTree* root) {
+        int dashboardOption;
+        system("CLS");
         cout << "Welcome to Manager Dashboard\n";
         cout << "=============================\n\n";
         cout << "1. View All Tenant\n";
         cout << "2. Search Tenant\n";
         cout << "3. Delete Tenant Account\n";
         cout << "4. Manage Tenancy\n";
-        cout << "5. View Report\n";
+        cout << "5. View Report\n\n";
+        while (true) {
+            
+            cout << "Please enter your option: ";
+            cin >> dashboardOption;
 
-        int dashboardOption;
-        cout << "Please enter your option: ";
-        cin >> dashboardOption;
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 5) {
+                cout << "\n\nInvalid input. Please enter a number between 1 and 5.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
 
-        if (dashboardOption == 1){
-          managerViewAllTenantMenu(root);
+            if (dashboardOption == 1) {
+                managerViewAllTenantMenu(root);
+
+            } else if (dashboardOption == 2) {
+                managerSearchMenu(root);
+
+            }
+            
+            break;
         }
     }
 
     void managerViewAllTenantMenu(TenantTree* root){
+        system("CLS");
         TenantTree tenant;
         tenant.dispAllTenant(root);
+
+        cout << "1. Back to Main Menu\n\n";
+
+        int option;
+        cout << "Please select an option: ";
+        cin >> option;
+
+        if (option == 1){
+            managerDashboard(root);
+        }
+
     }
 
 
-    // void managerSearchMenu(TenantTree* root){
-    //     cout << "Search Tenant\n";
-    //     cout << "==================\n\n";
-    //     cout << "1. Search by Username\n";
-    //     cout << "2. Search by Tenant Name\n\n";
-
-    //     int searchOption;
-    //     cout << "Please enter an option: ";
-    //     cin >> searchOption;
-
-    //     if (searchOption == 1){
-    //         cout << "Please enter username: ";
-
-    //         string searchUsername;
-    //         getline(cin, searchUsername);
-    //         TenantTree tenant;
-    //         bool found = tenant.bstSearchUsername(root, searchUsername);
-
-    //         if (!found) {
-    //             cout << "No result found." << endl;
-    //         }
-    //     }
-    //     else if (searchOption == 2) {
-    //         cout << "Pleaser enter name: ";
+    void managerSearchMenu(TenantTree* root){
+        int searchOption;
+        system("CLS");
+        cout << "Search Tenant\n";
+        cout << "==================\n\n";
+        cout << "1. Search by Username\n";
+        cout << "2. Search by Tenant Name\n";
+        cout << "3. Back to Main Menu\n";
+        cout << "4. Log Out\n\n";
+        
+        while (true){
+           
+            cout << "Please enter an option: ";
+            cin >> searchOption;
             
-    //         string searchName;
-    //         getline(cin, searchName);
-    //     }
-    // }
+
+            if (cin.fail() || searchOption < 1 || searchOption > 3) {
+                cout << "\n\nInvalid input. Please enter a number between 1 and 3.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+            if (searchOption == 1){
+                char continueSearch;
+                do{
+                    system("CLS");
+                    cout << "Please enter username want to search: ";
+
+                    string searchUsername;
+                    cin >> searchUsername;
+                    // getline(cin, searchUsername);
+
+                    cout << "\nSearch Result for " << searchUsername << "\n";
+                    cout << "................................................\n\n";
+                
+                    TenantTree tenant;
+                    bool found = tenant.tenantUsernameSearch(root, searchUsername);
+                
+                    if (!found) {
+                    cout << "No result found" << endl;
+                    }
+                    cout << "\n\nDo you want to continue searching? (Y/N): ";
+                    cin >> continueSearch;
+                    cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+                } 
+                while (toupper(continueSearch) == 'Y');
+                managerSearchMenu(root);
+                
+                
+            }
+            
+            else if (searchOption == 2) {
+                char continueSearchName;
+                do {
+                    system("CLS");
+                    cout << "Please enter name want to search: ";
+
+                    string searchName;
+                    cin.ignore(); // Ignore the newline character left in the input buffer
+                    getline(cin, searchName); // Read the entire line
+
+                    cout << "\nSearch Result for " << searchName << "\n";
+                    cout << "................................................\n\n";
+                
+                    TenantTree tenant;
+                    bool found = tenant.tenantNameSearch(root, searchName);
+                
+                    if (!found) {
+                    cout << "No result found" << endl;
+                    }
+
+                    cout << "\n\nDo you want to continue searching? (Y/N): ";
+                    cin >> continueSearchName;
+
+                } 
+                while (toupper(continueSearchName) == 'Y');
+                managerSearchMenu(root);
+                
+                
+                
+            } else if (searchOption == 3) {
+                system("CLS");
+                managerDashboard(root);
+            }
+        }
+    }
 };
 
 struct GeneralInterface {
@@ -256,3 +342,39 @@ struct GeneralInterface {
         cout << "===================================================\n\n";
     }
 };
+
+struct AdminInterface {
+    void adminDashboard(TenantTree* root) {
+        int dashboardOption;
+        system("CLS");
+        cout << "Welcome to Admin Dashboard\n";
+        cout << "=============================\n\n";
+        cout << "1. Manage Manager User\n";
+        cout << "2. Display\n";
+        cout << "3. Delete Tenant Account\n";
+        cout << "4. Manage Tenancy\n";
+        cout << "5. View Report\n\n";
+        while (true) {
+            
+            cout << "Please enter your option: ";
+            cin >> dashboardOption;
+
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 5) {
+                cout << "\n\nInvalid input. Please enter a number between 1 and 5.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (dashboardOption == 1) {
+                
+
+            } else if (dashboardOption == 2) {
+               
+
+            }
+            
+            break;
+        }
+    }
+}
