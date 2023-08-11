@@ -47,6 +47,7 @@ struct TenantTree {
 
     // Display All Tenant Details Function
     void dispAllTenant(TenantTree* root) {
+        cout << "\n\n==================\n";
         cout << "All Tenant Details\n";
         cout << "==================\n";
         dispInOrder(root);
