@@ -250,5 +250,28 @@ string toLower(const std::string &input) {
     return result;
 }
 
+
+// Display only female tenant
+void inOrderFemale(TenantTree* node) {
+	if (node == nullptr) return;
+
+	// Traverse the left subtree
+	inOrderFemale(node->left);
+
+	// Process the current node if the tenant is female
+	if (node->data.tenantGender == "female") {
+		cout << "Tenant Username: " << node->data.username << endl
+			<< "Tenant Name: " << node->data.tenantName << endl
+			<< "Tenant Email: " << node->data.tenantEmail << endl
+			<< "Tenant Tel: " << node->data.tenantTel << endl
+			<< "Gender: " << node->data.tenantGender << endl
+			<< "Status: " << node->data.tenantStatus << "\n\n"
+			<< "------------------------------------------------\n";
+	}
+
+	// Traverse the right subtree
+	inOrderFemale(node->right);
+}
+
 };
 

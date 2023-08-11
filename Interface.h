@@ -215,4 +215,44 @@ struct AdminInterface {
             }
         }
     }
+
+struct TenantInterface {
+    TenantTree* tenant;
+    PropertyTree* property;
+    void tenantDashboard(TenantTree* root1, PropertyTree* root2) {
+        int dashboardOption;
+        system("CLS");
+        cout << "Tenant Dashboard\n";
+        cout << "=============================\n\n";
+        cout << "1. View Property\n";
+        cout << "2. Sort Property\n";
+        cout << "3. Search Property \n";
+        cout << "4. View Favourite Property\n";
+        cout << "5. View Property Renting History\n";
+        cout << "6. Log Out\n\n";
+        while (true) {
+            cout << "Please enter your option: ";
+            cin >> dashboardOption;
+
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
+                cout << "\n\nInvalid input. Please enter a number between 1 and 6.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (dashboardOption == 1) {
+            } else if (dashboardOption == 2) {
+
+            } else if (dashboardOption == 3) {
+
+            } else if (dashboardOption == 4) {
+
+            } else if (dashboardOption == 5) {
+
+            } else {
+                // logOut();
+            }
+        }
+    }
 };

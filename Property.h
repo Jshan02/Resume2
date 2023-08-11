@@ -312,6 +312,20 @@ struct PropertyTree{
         }
     }
 
+    PropertyTree* getPropertyInfo(PropertyTree* root, string propertyID) {
+        if (root == nullptr){
+            return nullptr;
+        }
+        if (root->data.propertyID == propertyID){
+            return root;
+        } if (propertyID < root->data.propertyID){
+            return getPropertyInfo(root->left, propertyID);;
+        }
+        return getPropertyInfo(root->right, propertyID);
+    }
+
+
+
     //  ---------- Search Algorithm ----------
     // ========== Binary Search ==========
     // Binary Search by Property Name
