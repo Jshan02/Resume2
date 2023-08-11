@@ -13,7 +13,7 @@ struct Tenant {
 	string tenantName;
 	string tenantEmail;
 	string tenantTel;
-	string tenantGender;
+	char tenantGender;
 	string tenantStatus;
 };
 
@@ -23,7 +23,7 @@ struct TenantTree {
     TenantTree* right;
 
     // Create new tenant account
-    TenantTree* bstNewTenant(TenantTree* root, string tUName, string tPassword, string tName, string tEmail, string tTel, string tGender, string tStatus) {
+    TenantTree* bstNewTenant(TenantTree* root, string tUName, string tPassword, string tName, string tEmail, string tTel, char tGender, string tStatus) {
 
         // If root is null, direct add in the new account into BST
         if (root == nullptr) {
@@ -70,7 +70,7 @@ struct TenantTree {
     }
 
     // Sign Up Function
-    bool signUp(TenantTree* root, string uname, string pw, string name, string email, string tel, string gender) {
+    bool signUp(TenantTree* root, string uname, string pw, string name, string email, string tel, char gender) {
         // If root is null, direct add in the new account into BST
         if (root == nullptr) {
             root = new TenantTree();

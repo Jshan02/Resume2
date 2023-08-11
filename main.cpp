@@ -25,16 +25,16 @@ int main(){
     // preset data for tenant account
     TenantTree tenant;
     TenantTree* tenant_root = nullptr;
-    tenant_root = tenant.bstNewTenant(tenant_root, "Js0207", "123", "Low Jye Shan", "js@gmail.com", "012-7173702", "F", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "Hjw02", "456", "Hoong Jhen Wei", "hjw@gmail.com", "012-4501715", "M", "Inactive");
-    tenant_root = tenant.bstNewTenant(tenant_root, "Suyinsss", "789", "Teo Su Yin", "tsy@gmail.com", "011-11281358", "F", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "ericdiew", "abc", "Eric Diew", "ericdiew@gmail.com", "012-53575928", "M", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "angangpuds", "def", "Ang Chan Fwu", "angang22@gmail.com", "014-33785321", "M", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "shadoww", "ghi", "Shad Ng", "shadng78@gmail.com", "016-50247831", "M", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "seanw98", "jkl", "Sean Wong", "seanw33@gmail.com", "012-23348964", "M", "Inactive");
-    tenant_root = tenant.bstNewTenant(tenant_root, "noobmaster", "mno", "Thor Lee", "thormaster@gmail.com", "011-66249617", "M", "Inactive");
-    tenant_root = tenant.bstNewTenant(tenant_root, "kriko", "pqr", "Saeshav Subash", "kriko332@gmail.com", "010-13443015", "M", "Active");
-    tenant_root = tenant.bstNewTenant(tenant_root, "kante", "stu", "Shasivarman", "shasivarman@gmail.com", "019-94235764", "M", "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "Js0207", "123", "Low Jye Shan", "js@gmail.com", "012-7173702", 'F', "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "Hjw02", "456", "Hoong Jhen Wei", "hjw@gmail.com", "012-4501715", 'M', "Inactive");
+    tenant_root = tenant.bstNewTenant(tenant_root, "Suyinsss", "789", "Teo Su Yin", "tsy@gmail.com", "011-11281358", 'F', "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "ericdiew", "abc", "Eric Diew", "ericdiew@gmail.com", "012-53575928", 'M', "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "angangpuds", "def", "Ang Chan Fwu", "angang22@gmail.com", "014-33785321", 'M', "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "shadoww", "ghi", "Shad Ng", "shadng78@gmail.com", "016-50247831", 'M', "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "seanw98", "jkl", "Sean Wong", "seanw33@gmail.com", "012-23348964", 'M', "Inactive");
+    tenant_root = tenant.bstNewTenant(tenant_root, "noobmaster", "mno", "Thor Lee", "thormaster@gmail.com", "011-66249617", 'M', "Inactive");
+    tenant_root = tenant.bstNewTenant(tenant_root, "kriko", "pqr", "Saeshav Subash", "kriko332@gmail.com", "010-13443015", 'M', "Active");
+    tenant_root = tenant.bstNewTenant(tenant_root, "kante", "stu", "Shasivarman", "shasivarman@gmail.com", "019-94235764", 'M', "Active");
 
     // preset data for manager account
     ManagerTree manager;

@@ -6,7 +6,7 @@ using namespace std;
 
 struct FavouriteProperty{
     string username;
-    string password;
+    string propId;
 };
 
 struct FavouritePropertyLinkedList
@@ -19,7 +19,7 @@ struct FavouritePropertyLinkedList
     void presetData(FavouritePropertyLinkedList** head, string uName, string pID) {
         FavouritePropertyLinkedList* newFav = new FavouritePropertyLinkedList;
         newFav->data.username = uName;
-        newFav->data.password = pID;
+        newFav->data.propId = pID;
         newFav->prev = nullptr;
         newFav->next = nullptr;
 
@@ -42,7 +42,7 @@ struct FavouritePropertyLinkedList
         cout << "========================\n";
         while (current != nullptr) {
             cout << "Username\t\t\t\t: " << current->data.username << endl;
-            cout << "Favourite Property ID\t: " << current->data.password << endl;
+            cout << "Favourite Property ID\t: " << current->data.propId << endl;
             cout << "---------------------------------------\n\n";
             current = current->next;
         }

@@ -258,6 +258,10 @@ struct GeneralInterface {
         cin >> pw;
 
         if (admin.login(uname, pw)) {
+            ofstream Myfile("loggedInUser.txt");
+            Myfile << uname;
+            Myfile.close();
+            
             system("CLS");
             cout << "Login Success!\n";
             cout << "Welcome Back Admin!\n\n";
@@ -289,7 +293,8 @@ struct GeneralInterface {
         cout << "\n New Account Registration\n";
         cout << "--------------------------\n";
         cout << "Please fill in the following details: \n";
-        string uname, pw, name, email, tel, gender;
+        string uname, pw, name, email, tel;
+        char gender, format_gender;
         cout << "Username - ";
         cin >> uname;
         cout << "Password - ";
@@ -302,10 +307,10 @@ struct GeneralInterface {
         cin >> tel;
         cout << "Gender (M/F) - ";
         cin >> gender;
+        format_gender = toupper(gender);
 
         while (true) {
-            if (tenant.signUp(root1, uname, pw, name, email, tel, gender)) {
-                // tenant.dispAllTenant(root1);
+            if (tenant.signUp(root1, uname, pw, name, email, tel, format_gender)) {
                 cout << "\nSuccessfully Sign Up. Proceed to Login? (Y/N) - ";
                 cin >> yesNo;
 
@@ -333,6 +338,33 @@ struct GeneralInterface {
                     cout << "\nInvalid option. Please choose again.\n";
                 }
             }
+        }
+    }
+
+    void logOut(TenantTree* root1, ManagerTree* root2) {
+        int status;
+        char yesNo;
+        status = remove("loggedInUser.txt");
+        if (status == 0) {
+            cout << "\nYou are logged out.\n";
+
+            while (true) {
+                cout << "Proceed to Homepage? (Y/N) - ";
+                cin >> yesNo;
+
+                if (toupper(yesNo) == 89) {
+                    homepage(root1, root2);
+                    break;
+                } else if (toupper(yesNo) == 78) {
+                    quitProgram();
+                    break;
+                } else {
+                    cout << "\nInvalid option. Please choose again.\n";
+                }
+            }
+        } else {
+            cout << "\nNo logged in account.\n";
+            quitProgram();
         }
     }
 
