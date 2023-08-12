@@ -41,7 +41,8 @@ struct TenantInterface {
             }
 
             if (dashboardOption == 1) {                 // Display All Properties
-                displayAllProperty(tenant_root, prop_root, fav_root, tenancy_root, propertyArray);
+                system("CLS");
+                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
 
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
 
@@ -52,15 +53,21 @@ struct TenantInterface {
                 favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root);
 
             } else if (dashboardOption == 5) {          // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
+                system("CLS");
+                rentRequestStatusMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
 
             } else if (dashboardOption == 6) {          // view all completed status
+                system("CLS");
+                string username = getCurrentUsername();
+                tenancy.displayCompletedTenancy(tenancy_root, username);
+                completedTenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
 
             }
             break;
         }
     }
 
-    void displayAllProperty(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
         int page = 1;
         int totalPages = (prop_root->countProperties(prop_root) + 9) / 10; // Calculate the total number of pages
 
@@ -87,6 +94,7 @@ struct TenantInterface {
                 break;
             }
             else if (choice == 4) {
+                system("CLS");
                 tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
                 break;
             }
@@ -137,6 +145,7 @@ struct TenantInterface {
             system("CLS");
             fav.displayUserFavourite(fav_root, username, prop_root);
 
+            string choiceStr;
             char choice;
             while (true) { // Infinite loop to keep prompting the user until valid input
                 cout << "\nWould you like to place a rent request for a favorite property? (Y/N): ";
@@ -228,6 +237,153 @@ struct TenantInterface {
 
         } else {
             cout << "No user is currently logged in. \n";
+        }
+    }
+
+
+    // view renting request status menu
+    void rentRequestStatusMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
+        int choice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nChoose an option to view rent request status:\n";
+            cout << "1. Pending Manager Approval\n";
+            cout << "2. Rejected\n";
+            cout << "3. Pending Payment\n";
+            cout << "4. Pending Verification\n";
+            cout << "5. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 5): ";
+            cin >> choice;
+            string username = getCurrentUsername();
+            if (cin.fail() || choice < 1 || choice > 5) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number between 1 and 5.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                
+            } else {
+                if (choice == 1) {
+                    system("CLS");
+                    // Call the function to display rent requests with "Pending Manager Approval" status
+                    tenancy.displayPendingApprovalTenancy(tenancy_root, username);
+                    tenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                    break;
+
+                } else if (choice == 2) {
+                    system("CLS");
+                    // Call the function to display rent requests with "Rejected" status
+                    tenancy.displayRejectedTenancy(tenancy_root, username);
+                    tenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                    break;
+
+                } else if (choice == 3) {
+                    system("CLS");
+                    // Call the function to display rent requests with "Pending Payment" status
+                    tenancy.displayPendingPaymentTenancy(tenancy_root, username);
+                    pendingPaymentOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                    break;
+
+                } else if (choice == 4) {
+                    system("CLS");
+                    // Call the function to display rent requests with "Pending Verification" status
+                    tenancy.displayPendingPaymentVerificationTenancy(tenancy_root, username);
+                    tenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray,  tenant_root);
+                    break;
+
+                } else {
+                    system("CLS");
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root); // go back to main menu
+                    break;
+                }
+            }
+        }
+    }
+
+    // navigation for pending manager approval, rejected, and pending payment verification
+    void tenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
+        string choiceStr;
+        char otherStatus;
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nWould you like to see other tenancy status? (Y/N): ";
+            cin >> ws; // Ignore leading whitespace
+            getline(cin, choiceStr); // Read the entire line
+            if (!choiceStr.empty()) {
+                otherStatus = toupper(choiceStr[0]); // Consider the first character only
+                if (otherStatus == 'N') {
+                    system("CLS");
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                    break;
+                } else if (otherStatus == 'Y') {
+                    system("CLS");
+                    rentRequestStatusMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                    break; // Break out of the inner loop to return to the gender filter options
+                } else {
+                    cout << "\nInvalid input. Please enter Y or N.";
+                }
+            } else {
+                cout << "\nInvalid input. Please enter Y or N.";
+                // Continue to prompt the user until a valid input is entered
+            }
+        }
+    }
+
+    // navigation for pending payment menu
+    void pendingPaymentOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root){
+        int option;
+        cout << "\n\n1. Make Payment\n";
+        cout << "2. Back to Previos Page\n";
+        cout << "3. Back to Main Menu\n\n";
+
+        while (true) { // Inner loop for the otherFilter input
+            cout << "Please enter your choice (1 to 3): ";
+            cin >> option;
+
+            if (cin.fail() || option < 1 || option > 3) {
+                cout << "\n\nInvalid input. Please enter a number between 1 and 3 only.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+             if (option == 1) {
+                //make payment
+                break;
+
+            } else if (option == 2) {
+                system("CLS");
+                rentRequestStatusMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                break; // Break out of the inner loop to return to the gender filter options
+
+            } else if (option == 3) {
+                system("CLS");
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                break;
+            }
+        }
+    }
+
+    // navigation for completed tenancy menu
+    void completedTenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
+        string choiceStr;
+        char otherStatus;
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nDo you want to go back to main menu? (Enter y to go back):";
+            cin >> ws; // Ignore leading whitespace
+            getline(cin, choiceStr); // Read the entire line
+            
+            if (!choiceStr.empty()) {
+                otherStatus = toupper(choiceStr[0]); // Consider the first character only
+                if (otherStatus == 'Y') {
+                    system("CLS");
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                    break;
+                } else {
+                    cout << "\nInvalid input. Please enter Y only.";
+                }
+            } else {
+                cout << "\nInvalid input. Please enter Y only.";
+                // Continue to prompt the user until a valid input is entered
+            }
         }
     }
 };
@@ -448,7 +604,9 @@ struct AdminInterface {
 
             } else if (dashboardOption == 3) {                                              //  Modify Tenant Status (Last Completed Rent Request Date)
 
-            } else if (dashboardOption == 4) {                                              // Display All Tenant + Filtering Criteria
+            } else if (dashboardOption == 4) {
+                system("CLS");
+                filterTenantMenu(tenant_root, manager_root, prop_root, propertyArray);  // Display All Tenant + Filtering Criteria
 
             } else if (dashboardOption == 5) {                                              // Displat All Property + Filtering Criteria
 
@@ -521,6 +679,159 @@ struct AdminInterface {
                 }
             }
             
+        }
+    }
+
+    void filterTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+        int filterChoice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nDo you want to filter tenants by:\n";
+            cout << "1. Gender\n";
+            cout << "2. Status\n";
+            cout << "3. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1, 2, or 3): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Gender, 2 for Status, or 3 for Main Menu.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            } else {
+                if (filterChoice == 1) {
+                     // Call the function to filter by gender
+                     system("CLS");
+                     filterTenantGenderMenu(tenant_root, manager_root, prop_root, propertyArray);
+                     break;
+                } else if (filterChoice == 2) {
+                    // Call the function to filter by status
+                    system("CLS");
+                    filterTenantStatusMenu(tenant_root, manager_root, prop_root, propertyArray);
+                    break;
+                } else if (filterChoice == 3) {
+                    system("CLS");
+                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu (Assuming you have a function for this)
+                    break;
+                }
+                break; // Exit the loop as the choice has been handled
+            }
+        }
+    }
+
+    // filter gender menu
+    void filterTenantGenderMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray){
+        int choice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nDo you want to filter tenants' gender by?\n";
+            cout << "1. Female\n";
+            cout << "2. Male\n";
+            cout << "3. Go Back to previous page\n";
+            cout << "Please enter your choice (1, 2, or 3): ";
+            cin >> choice;
+
+            if (cin.fail() || (choice != 1 && choice != 2 && choice != 3)) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Female, 2 for Male, or 3 to go back.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            } else {
+                if (choice == 1) {
+                    system("CLS");
+                    cout << "\nFemale Tenants\n";
+                    cout << "=====================\n\n";
+                    tenant.filterFemale(tenant_root); // Call the function to display only female tenants
+                } else if (choice == 2) {
+                    system("CLS");
+                    cout << "\nMale Tenants\n";
+                    cout << "=====================\n\n";
+                    tenant.filterMale(tenant_root); // Call the function to display only male tenants
+                } else if (choice == 3){
+                    system("CLS");
+                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                    break; // go back to main menu
+                }
+
+                char otherFilter;
+                while (true) { // Inner loop for the otherFilter input
+                    cout << "Would you like to see other filter options? (Y/N): ";
+                    cin >> otherFilter;
+                    otherFilter = toupper(otherFilter);
+
+                    if (otherFilter == 'N') {
+                        system("CLS");
+                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                        break;
+                    } else if (otherFilter == 'Y') {
+                        system("CLS");
+                        filterTenantGenderMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        break; // Break out of the inner loop to return to the gender filter options
+                    } else {
+                        cout << "\nInvalid input. Please enter Y or N.\n";
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    // filter status
+    void filterTenantStatusMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray){
+        int choice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nDo you want to filter tenants' status by?\n";
+            cout << "1. Active\n";
+            cout << "2. Inactive\n";
+            cout << "3. Go Back to previous page\n";
+            cout << "Please enter your choice (1, 2, or 3): ";
+            cin >> choice;
+
+            if (cin.fail() || (choice != 1 && choice != 2 && choice != 3)) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Active, 2 for Inactive, or 3 to go back.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            } else {
+                if (choice == 1) {
+                    system("CLS");
+                    cout << "\nActive Tenants\n";
+                    cout << "=====================\n\n";
+                    tenant.filterActive(tenant_root); // Call the function to display only female tenants
+                } else if (choice == 2) {
+                    system("CLS");
+                    cout << "\nInactive Tenants\n";
+                    cout << "=====================\n\n";
+                    tenant.filterInactive(tenant_root); // Call the function to display only male tenants
+                } else {
+                    system("CLS");
+                    filterTenantMenu(tenant_root, manager_root, prop_root, propertyArray); // go back to main menu
+                    break;
+                }
+
+                char otherFilter;
+                while (true) { // Inner loop for the otherFilter input
+                    cout << "Would you like to see other filter options? (Y/N): ";
+                    cin >> otherFilter;
+                    otherFilter = toupper(otherFilter);
+
+                    if (otherFilter == 'N') {
+                        system("CLS");
+                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                        break;
+                    } else if (otherFilter == 'Y') {
+                        system("CLS");
+                        filterTenantStatusMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        break; // Break out of the inner loop to return to the gender filter options
+                    } else {
+                        cout << "\nInvalid input. Please enter Y or N.\n";
+                    }
+                }
+                break;
+            }
         }
     }
 };

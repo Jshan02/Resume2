@@ -17,8 +17,8 @@ struct Manager {
 
 struct ManagerTree {
     Manager data;
-    ManagerTree* left;
-    ManagerTree* right;
+    ManagerTree* leftChild;
+    ManagerTree* rightChild;
 
     // Create new manager account
     ManagerTree* bstNewManager(ManagerTree* root, string mUName, string mPassword, string empId, string mName, string mTel, string mEmail, string mStatus) {
@@ -34,10 +34,10 @@ struct ManagerTree {
             root->data.managerStatus = mStatus;
 
         } else if (mUName < root->data.username) {
-            root->left = bstNewManager(root->left, mUName, mPassword, empId, mName, mTel, mEmail, mStatus);
+            root->leftChild = bstNewManager(root->leftChild, mUName, mPassword, empId, mName, mTel, mEmail, mStatus);
 
         } else {
-            root->right = bstNewManager(root->right, mUName, mPassword, empId, mName, mTel, mEmail, mStatus);
+            root->rightChild= bstNewManager(root->rightChild, mUName, mPassword, empId, mName, mTel, mEmail, mStatus);
         }
         return root;
     }
@@ -68,7 +68,7 @@ struct ManagerTree {
     bool bstSearchManagerUsername(ManagerTree* root, string uname) {
         if (root == nullptr) return false;
         if (root->data.username == uname) return true;
-        return bstSearchManagerUsername(root->left,uname) || bstSearchManagerUsername(root->right, uname);
+        return bstSearchManagerUsername(root->leftChild,uname) || bstSearchManagerUsername(root->rightChild, uname);
     }
 
     string checkManagerStatus (ManagerTree* root, string uname) {
@@ -77,9 +77,9 @@ struct ManagerTree {
         if (cmp == 0) {
             return root->data.managerStatus;
         } else if (cmp < 0) {
-            return checkManagerStatus(root->left, uname);
+            return checkManagerStatus(root->leftChild, uname);
         } else {
-            return checkManagerStatus(root->right, uname);
+            return checkManagerStatus(root->rightChild, uname);
         }
     }
 
@@ -88,9 +88,9 @@ struct ManagerTree {
         if (cmp == 0) {
             return root->data.password;
         } else if (cmp < 0) {
-            return bstGetManagerPassword(root->left, uname);
+            return bstGetManagerPassword(root->leftChild, uname);
         } else {
-            return bstGetManagerPassword(root->right, uname);
+            return bstGetManagerPassword(root->rightChild, uname);
         }
     }
 };

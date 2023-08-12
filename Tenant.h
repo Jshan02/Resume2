@@ -276,28 +276,93 @@ string toLower(const std::string &input) {
 }
 
 
-// Display only female tenant
-void inOrderFemale(TenantTree* node) {
-	if (node == nullptr) return;
+    // Display only female tenant
+    void filterFemale(TenantTree* node) {
+        if (node == nullptr) return;
 
-	// Traverse the left subtree
-	inOrderFemale(node->leftChild);
+        // Traverse the left subtree
+        filterFemale(node->leftChild);
 
-	// Process the current node if the tenant is female
-	if (node->data.tenantGender == 'F') {
-		cout << "Tenant Username: " << node->data.username << endl
-			<< "Tenant Name: " << node->data.tenantName << endl
-			<< "Tenant Email: " << node->data.tenantEmail << endl
-			<< "Tenant Tel: " << node->data.tenantTel << endl
-			<< "Gender: " << node->data.tenantGender << endl
-			<< "Status: " << node->data.tenantStatus << "\n\n"
-			<< "------------------------------------------------\n";
-	}
+        // Process the current node if the tenant is female
+        if (node->data.tenantGender == 'F') {
+            cout << "Username: " << node->data.username << endl;
+            cout << "Name\t: " << node->data.tenantName << endl;
+            cout << "Email\t: " << node->data.tenantEmail << endl;
+            cout << "Tel\t: " << node->data.tenantTel << endl;
+            cout << "Gender\t: " << node->data.tenantGender << endl;
+            cout << "Status\t: " << node->data.tenantStatus << endl;
+            cout << "---------------------------------------\n\n";
+        }
 
-	// Traverse the right subtree
-	inOrderFemale(node->rightChild);
-}
+        // Traverse the right subtree
+        filterFemale(node->rightChild);
+    }
 
+    // Display only male tenant
+    void filterMale(TenantTree* node) {
+        if (node == nullptr) return;
+
+        // Traverse the left subtree
+        filterMale(node->leftChild);
+
+        // Process the current node if the tenant is female
+        if (node->data.tenantGender == 'M') {
+            cout << "Username: " << node->data.username << endl;
+            cout << "Name\t: " << node->data.tenantName << endl;
+            cout << "Email\t: " << node->data.tenantEmail << endl;
+            cout << "Tel\t: " << node->data.tenantTel << endl;
+            cout << "Gender\t: " << node->data.tenantGender << endl;
+            cout << "Status\t: " << node->data.tenantStatus << endl;
+            cout << "---------------------------------------\n\n";
+        }
+
+        // Traverse the right subtree
+        filterMale(node->rightChild);
+    }
+
+    // Display only active tenant
+    void filterActive(TenantTree* node) {
+        if (node == nullptr) return;
+
+        // Traverse the left subtree
+        filterActive(node->leftChild);
+
+        // Process the current node if the tenant is female
+        if (node->data.tenantStatus == "Active") {
+            cout << "Username: " << node->data.username << endl;
+            cout << "Name\t: " << node->data.tenantName << endl;
+            cout << "Email\t: " << node->data.tenantEmail << endl;
+            cout << "Tel\t: " << node->data.tenantTel << endl;
+            cout << "Gender\t: " << node->data.tenantGender << endl;
+            cout << "Status\t: " << node->data.tenantStatus << endl;
+            cout << "---------------------------------------\n\n";
+        }
+
+        // Traverse the right subtree
+        filterActive(node->rightChild);
+    }
+
+    // Display only inactive tenant
+    void filterInactive(TenantTree* node) {
+        if (node == nullptr) return;
+
+        // Traverse the left subtree
+        filterInactive(node->leftChild);
+
+        // Process the current node if the tenant is female
+        if (node->data.tenantStatus == "Inactive") {
+            cout << "Username: " << node->data.username << endl;
+            cout << "Name\t: " << node->data.tenantName << endl;
+            cout << "Email\t: " << node->data.tenantEmail << endl;
+            cout << "Tel\t: " << node->data.tenantTel << endl;
+            cout << "Gender\t: " << node->data.tenantGender << endl;
+            cout << "Status\t: " << node->data.tenantStatus << endl;
+            cout << "---------------------------------------\n\n";
+        }
+
+        // Traverse the right subtree
+        filterInactive(node->rightChild);
+    }
 
     string getTenantName(TenantTree* root, const string& username) {
         if (root == nullptr) {
@@ -315,6 +380,5 @@ void inOrderFemale(TenantTree* node) {
             return getTenantName(root->rightChild, username);
         }
     }
-
 };
 
