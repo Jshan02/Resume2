@@ -163,13 +163,25 @@ struct GeneralInterface {
         cout << "Password - ";
         cin >> pw;
         cout << "Full Name as per IC - ";
-        cin >> name;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear any remaining characters in the input buffer
+        getline(cin, name);
         cout << "Email - ";
         cin >> email;
         cout << "Contact Number - ";
         cin >> tel;
-        cout << "Gender (M/F) - ";
-        cin >> gender;
+
+        while (true) {
+            cout << "Gender (M/F) - ";
+            cin >> gender;
+
+            if (gender != 'M' && gender != 'F' && gender != 'm' && gender != 'f') {
+                cout << "\nInvalid input. Only 'M' and 'F' is allowed.\n";
+                continue;
+            } else {
+                break;
+            }
+        }
+        
 
         transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
         format_gender = toupper(gender);
