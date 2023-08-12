@@ -92,6 +92,7 @@ int main(){
     GeneralInterface general_interface;
     AdminInterface admin_interface;
     ManagerInterface manager_interface;
+    TenantInterface tenant_interface;
     
 
     // Main Program Starts Here
@@ -106,7 +107,7 @@ int main(){
                 authenticated = general_interface.tenantLogIn(tenant_root);     // Verify Username and Password
 
                 if (authenticated) {                                            // Correct
-                    cout << "Display Tenant Dashboard";                         // Call Tenant Dashboard
+                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray); // Call Tenant Dashboard
                     general_interface.logOut();                                 // If log out is selected
                     quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
                     if (quitOpt == 0) {                                         // Quit Program is Selected
@@ -148,7 +149,7 @@ int main(){
             } else {                                                            // Admin Selected
                 authenticated = general_interface.adminLogIn();
                 if (authenticated) {
-                    admin_interface.adminDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                    admin_interface.adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
                     general_interface.logOut();
                     quitOpt = general_interface.backHomepage();
                     if (quitOpt == 0) {
@@ -174,7 +175,7 @@ int main(){
                 if (goLogin) {                                                  // go login
                     authenticated = general_interface.tenantLogIn(tenant_root);
                     if (authenticated) {
-                        cout << "Display Tenant Dashboard";
+                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray);
                         general_interface.logOut();
                         quitOpt = general_interface.backHomepage();
                         if (quitOpt == 0) {
