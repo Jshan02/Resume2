@@ -21,37 +21,41 @@ struct TenantInterface {
         int dashboardOption;
         cout << " Welcome to Tenant Dashboard\n";
         cout << "=============================\n\n";
-        cout << "1. Sort and Display Properties\n";
-        cout << "2. Search and Display Properties\n";
-        cout << "3. View Favourite Properties\n";
-        cout << "4. View Rent Request Status\n";
-        cout << "5. View Property Renting History\n";
-        cout << "6. Logout\n\n";
+        cout << "1. View All Properties\n";
+        cout << "2. Sort and Display Properties\n";
+        cout << "3. Search and Display Properties\n";
+        cout << "4. View Favourite Properties\n";
+        cout << "5. View Rent Request Status\n";
+        cout << "6. View Property Renting History\n";
+        cout << "7. Logout\n\n";
 
         while (true) {
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
-                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
+                cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
             }
 
-            if (dashboardOption == 1) {                 // Sort n Display + Mark Fav
+            if (dashboardOption == 1) {                 // Display All Properties
+                displayAllProperty(tenant_root, prop_root, fav_root, tenancy_root, propertyArray);
 
-            } else if (dashboardOption == 2) {          // Search n Display + Mark Fav
+            } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
 
-            } else if (dashboardOption == 3) {          // View Favourite + Option to place rent request
+            } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
+                
+
+            } else if (dashboardOption == 4) {          // View Favourite + Option to place rent request
                 favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root);
 
-            } else if (dashboardOption == 4) {           // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
+            } else if (dashboardOption == 5) {          // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
 
+            } else if (dashboardOption == 6) {          // view all completed status
 
-            } else if (dashboardOption == 5) {          // view all completed status
-
-            } 
+            }
             break;
         }
     }
