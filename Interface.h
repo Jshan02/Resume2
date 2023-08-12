@@ -31,8 +31,8 @@ struct TenantInterface {
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
-                cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
+                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
