@@ -27,8 +27,8 @@ struct Property {
 
 struct PropertyTree{
     Property data;
-    PropertyTree* left;
-    PropertyTree* right;
+    PropertyTree* leftChild;
+    PropertyTree* rightChild;
 
     // BST Insertion
     PropertyTree* bstInsert(PropertyTree* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
@@ -48,13 +48,13 @@ struct PropertyTree{
             root->data.facilities = facilities;
             root->data.additional_facilities = additional_facilities;
             root->data.region = region;
-            root->left = root->right = nullptr;
+            root->leftChild = root->rightChild = nullptr;
         }
         else if (propertyID < root->data.propertyID) {
-            root->left = bstInsert(root->left, propertyID, propertyName, completion_year, monthly_rental, location, propertyType, rooms, parking, bathroom, size, furnished, facilities, additional_facilities, region);
+            root->leftChild = bstInsert(root->leftChild, propertyID, propertyName, completion_year, monthly_rental, location, propertyType, rooms, parking, bathroom, size, furnished, facilities, additional_facilities, region);
         }
         else {
-            root->right = bstInsert(root->right, propertyID, propertyName, completion_year, monthly_rental, location, propertyType, rooms, parking, bathroom, size, furnished, facilities, additional_facilities, region);
+            root->rightChild = bstInsert(root->rightChild, propertyID, propertyName, completion_year, monthly_rental, location, propertyType, rooms, parking, bathroom, size, furnished, facilities, additional_facilities, region);
         }
         return root;
     }
@@ -133,7 +133,7 @@ struct PropertyTree{
     void displayPropertiesInRange(PropertyTree* node, int start, int end, int& count) {
         if (node == nullptr || count >= end) return;
 
-        displayPropertiesInRange(node->left, start, end, count);
+        displayPropertiesInRange(node->leftChild, start, end, count);
 
         if (count >= start && count < end) {
             // Display the property information
@@ -159,14 +159,14 @@ struct PropertyTree{
 
         count++;
 
-        displayPropertiesInRange(node->right, start, end, count);
+        displayPropertiesInRange(node->rightChild, start, end, count);
     }
 
     int countProperties(PropertyTree* root) {
         if (root == nullptr) {
             return 0;
         }
-        return 1 + countProperties(root->left) + countProperties(root->right);
+        return 1 + countProperties(root->leftChild) + countProperties(root->rightChild);
     }
 
     // Display 10 properties at a same time (binary search tree)
@@ -180,7 +180,7 @@ struct PropertyTree{
         if (root == nullptr) return;
 
         // Traverse left subtree
-        addPropertiesToArray(root->left, propertyArray);
+        addPropertiesToArray(root->leftChild, propertyArray);
 
         // Create a property object and populate it with the data from the current node
         Property property;
@@ -203,7 +203,7 @@ struct PropertyTree{
         propertyArray.push_back(property);
 
         // Traverse right subtree
-        addPropertiesToArray(root->right, propertyArray);
+        addPropertiesToArray(root->rightChild, propertyArray);
     }
 
     // display property data stored in vector
@@ -235,7 +235,7 @@ struct PropertyTree{
         if (root->data.propertyID == propertyID) return true;
 
         // Search in the left and right subtrees
-        return searchProperty(root->left, propertyID) || searchProperty(root->right, propertyID);
+        return searchProperty(root->leftChild, propertyID) || searchProperty(root->rightChild, propertyID);
     }
 
     // function to get property data
@@ -246,9 +246,9 @@ struct PropertyTree{
         if (root->data.propertyID == propertyID){
             return root;
         } if (propertyID < root->data.propertyID){
-            return getPropertyInfo(root->left, propertyID);;
+            return getPropertyInfo(root->leftChild, propertyID);;
         }
-        return getPropertyInfo(root->right, propertyID);
+        return getPropertyInfo(root->rightChild, propertyID);
     }
 
 
@@ -257,12 +257,12 @@ struct PropertyTree{
     // ========== Binary Search ==========
     // Binary Search by Property Name
     void binarySearchPropertiesByName(vector<Property>& propertyArray, string targetName) {
-        int left = 0;
-        int right = propertyArray.size() - 1;
+        int leftChild = 0;
+        int rightChild = propertyArray.size() - 1;
         bool found = false;
         
-        while (left <= right) {
-            int mid = (left + right) / 2;
+        while (leftChild <= rightChild) {
+            int mid = (leftChild + rightChild) / 2;
             if (propertyArray[mid].propertyName.find(targetName) != string::npos) {
                 // Found the property; print its information.
                 cout << "Property found with name '" << targetName << "':\n";
@@ -329,10 +329,10 @@ struct PropertyTree{
                 break; // Exit the loop since we've found and printed all matching properties
             }
             else if (propertyArray[mid].propertyName < targetName) {
-                left = mid + 1;
+                leftChild = mid + 1;
             }
             else {
-                right = mid - 1;
+                rightChild = mid - 1;
             }
         }
 
@@ -344,12 +344,12 @@ struct PropertyTree{
 
     // Binary search by rental
     void binarySearchPropertiesByRental(vector<Property>& propertyArray, string searchRental) {
-        int left = 0;
-        int right = propertyArray.size() - 1;
+        int leftChild = 0;
+        int rightChild = propertyArray.size() - 1;
         bool found = false;
         
-        while (left <= right) {
-            int mid = (left + right) / 2;
+        while (leftChild <= rightChild) {
+            int mid = (leftChild + rightChild) / 2;
             if (propertyArray[mid].monthly_rental.find(searchRental) != string::npos) {
                 // Found the property; print its information.
                 cout << "Property found with month rental with '" << searchRental << "':\n";
@@ -416,10 +416,10 @@ struct PropertyTree{
                 break; // Exit the loop since we've found and printed all matching properties
             }
             else if (propertyArray[mid].monthly_rental < searchRental) {
-                left = mid + 1;
+                leftChild = mid + 1;
             }
             else {
-                right = mid - 1;
+                rightChild = mid - 1;
             }
         }
 
@@ -495,6 +495,23 @@ struct PropertyTree{
 
 
 };
+
+    Property getPropertyById(PropertyTree* root, const string& propertyID) {
+        if (root == nullptr) {
+            return Property(); // Property ID not found; return an empty Property object
+        }
+
+        if (root->data.propertyID == propertyID) {
+            return root->data; // Found the matching property ID; return the property
+        }
+
+        // Search the left or right subtree based on your comparison logic
+        if (propertyID < root->data.propertyID) {
+            return getPropertyById(root->leftChild, propertyID);
+        } else {
+            return getPropertyById(root->rightChild, propertyID);
+        }
+    }
 
     // Comparison function to compare two Property objects by their propertyName
     bool compareByName(const Property& a, const Property& b) {

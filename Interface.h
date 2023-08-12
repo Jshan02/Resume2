@@ -16,7 +16,7 @@ struct TenantInterface {
     FavouritePropertyLinkedList fav;
     TenancyLinkedList tenancy;
     
-    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
         int dashboardOption;
         cout << " Welcome to Tenant Dashboard\n";
         cout << "=============================\n\n";
@@ -43,7 +43,7 @@ struct TenantInterface {
             } else if (dashboardOption == 2) {          // Search n Display + Mark Fav
 
             } else if (dashboardOption == 3) {          // View Favourite + Option to place rent request
-                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray);
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root);
 
             } else if (dashboardOption == 4) {           // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
 
@@ -78,11 +78,11 @@ struct TenantInterface {
                 page--;
             }
             else if (choice == 3) {
-                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray);
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root);
                 break;
             }
             else if (choice == 4) {
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
                 break;
             }
         }
@@ -126,7 +126,7 @@ struct TenantInterface {
     }
 
     // display favourite property for current user
-    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
         string username = getCurrentUsername();
         if (!username.empty()) {
             system("CLS");
@@ -138,12 +138,14 @@ struct TenantInterface {
                 cin >> choice;
 
                 if (toupper(choice) == 'Y') {
+                    placeRentRequest(fav_root, prop_root, tenancy_root, propertyArray, tenant_root);
                     // put place request function
+
                     break; // Exit the loop as the choice has been handled
                 } else if (toupper(choice) == 'N') {
                     // back to main menu
                     system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray);
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
                     break; // Exit the loop as the choice has been handled
                 } else {
                     cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
@@ -152,6 +154,75 @@ struct TenantInterface {
             }
         } else {
             cout << "No user is currently logged in.\n";
+        }
+    }
+
+    // Current user place rent request
+    void placeRentRequest(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
+        string username = getCurrentUsername();
+        if (!username.empty()) {
+            system("CLS");
+            fav.displayUserFavourite(fav_root, username, prop_root);
+
+            string tenantName = tenant.getTenantName(tenant_root, username);
+            if (!tenantName.empty()) {
+                cout << "Tenant Name: " << tenantName << "\n";
+            } else {
+                cout <<"Username not found.\n";
+            }
+            string propertyID;
+            cout << "Enter the Property ID you want to rent: ";
+            cin >> propertyID;
+
+            if (!fav.isInFavouriteList(fav_root, username, propertyID)) {
+                cout << " The property ID is not in your favourite list.\n";
+
+                char choice;
+                while (true) { // Infinite loop to keep prompting the user until valid input
+                    cout << "\nWould you like to view favourite property list again? (Y/N) ";
+                    cin >> choice;
+
+                    if (toupper(choice) == 'Y') {
+                        favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root);
+                        // put place request function
+
+                        break; // Exit the loop as the choice has been handled
+                    } else if (toupper(choice) == 'N') {
+                        // back to main menu
+                        system("CLS");
+                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                        break; // Exit the loop as the choice has been handled
+                    } else {
+                        cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
+                        // Continue to prompt the user until a valid input is entered
+                    }
+                }
+            }  
+
+            Property property = getPropertyById(prop_root, propertyID);
+            if (!property.propertyID.empty()) { // Check if a valid property was found
+                cout << "Property Name: " << property.propertyName << "\n";
+                cout << "Completion Year: " << property.completion_year << "\n";
+                cout << "Monthly Rental: " << property.monthly_rental << "\n";
+                // Print other property details...
+            } else {
+                cout << "Property ID not found.\n";
+                // Handle error...
+            }
+
+            string startDate;
+            cout << "Enter the starting date of rental: ";
+            cin >> startDate;
+
+            string Duration;
+            cout << "\nEnter the duration of rental: ";
+            cin >> Duration;
+
+            tenancy.presetData(&tenancy_root, "", username, tenantName, property.propertyName, startDate, Duration, "", property.monthly_rental, "Pending Manager Approval");
+
+            tenancy.displayTenancyHistory(tenancy_root);
+        } else {
+            cout << "No user is currently logged in. \n";
         }
     }
 };
@@ -198,7 +269,7 @@ struct ManagerInterface {
                 
 
             } else if (dashboardOption == 6) {                                                                                  // View Report
-                managerViewTop10Report(fav_root, propertyArray);
+                managerViewTop10Report(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
 
             }
             
@@ -223,9 +294,29 @@ struct ManagerInterface {
 
     }
 
-    void managerViewTop10Report(FavouritePropertyLinkedList* fav_root, const vector<Property>& propertyArray) {
+    void managerViewTop10Report(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root,  const vector<Property>& propertyArray) {
+        system("CLS");
         map<string, string> propertyNames = createPropertyMap(propertyArray);
         favorite.displayTop10Favourite(fav_root, propertyNames);
+
+        cout << "\n1. Back to Dashboard\n\n";
+            int opt;
+
+            while (true) {
+                cout << "Select an option: ";
+                cin >> opt;
+
+                if (cin.fail() || opt != 1) {
+                    cout << "\nInvalid input. Only 1 is allowed.\n";
+                    cin.clear();
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    continue;
+                }
+
+                system("CLS");
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                break;
+            }
     }
 
 

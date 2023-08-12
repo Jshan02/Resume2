@@ -298,5 +298,23 @@ void inOrderFemale(TenantTree* node) {
 	inOrderFemale(node->rightChild);
 }
 
+
+    string getTenantName(TenantTree* root, const string& username) {
+        if (root == nullptr) {
+            return ""; // Username not found
+        }
+
+        if (root->data.username == username) {
+            return root->data.tenantName; // Found the matching username, return the tenant's name
+        }
+
+        // Search the left or right subtree based on your comparison logic
+        if (username < root->data.username) {
+            return getTenantName(root->leftChild, username);
+        } else {
+            return getTenantName(root->rightChild, username);
+        }
+    }
+
 };
 

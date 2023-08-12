@@ -135,4 +135,17 @@ struct FavouritePropertyLinkedList
             cout << left << setw(maxIDLength + 5) << propertyID << setw(maxNameLength + 5) << propertyName << setw(12) << sortedCounts[i].second << endl;
         }
     }
+
+    bool isInFavouriteList(FavouritePropertyLinkedList* fav_root, const string& username, const string& propertyID) {
+        FavouritePropertyLinkedList* current = fav_root;
+
+        while (current != nullptr) {
+            if (current->data.username == username && current->data.propId == propertyID) {
+                return true;
+            }
+            current = current -> next;
+        }
+
+        return false;
+    }
 };

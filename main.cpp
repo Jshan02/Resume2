@@ -113,7 +113,7 @@ int main(){
                 authenticated = general_interface.tenantLogIn(tenant_root);     // Verify Username and Password
 
                 if (authenticated) {                                            // Correct
-                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray); // Call Tenant Dashboard
+                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root); // Call Tenant Dashboard
                     general_interface.logOut();                                 // If log out is selected
                     quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
                     if (quitOpt == 0) {                                         // Quit Program is Selected
@@ -181,7 +181,7 @@ int main(){
                 if (goLogin) {                                                  // go login
                     authenticated = general_interface.tenantLogIn(tenant_root);
                     if (authenticated) {
-                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray);
+                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
                         general_interface.logOut();
                         quitOpt = general_interface.backHomepage();
                         if (quitOpt == 0) {

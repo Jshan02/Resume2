@@ -41,6 +41,13 @@ struct GeneralInterface {
             cout << "Select your user role: ";
             cin >> opt;
 
+            if (cin.fail()) {
+            cin.clear(); // clear the error state
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // ignore the rest of the line
+            cout << "\nInvalid input. Please enter a number.\n";
+            continue; // continue with the next iteration of the loop
+        }
+
             if (opt >= 1 && opt <=3) {
                 break;
             } else {
