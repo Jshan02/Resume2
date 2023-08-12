@@ -46,9 +46,9 @@ int main(){
     //preset data for tenancy history
     TenancyLinkedList tenancy;
     TenancyLinkedList* tenancy_root = nullptr;
-    tenancy.presetData(&tenancy_root, "R01", "Js0207", "Low Jye Shan", "Segar Courts", "1 June 2023", "1 Year", "31 May 2024", "RM 2 300 per month", "Confirmed");
-    tenancy.presetData(&tenancy_root, "R02", "Hjw02", "Hoong Jhen Wei", "Sky Meridien", "1 July 2023", "1 Year", "30 June 2024", "RM 2 900 per month", "Confirmed");
-    tenancy.presetData(&tenancy_root, "R03", "Suyinsss", "Teo Su Yin", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "To Pay");
+    tenancy.presetData(&tenancy_root, "R01", "Js0207", "Low Jye Shan", "Segar Courts", "1 June 2023", "1 Year", "31 May 2024", "RM 2 300 per month", "Completed");
+    tenancy.presetData(&tenancy_root, "R02", "Hjw02", "Hoong Jhen Wei", "Sky Meridien", "1 July 2023", "1 Year", "30 June 2024", "RM 2 900 per month", "Wait for Manager Approval");
+    tenancy.presetData(&tenancy_root, "R03", "Suyinsss", "Teo Su Yin", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Wait for Tenant Payment");
     
     // preset data for favourite property list
     FavouritePropertyLinkedList fav;

@@ -19,29 +19,32 @@ struct TenantInterface {
         cout << "2. Search and Display Properties\n";
         cout << "3. View Favourite Properties\n";
         cout << "4. Place Rent Request\n";
-        cout << "5. View Property Renting History\n";
-        cout << "6. Logout\n\n";
+        cout << "5. View Rent Request Status\n";
+        cout << "6. View Property Renting History\n";
+        cout << "7. Logout\n\n";
 
         while (true) {
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
-                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
+                cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
             }
 
-            if (dashboardOption == 1) {
+            if (dashboardOption == 1) {                 // Sort n Display + Mark Fav
 
-            } else if (dashboardOption == 2) {
+            } else if (dashboardOption == 2) {          // Search n Display + Mark Fav
 
-            } else if (dashboardOption == 3) {
+            } else if (dashboardOption == 3) {          // View Favourite + Option to place rent request
 
-            } else if (dashboardOption == 4) {
+            } else if (dashboardOption == 4) {          // Display Fav + Direct Prompt Property ID
 
-            } else if (dashboardOption == 5) {
+            } else if (dashboardOption == 5) {          // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
+
+            } else if (dashboardOption == 6) {          // Only Show Completed Rent Requests
 
             }
             break;
@@ -62,32 +65,37 @@ struct ManagerInterface {
         cout << "2. Search Tenant\n";
         cout << "3. Delete Tenant Account\n";
         cout << "4. Manage Tenancy\n";
-        cout << "5. View Report\n";
-        cout << "6. Logout\n\n";
+        cout << "5. Manage Payment\n";
+        cout << "6. View Report\n";
+        cout << "7. Logout\n\n";
         while (true) {
             
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
-                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
+                cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
             }
 
-            if (dashboardOption == 1) {
+            if (dashboardOption == 1) {                                                                                         // View All Tenants
                 managerViewAllTenantMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
 
-            } else if (dashboardOption == 2) {
+            } else if (dashboardOption == 2) {                                                                                  // Search Tenant
                 managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
 
-            } else if (dashboardOption == 3) {
+            } else if (dashboardOption == 3) {                                                                                  // Delete Inactive Tenant
 
-            } else if (dashboardOption == 4) {
+            } else if (dashboardOption == 4) {                                                                                  // View All Rent Request + Confirm Them (Give RentID...)
 
-            } else if (dashboardOption == 5) {
+            } else if (dashboardOption == 5) {                                                                                  // View Tenant Payment + Confirm Them
+                
+
+            } else if (dashboardOption == 6) {                                                                                  // View Report
                 managerViewTop10Report(fav_root, propertyArray);
+
             }
             
             break;
@@ -233,16 +241,16 @@ struct AdminInterface {
                 continue;
             }
 
-            if (dashboardOption == 1) {
+            if (dashboardOption == 1) {                                                     // Add Manager Account
                 addManagerIf(tenant_root, manager_root, prop_root, propertyArray);
 
-            } else if (dashboardOption == 2) {
+            } else if (dashboardOption == 2) {                                              // Modify Manager Status (Resigned)
 
-            } else if (dashboardOption == 3) {
+            } else if (dashboardOption == 3) {                                              //  Modify Tenant Status (Last Completed Rent Request Date)
 
-            } else if (dashboardOption == 4) {
+            } else if (dashboardOption == 4) {                                              // Display All Tenant + Filtering Criteria
 
-            } else if (dashboardOption == 5) {
+            } else if (dashboardOption == 5) {                                              // Displat All Property + Filtering Criteria
 
             } 
             break;
@@ -257,7 +265,7 @@ struct AdminInterface {
         cout << "\n Add New Manager Account\n";
         cout << "-------------------------\n";
         cout << "Please fill in the following details: \n";
-        string uname, pw, eid, name, tel, email;
+        string uname, pw, eid, name, tel, email;                // Get Required Details
         cout << "Username - ";
         cin >> uname;
         cout << "Password - ";
@@ -271,9 +279,9 @@ struct AdminInterface {
         cout << "Email - ";
         cin >> email;
 
-        addSuccess = manager.bstNewManager(manager_root, uname, pw, eid, name, tel, email, "Active");
+        addSuccess = manager.bstNewManager(manager_root, uname, pw, eid, name, tel, email, "Active");       // Call Add Manager Algorithm
 
-        if (addSuccess) {
+        if (addSuccess) {                                       // Add Success
             cout << "\n==========================================================\n";
             cout << "Manager account for " << uname << " is added successfully!\n";
             cout << "==========================================================\n";
@@ -295,15 +303,15 @@ struct AdminInterface {
                 adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
                 break;
             }
-        } else {
+        } else {                                                // Add Fail
             while (true) {
                 cout << "\nOops, something wrong. Try to add manager account again? (Y/N) - ";
                 cin >> tryAgain;
 
-                if (toupper(tryAgain) == 'Y') {
+                if (toupper(tryAgain) == 'Y') {                 // Call Add Account Again
                     addManagerIf(tenant_root, manager_root, prop_root, propertyArray);
                     break;
-                } else if (toupper(tryAgain) == 'N') {
+                } else if (toupper(tryAgain) == 'N') {          // Call Dashboard
                     adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
                     break;
                 } else {
@@ -313,21 +321,4 @@ struct AdminInterface {
             
         }
     }
-
-    // void addAccNavigation(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
-    //     int opt;
-    //     while (true) {
-    //         cout << "\n1. Back to Dashboard\n";
-    //         cin >> opt;
-
-    //         if (opt == 1) {
-    //             adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
-    //             break;
-    //         } else {
-    //             cout << "\nInvalid input. Please enter a number between 1 and 6.";
-    //         }
-    //     }
-        
-
-    // }
 };
