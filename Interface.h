@@ -234,7 +234,9 @@ struct TenantInterface {
             getline(cin, Duration);
 
             string tenancyID = tenancy.generateTenancyID(tenancy_root);
-            tenancy.presetData(&tenancy_root, tenancyID, username, tenantName, propertyID, property.propertyName, startDate, Duration, "", property.monthly_rental, "Pending Manager Approval");        } else {
+            tenancy.presetData(&tenancy_root, tenancyID, username, tenantName, propertyID, property.propertyName, startDate, Duration, "", property.monthly_rental, "Pending Manager Approval");
+            tenancy.displayPendingApprovalTenancy(tenancy_root, username);
+        } else {
             cout << "No user is currently logged in. \n";
         }
     }
