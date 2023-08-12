@@ -43,7 +43,7 @@ struct TenantInterface {
             } else if (dashboardOption == 2) {          // Search n Display + Mark Fav
 
             } else if (dashboardOption == 3) {          // View Favourite + Option to place rent request
-                favouritePropertyMenu(fav_root, prop_root);
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray);
 
             } else if (dashboardOption == 4) {           // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
 
@@ -78,7 +78,7 @@ struct TenantInterface {
                 page--;
             }
             else if (choice == 3) {
-                favouritePropertyMenu(fav_root, prop_root);
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray);
                 break;
             }
             else if (choice == 4) {
@@ -126,10 +126,30 @@ struct TenantInterface {
     }
 
     // display favourite property for current user
-    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root){
+    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
         string username = getCurrentUsername();
-        if (!username.empty()){
+        if (!username.empty()) {
+            system("CLS");
             fav.displayUserFavourite(fav_root, username, prop_root);
+
+            char choice;
+            while (true) { // Infinite loop to keep prompting the user until valid input
+                cout << "\nWould you like to place a rent request for a favorite property? (Y/N): ";
+                cin >> choice;
+
+                if (toupper(choice) == 'Y') {
+                    // put place request function
+                    break; // Exit the loop as the choice has been handled
+                } else if (toupper(choice) == 'N') {
+                    // back to main menu
+                    system("CLS");
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray);
+                    break; // Exit the loop as the choice has been handled
+                } else {
+                    cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
+                    // Continue to prompt the user until a valid input is entered
+                }
+            }
         } else {
             cout << "No user is currently logged in.\n";
         }

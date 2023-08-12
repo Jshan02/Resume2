@@ -63,8 +63,8 @@ struct FavouritePropertyLinkedList
     // Display facourite specific user's favourite property
     void displayUserFavourite(FavouritePropertyLinkedList* head, string username, PropertyTree* root) {
     FavouritePropertyLinkedList* current = head;
-    cout << "Favourite Properties for " << username << "\n";
-    cout << "========================\n";
+    cout << "\nFavourite Properties for " << username << "\n";
+    cout << "============================================\n\n";
     bool found = false;
     
     while (current != nullptr) {
