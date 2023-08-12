@@ -46,26 +46,26 @@ int main(){
     //preset data for tenancy history
     TenancyLinkedList tenancy;
     TenancyLinkedList* tenancy_root = nullptr;
-    tenancy.presetData(&tenancy_root, "R01", "js0207", "Low Jye Shan", "Segar Courts", "1 June 2023", "1 Year", "31 May 2024", "RM 2 300 per month", "Completed");
-    tenancy.presetData(&tenancy_root, "R02", "hjw02", "Hoong Jhen Wei", "Sky Meridien", "1 July 2023", "1 Year", "30 June 2024", "RM 2 900 per month", "Pending Payment");
-    tenancy.presetData(&tenancy_root, "R03", "suyinsss", "Teo Su Yin", "Desa Villas", "1 June 2023", "1 Year", "31 May 2024", "RM 2 500 per month", "Completed");
-    tenancy.presetData(&tenancy_root, "R04", "kante", "Shasivarman", "Sky Meridien", "1 August 2023", "1 Year", "30 July 2024", "RM 2 900 per month", "Rejected");
-    tenancy.presetData(&tenancy_root, "R05", "kante", "Shasivarman", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
-    tenancy.presetData(&tenancy_root, "R06", "shadoww", "Shad Ng", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
-    tenancy.presetData(&tenancy_root, "R07", "angangpuds", "Ang Chan Fwu", "Sentul Point Suite Apartment", "1 October 2023", "1 Year", "30 September 2024", "RM 1 700 per month", "Completed");
-    tenancy.presetData(&tenancy_root, "R08", "noobmaster", "Thor Lee", "The Hipster @ Taman Desa", "1 February 2024", "1 Year", "31 January 2025", "RM 4 200 per month", "Rejected");
-    tenancy.presetData(&tenancy_root, "R09", "kriko", "Saeshav Subash", "The Hipster @ Taman Desa", "1 September 2023", "1 Year", "31 August 2024", "RM 4 200 per month", "Pending Manager Approval");
+    tenancy.presetData(&tenancy_root, "R01", "js0207", "Low Jye Shan", "100203973", "Segar Courts", "1 June 2023", "1 Year", "31 May 2024", "RM 2 300 per month", "Completed");
+    tenancy.presetData(&tenancy_root, "R02", "hjw02", "Hoong Jhen Wei", "100322962", "Sky Meridien", "1 July 2023", "1 Year", "30 June 2024", "RM 2 900 per month", "Pending Payment");
+    tenancy.presetData(&tenancy_root, "R03", "suyinsss", "Teo Su Yin", "100273500", "Desa Villas", "1 June 2023", "1 Year", "31 May 2024", "RM 2 500 per month", "Completed");
+    tenancy.presetData(&tenancy_root, "R04", "kante", "Shasivarman", "100322962", "Sky Meridien", "1 August 2023", "1 Year", "30 July 2024", "RM 2 900 per month", "Rejected");
+    tenancy.presetData(&tenancy_root, "R05", "kante", "Shasivarman", "100273500", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
+    tenancy.presetData(&tenancy_root, "R06", "shadoww", "Shad Ng", "100273500", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
+    tenancy.presetData(&tenancy_root, "R07", "angangpuds", "Ang Chan Fwu", "99923007", "Sentul Point Suite Apartment", "1 October 2023", "1 Year", "30 September 2024", "RM 1 700 per month", "Completed");
+    tenancy.presetData(&tenancy_root, "R08", "noobmaster", "Thor Lee", "97468177", "The Hipster @ Taman Desa", "1 February 2024", "1 Year", "31 January 2025", "RM 4 200 per month", "Rejected");
+    tenancy.presetData(&tenancy_root, "R09", "kriko", "Saeshav Subash", "97468177", "The Hipster @ Taman Desa", "1 September 2023", "1 Year", "31 August 2024", "RM 4 200 per month", "Pending Manager Approval");
     
     // preset data for favourite property list
     FavouritePropertyLinkedList fav;
     FavouritePropertyLinkedList* fav_root = nullptr;
-    fav.presetData(&fav_root, "Js0207", "100203973");
-    fav.presetData(&fav_root, "Js0207", "87950203");
-    fav.presetData(&fav_root, "Hjw02", "100322962");
-    fav.presetData(&fav_root, "Suyinsss", "100273500");
-    fav.presetData(&fav_root, "Hjw02", "100493997");
-    fav.presetData(&fav_root, "Hjw02", "100239196");
-    fav.presetData(&fav_root, "Hjw02", "100202252");
+    fav.presetData(&fav_root, "js0207", "100203973");
+    fav.presetData(&fav_root, "js0207", "87950203");
+    fav.presetData(&fav_root, "hjw02", "100322962");
+    fav.presetData(&fav_root, "suyinsss", "100273500");
+    fav.presetData(&fav_root, "hjw02", "100493997");
+    fav.presetData(&fav_root, "hjw02", "100239196");
+    fav.presetData(&fav_root, "hjw02", "100202252");
     fav.presetData(&fav_root, "ericdiew", "100322962");
     fav.presetData(&fav_root, "ericdiew", "100321021");
     fav.presetData(&fav_root, "ericdiew", "100170082");
@@ -90,9 +90,9 @@ int main(){
     fav.presetData(&fav_root, "noobmaster", "100322962");
     fav.presetData(&fav_root, "noobmaster", "100239196");
     fav.presetData(&fav_root, "noobmaster", "100321021");
-    fav.presetData(&fav_root, "Suyinsss", "100088258");
-    fav.presetData(&fav_root, "Suyinsss", "100493687");
-    fav.presetData(&fav_root, "Suyinsss", "100202252");
+    fav.presetData(&fav_root, "suyinsss", "100088258");
+    fav.presetData(&fav_root, "suyinsss", "100493687");
+    fav.presetData(&fav_root, "suyinsss", "100202252");
 
     // Struct Declaration
     GeneralInterface general_interface;

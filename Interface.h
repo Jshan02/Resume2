@@ -9,6 +9,7 @@
 #include "Property.h"
 #include "FavouriteProperty.h"
 #include "TenancyHistory.h"
+using namespace std;
 
 struct TenantInterface {
     TenantTree tenant;
@@ -212,15 +213,15 @@ struct TenantInterface {
 
             string startDate;
             cout << "Enter the starting date of rental: ";
-            cin >> startDate;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input stream
+            getline(cin, startDate);
 
             string Duration;
             cout << "\nEnter the duration of rental: ";
-            cin >> Duration;
+            getline(cin, Duration);
 
-            tenancy.presetData(&tenancy_root, "", username, tenantName, property.propertyName, startDate, Duration, "", property.monthly_rental, "Pending Manager Approval");
+            tenancy.presetData(&tenancy_root, "NULL", username, tenantName, propertyID, property.propertyName, startDate, Duration, "NULL", property.monthly_rental, "Pending Manager Approval");
 
-            tenancy.displayTenancyHistory(tenancy_root);
         } else {
             cout << "No user is currently logged in. \n";
         }
@@ -309,7 +310,7 @@ struct ManagerInterface {
                 if (cin.fail() || opt != 1) {
                     cout << "\nInvalid input. Only 1 is allowed.\n";
                     cin.clear();
-                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     continue;
                 }
 
@@ -338,7 +339,7 @@ struct ManagerInterface {
             if (cin.fail() || searchOption < 1 || searchOption > 3) {
                 cout << "\n\nInvalid input. Please enter a number between 1 and 3.\n";
                 cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
@@ -363,7 +364,7 @@ struct ManagerInterface {
                     }
                     cout << "\n\nDo you want to continue searching? (Y/N): ";
                     cin >> continueSearch;
-                    cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 } 
                 while (toupper(continueSearch) == 'Y');
                 managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
@@ -432,7 +433,7 @@ struct AdminInterface {
             if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
                 cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
                 cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
@@ -492,7 +493,7 @@ struct AdminInterface {
                 if (cin.fail() || opt != 1) {
                     cout << "\nInvalid input. Only 1 is allowed.\n";
                     cin.clear();
-                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     continue;
                 }
 
