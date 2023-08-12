@@ -19,8 +19,8 @@ struct Tenant {
 
 struct TenantTree {
     Tenant data;
-    TenantTree* left;
-    TenantTree* right;
+    TenantTree* leftChild;
+    TenantTree* rightChild;
 
     // Create new tenant account
     TenantTree* bstNewTenant(TenantTree* root, string tUName, string tPassword, string tName, string tEmail, string tTel, char tGender, string tStatus) {
@@ -38,35 +38,60 @@ struct TenantTree {
 
         // If new username is lower (in alphabet) than root's username, call again this function to check if it should be enter to the left of this root or not
         } else if (tUName < root->data.username) {
-            root->left = bstNewTenant(root->left, tUName, tPassword, tName, tEmail, tTel, tGender, tStatus);
+            root->leftChild = bstNewTenant(root->leftChild, tUName, tPassword, tName, tEmail, tTel, tGender, tStatus);
 
         // If new username is higher (in alphabet) than root's username, call again this function to check if it should be enter to the right of this root or not
         } else {
-            root->right = bstNewTenant(root->right, tUName, tPassword, tName, tEmail, tTel, tGender, tStatus);
+            root->rightChild = bstNewTenant(root->rightChild, tUName, tPassword, tName, tEmail, tTel, tGender, tStatus);
         }
         return root;
     }
 
     // Display All Tenant Details Function
     void dispAllTenant(TenantTree* root) {
-        cout << "\n\n==================\n";
-        cout << "All Tenant Details\n";
-        cout << "==================\n";
-        dispInOrder(root);
+        int maxUsername = 0, maxName = 0, maxEmail = 0;
+        calMaxLength(root, maxUsername, maxName, maxEmail);
+
+        cout << "\n\n====================================================================================================\n";
+        cout << "                                     All Tenant Details\n";
+        cout << "====================================================================================================\n\n";
+        cout << left;
+        cout << setw(maxUsername + 5) << "Username";
+        cout << setw(maxName + 5) << "Name";
+        cout << setw(maxEmail + 5) << "Email";
+        cout << setw(16) << "Contact Number";
+        cout << setw(10) << "Gender";
+        cout << setw(33) << "Status" << endl;
+        cout << "----------------------------------------------------------------------------------------------------\n";
+
+        dispInOrder(root, maxUsername, maxName, maxEmail);
+    }
+
+    // Get Maximum Length of Username, Name, and Email
+    void calMaxLength(TenantTree* root, int& maxUsername, int& maxName, int& maxEmail) {
+        if (root == nullptr) return;
+        maxUsername = max(maxUsername, (int)root->data.username.length());              // Compare both and save the maximum one
+        maxName = max(maxName, (int)root->data.tenantName.length());
+        maxEmail = max(maxEmail, (int)root->data.tenantEmail.length());
+
+        calMaxLength(root->leftChild, maxUsername, maxName, maxEmail);
+        calMaxLength(root->rightChild, maxUsername, maxName, maxEmail);
     }
 
     // Display Tenant Details from Username A to Z order
-    void dispInOrder (TenantTree* root) {
+    void dispInOrder(TenantTree* root, int& maxUsername, int& maxName, int& maxEmail) {
         if (root == nullptr) return;
-        dispInOrder (root->left);
-        cout << "Username: " << root->data.username << endl;
-        cout << "Name\t: " << root->data.tenantName << endl;
-        cout << "Email\t: " << root->data.tenantEmail << endl;
-        cout << "Tel\t: " << root->data.tenantTel << endl;
-        cout << "Gender\t: " << root->data.tenantGender << endl;
-        cout << "Status\t: " << root->data.tenantStatus << endl;
-        cout << "---------------------------------------\n\n";
-        dispInOrder (root->right);
+        dispInOrder(root->leftChild, maxUsername, maxName, maxEmail);
+
+        cout << left;
+        cout << setw(maxUsername + 5) << root->data.username;
+        cout << setw(maxName + 5) << root->data.tenantName;
+        cout << setw(maxEmail + 5) << root->data.tenantEmail;
+        cout << setw(16) << root->data.tenantTel;
+        cout << setw(10) << root->data.tenantGender;
+        cout << setw(33) << root->data.tenantStatus << endl;
+
+        dispInOrder(root->rightChild, maxUsername, maxName, maxEmail);
     }
 
     // Sign Up Function
@@ -85,12 +110,12 @@ struct TenantTree {
 
         // If new username is lower (in alphabet) than root's username, call again this function to check if it should be enter to the left of this root or not
         } else if (uname < root->data.username) {
-            root->left = bstNewTenant(root->left, uname, pw, name, email, tel, gender, "Active");
+            root->leftChild = bstNewTenant(root->leftChild, uname, pw, name, email, tel, gender, "Active");
             return true;
 
         // If new username is higher (in alphabet) than root's username, call again this function to check if it should be enter to the right of this root or not
         } else {
-            root->right = bstNewTenant(root->right, uname, pw, name, email, tel, gender, "Active");
+            root->rightChild = bstNewTenant(root->rightChild, uname, pw, name, email, tel, gender, "Active");
             return true;
         }        
     }
@@ -142,7 +167,7 @@ struct TenantTree {
         if (root->data.username == uname) return true;
 
         // If username of root not matches, go check the root's left and right node.
-        return bstSearchUsername(root->left, uname) || bstSearchUsername(root->right, uname);
+        return bstSearchUsername(root->leftChild, uname) || bstSearchUsername(root->rightChild, uname);
     }
 
     string checkStatus (TenantTree* root, string uname) {
@@ -156,11 +181,11 @@ struct TenantTree {
 
         // Result is negative, means username entered is smaller then current username, go to check its left node
         } else if (cmp < 0) {
-            return checkStatus(root->left, uname);
+            return checkStatus(root->leftChild, uname);
 
         // Result is positive, means username entered is greater then current username, go to check its right node
         } else {
-            return checkStatus(root->right, uname);
+            return checkStatus(root->rightChild, uname);
         }
     }
 
@@ -174,9 +199,9 @@ struct TenantTree {
         if (cmp == 0) {
             return root->data.password;
         } else if (cmp < 0) {
-            return bstGetPassword(root->left, uname);
+            return bstGetPassword(root->leftChild, uname);
         } else {
-            return bstGetPassword(root->right, uname);
+            return bstGetPassword(root->rightChild, uname);
         }
     }
 
@@ -188,7 +213,7 @@ struct TenantTree {
     string searchUsernameLower = toLower(searchUsername);
 
     // Search in the left subtree
-    bool foundLeft = tenantUsernameSearch(root->left, searchUsername);
+    bool foundLeft = tenantUsernameSearch(root->leftChild, searchUsername);
 
     // Check current node
     bool foundCurrent = false;
@@ -206,7 +231,7 @@ struct TenantTree {
     }
 
     // Search in the right subtree
-    bool foundRight = tenantUsernameSearch(root->right, searchUsername);
+    bool foundRight = tenantUsernameSearch(root->rightChild, searchUsername);
 
     return foundLeft || foundCurrent || foundRight;
 }
@@ -219,7 +244,7 @@ struct TenantTree {
     string searchNameLower = toLower(searchName);
 
     // Search in the left subtree
-    bool foundLeft = tenantNameSearch(root->left, searchName);
+    bool foundLeft = tenantNameSearch(root->leftChild, searchName);
 
     // Check current node
     bool foundCurrent = false;
@@ -237,7 +262,7 @@ struct TenantTree {
     }
 
     // Search in the right subtree
-    bool foundRight = tenantNameSearch(root->right, searchName);
+    bool foundRight = tenantNameSearch(root->rightChild, searchName);
 
     return foundLeft || foundCurrent || foundRight;
 }
@@ -256,7 +281,7 @@ void inOrderFemale(TenantTree* node) {
 	if (node == nullptr) return;
 
 	// Traverse the left subtree
-	inOrderFemale(node->left);
+	inOrderFemale(node->leftChild);
 
 	// Process the current node if the tenant is female
 	if (node->data.tenantGender == 'F') {
@@ -270,7 +295,7 @@ void inOrderFemale(TenantTree* node) {
 	}
 
 	// Traverse the right subtree
-	inOrderFemale(node->right);
+	inOrderFemale(node->rightChild);
 }
 
 };

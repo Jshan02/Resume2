@@ -210,7 +210,7 @@ struct ManagerInterface {
         system("CLS");
         tenant.dispAllTenant(tenant_root);
 
-        cout << "1. Back to Main Menu\n\n";
+        cout << "\n1. Back to Main Menu\n\n";
 
         int option;
         cout << "Please select an option: ";
@@ -382,6 +382,8 @@ struct AdminInterface {
         cin >> tel;
         cout << "Email - ";
         cin >> email;
+
+        transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
 
         addSuccess = manager.bstNewManager(manager_root, uname, pw, eid, name, tel, email, "Active");       // Call Add Manager Algorithm
 

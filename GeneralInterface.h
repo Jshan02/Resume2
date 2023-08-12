@@ -60,6 +60,8 @@ struct GeneralInterface {
         cout << "Enter Your Password: ";
         cin >> pw;
 
+        transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
+
         if (tenant.login(tenant_root, uname, pw)) {
             system("CLS");
             cout << "Login Successfully!\n";
@@ -80,6 +82,8 @@ struct GeneralInterface {
         cout << "Enter Your Password: ";
         cin >> pw;
 
+        transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
+
         if (manager.login(manager_root, uname, pw)) {
             system("CLS");
             cout << "Login Successfully!\n";
@@ -99,6 +103,8 @@ struct GeneralInterface {
         cin >> uname;
         cout << "Enter Your Password: ";
         cin >> pw;
+
+        transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
 
         if (admin.login(uname, pw)) {
             ofstream Myfile("loggedInUser.txt");
@@ -143,7 +149,7 @@ struct GeneralInterface {
         cout << "\n New Account Registration\n";
         cout << "--------------------------\n";
         cout << "Please fill in the following details: \n";
-        string uname, pw, name, email, tel;
+        string uname, pw, name, email, tel, format_uname;
         char gender, format_gender;
         cout << "Username - ";
         cin >> uname;
@@ -157,6 +163,8 @@ struct GeneralInterface {
         cin >> tel;
         cout << "Gender (M/F) - ";
         cin >> gender;
+
+        transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
         format_gender = toupper(gender);
 
         addSuccess = tenant.signUp(tenant_root, uname, pw, name, email, tel, format_gender);
