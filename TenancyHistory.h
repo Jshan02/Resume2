@@ -165,6 +165,15 @@ struct TenancyLinkedList
     }
 
 
-
-
+    // Function to check if the propertyID exists in the Tenancy History with either "Confirmed" or "To Pay" status
+    bool checkPropertyStatusInTenancy(TenancyLinkedList* head, string propertyID) {
+        TenancyLinkedList* current = head;
+        while (current != nullptr) {
+            if (current->data.property_id == propertyID && (current->data.status == "Confirmed" || current->data.status == "To Pay")) {
+                return true;
+            }
+            current = current->next;
+        }
+        return false;
+    }
 };

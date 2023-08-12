@@ -11,6 +11,11 @@
 #include "TenancyHistory.h"
 
 struct TenantInterface {
+    TenantTree tenant;
+    PropertyTree prop;
+    FavouritePropertyLinkedList fav;
+    TenancyLinkedList tenancy;
+    
     void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
         int dashboardOption;
         cout << " Welcome to Tenant Dashboard\n";
@@ -18,10 +23,9 @@ struct TenantInterface {
         cout << "1. Sort and Display Properties\n";
         cout << "2. Search and Display Properties\n";
         cout << "3. View Favourite Properties\n";
-        cout << "4. Place Rent Request\n";
-        cout << "5. View Rent Request Status\n";
-        cout << "6. View Property Renting History\n";
-        cout << "7. Logout\n\n";
+        cout << "4. View Rent Request Status\n";
+        cout << "5. View Property Renting History\n";
+        cout << "6. Logout\n\n";
 
         while (true) {
             cout << "Please enter your option: ";
@@ -39,15 +43,95 @@ struct TenantInterface {
             } else if (dashboardOption == 2) {          // Search n Display + Mark Fav
 
             } else if (dashboardOption == 3) {          // View Favourite + Option to place rent request
+                favouritePropertyMenu(fav_root, prop_root);
 
-            } else if (dashboardOption == 4) {          // Display Fav + Direct Prompt Property ID
+            } else if (dashboardOption == 4) {           // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
 
-            } else if (dashboardOption == 5) {          // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
 
-            } else if (dashboardOption == 6) {          // Only Show Completed Rent Requests
+            } else if (dashboardOption == 5) {          // view all completed status
 
-            }
+            } 
             break;
+        }
+    }
+
+    void displayAllProperty(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+        int page = 1;
+        int totalPages = (prop_root->countProperties(prop_root) + 9) / 10; // Calculate the total number of pages
+
+        while (true) {
+            prop_root->navigateProperties(prop_root, page);
+            cout << "Page " << page << " of " << totalPages << endl << endl;
+
+            cout << "1. Next 10 properties\n";
+            cout << "2. Previous 10 Properties\n";
+            cout << "3. Add to favourite\n";
+            cout << "4. Back to Main Menu\n\n";
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (choice == 1 && page < totalPages) {
+                page++;
+            }
+            else if (choice == 2 && page > 1) {
+                page--;
+            }
+            else if (choice == 3) {
+                favouritePropertyMenu(fav_root, prop_root);
+                break;
+            }
+            else if (choice == 4) {
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray);
+                break;
+            }
+        }
+    }
+
+    // get current user's username
+    string getCurrentUsername() {
+        string username;
+        ifstream file("loggedInUser.txt");
+        if (file.is_open()) {
+            getline(file, username);
+            file.close();
+        } else {
+            cout << "Unable to open the file.\n";
+        }
+        return username;
+    }
+
+    // Tenant add favourite property menu
+    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root) {
+        string username = getCurrentUsername();
+        string propertyID;
+        bool propertyExists;
+
+        while (true) { // Infinite loop to keep prompting the user
+            propertyExists = false; // Reset propertyExists for each iteration
+            cout << "Enter the Property ID to add to favorites: ";
+            cin >> propertyID;
+
+            // Search for the property in the PropertyTree
+            propertyExists = prop.searchProperty(prop_root, propertyID);
+
+            if (propertyExists) {
+                fav.presetData(&fav_root, username, propertyID);
+                cout << "Property added to favorites!\n";
+                break; // Exit the loop as the property has been added to favorites
+            } else {
+                cout << "Property not found. Please enter a valid Property ID.\n";
+            }
+        }
+    }
+
+    // display favourite property for current user
+    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root){
+        string username = getCurrentUsername();
+        if (!username.empty()){
+            fav.displayUserFavourite(fav_root, username, prop_root);
+        } else {
+            cout << "No user is currently logged in.\n";
         }
     }
 };

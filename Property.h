@@ -30,27 +30,6 @@ struct PropertyTree{
     PropertyTree* left;
     PropertyTree* right;
 
-
-    //void preOrder(Property* node) {
-    //    if (node == nullptr) return;
-    //    cout << "Property ID: " << node->propertyID << endl
-    //        << "Property Name: " << node->propertyName << endl
-    //        << "Completion Year: " << node->completion_year << endl
-    //        << "Monthly Year: " << node->monthly_rental << endl
-    //        << "Location: " << node->location << endl
-    //        << "Property Type: " << node->propertyType << endl
-    //        << "Rooms: " << node->rooms << endl
-    //        << "Parking: " << node->parking << endl
-    //        << "Bathroom: " << node->bathroom << endl
-    //        << "Size: " << node->size << endl
-    //        << "Furnished: " << node->furnished << endl
-    //        << "Facilities: " << node->facilities << endl
-    //        << "Additional Facilities: " << node->additional_facilities << endl
-    //        << "Region: " << node->region << endl << endl << endl;
-    //    preOrder(node->left);
-    //    preOrder(node->right);
-    //}
-
     // BST Insertion
     PropertyTree* bstInsert(PropertyTree* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
         if (root == nullptr) {
@@ -80,6 +59,7 @@ struct PropertyTree{
         return root;
     }
 
+    // import property data from csv file
     PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray) {
         ifstream file(filename);
         if (!file.is_open()) {
@@ -189,78 +169,13 @@ struct PropertyTree{
         return 1 + countProperties(root->left) + countProperties(root->right);
     }
 
-    void navigateProperties(PropertyTree* root) {
-        int page = 1;
-        int totalPages = (countProperties(root) + 9) / 10; // Calculate the total number of pages
-
-        while (true) {
-            displayPage(root, page); 
-            cout << "Page " << page << " of " << totalPages << endl << endl;
-
-            cout << "1. Next 10 properties\n2. Previous 10 Properties\n3. Add to favourite\n4. Back to Main Menu" << endl;
-            cout << "Please select an option: ";
-            int choice;
-            cin >> choice;
-
-            if (choice == 1 && page < totalPages) {
-                page++;
-            }
-            else if (choice == 2 && page > 1) {
-                page--;
-            }
-            else if (choice == 3) {
-                break;
-            }
-            else if (choice == 4) {
-                break;
-            }
-        }
+    // Display 10 properties at a same time (binary search tree)
+    void navigateProperties(PropertyTree* root, int page) {
+        system("CLS");
+        displayPage(root, page); // Function to display the properties for the given page
     }
 
-    // binary search by property name
-    void bstSearchByPropName(PropertyTree* root, string searchPropName) {
-        bool found = false; // Flag to track if a property is found
-        cout << "\n=================\n";
-        cout << "Search Result:\n";
-        cout << "=================\n\n";
-
-        function<void(PropertyTree*)> search = [&](PropertyTree* node) {
-            if (node == nullptr) {
-                return;
-            }
-
-            search(node->left);
-
-            if (node->data.propertyName.find(searchPropName) != string::npos) {
-                // Display the property information
-                cout << "Property ID: " << node->data.propertyID << endl
-                    << "Property Name: " << node->data.propertyName << endl
-                    << "completion Year: " << node->data.completion_year << endl
-                    << "Monthly Year: " << node->data.monthly_rental << endl
-                    << "Location: " << node->data.location << endl
-                    << "Property Type: " << node->data.propertyType << endl
-                    << "Rooms: " << node->data.rooms << endl
-                    << "Parking: " << node->data.parking << endl
-                    << "Bathroom: " << node->data.bathroom << endl
-                    << "Size: " << node->data.size << endl
-                    << "Furnished: " << node->data.furnished << endl
-                    << "Facilities: " << node->data.facilities << endl
-                    << "Additional Facilities: " << node->data.additional_facilities << endl
-                    << "Region: " << node->data.region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-                found = true; // Set the flag to true as property is found
-            }
-
-            search(node->right);
-        };
-
-        search(root);
-
-        if (!found) {
-            cout << "Property Not found\n"; // Print "Not found" if no property is found
-        }
-    }
-
+    // insert property data from tree to ventor
     void addPropertiesToArray(PropertyTree* root, vector<Property>& propertyArray) {
         if (root == nullptr) return;
 
@@ -291,6 +206,7 @@ struct PropertyTree{
         addPropertiesToArray(root->right, propertyArray);
     }
 
+    // display property data stored in vector
     void displayPropertiesVector(const vector<Property>& propertyArray) {
         cout << "Properties:\n";
         for (const Property& property : propertyArray) {
@@ -312,6 +228,17 @@ struct PropertyTree{
         }
     }
 
+    // Function to search for a property in the PropertyTree by propertyID
+    bool searchProperty(PropertyTree* root, const string& propertyID) {
+        if (root == nullptr) return false;
+        
+        if (root->data.propertyID == propertyID) return true;
+
+        // Search in the left and right subtrees
+        return searchProperty(root->left, propertyID) || searchProperty(root->right, propertyID);
+    }
+
+    // function to get property data
     PropertyTree* getPropertyInfo(PropertyTree* root, string propertyID) {
         if (root == nullptr){
             return nullptr;
