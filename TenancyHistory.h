@@ -238,4 +238,14 @@ struct TenancyLinkedList
         }
         return false;
     }
+
+    string generateTenancyID(TenancyLinkedList* tenancy_root) {
+        int count = 0;
+        TenancyLinkedList* current = tenancy_root;
+        while (current != nullptr) {
+            count++;
+            current = current->next;
+        }
+        return "R" + to_string(count + 1); // Increment count for the new ID
+    }
 };

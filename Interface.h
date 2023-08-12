@@ -233,9 +233,8 @@ struct TenantInterface {
             cout << "\nEnter the duration of rental: ";
             getline(cin, Duration);
 
-            tenancy.presetData(&tenancy_root, "NULL", username, tenantName, propertyID, property.propertyName, startDate, Duration, "NULL", property.monthly_rental, "Pending Manager Approval");
-
-        } else {
+            string tenancyID = tenancy.generateTenancyID(tenancy_root);
+            tenancy.presetData(&tenancy_root, tenancyID, username, tenantName, propertyID, property.propertyName, startDate, Duration, "", property.monthly_rental, "Pending Manager Approval");        } else {
             cout << "No user is currently logged in. \n";
         }
     }
@@ -425,7 +424,7 @@ struct ManagerInterface {
             } else if (dashboardOption == 3) {                                                                                  // Delete Inactive Tenant
 
             } else if (dashboardOption == 4) {                                                                                  // View All Rent Request + Confirm Them (Give RentID...)
-
+                manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
             } else if (dashboardOption == 5) {                                                                                  // View Tenant Payment + Confirm Them
                 
 
@@ -565,6 +564,98 @@ struct ManagerInterface {
             }
 
             break;
+        }
+    }
+
+    void manageTenancy(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+        system("CLS");
+        int option = 0;
+
+        while (option != 2) {
+            int maxTenancyIDLength = strlen("Tenancy ID");
+            int maxUsernameLength = strlen("Username");
+            int maxTenantNameLength = strlen("Tenant Name");
+            int maxPropertyIDLength = strlen("Property ID");
+            int maxPropertyNameLength = strlen("Property Name");
+            int maxStartDateLength = strlen("Start Date");
+            int maxDurationLength = strlen("Duration");
+            int maxEndDateLength = strlen("End Date");
+            int maxRentalLength = strlen("Rental");
+            int maxStatusLength = strlen("Status");
+
+            TenancyLinkedList* current = tenancy_root;
+            while (current != nullptr) {
+                if (current->data.status == "Pending Manager Approval") {
+                    maxTenancyIDLength = max(maxTenancyIDLength, static_cast<int>(current->data.tenancyID.length()));
+                    maxUsernameLength = max(maxUsernameLength, static_cast<int>(current->data.username.length()));
+                    maxTenantNameLength = max(maxTenantNameLength, static_cast<int>(current->data.tenant_name.length()));
+                    maxPropertyIDLength = max(maxPropertyIDLength, static_cast<int>(current->data.property_id.length()));
+                    maxPropertyNameLength = max(maxPropertyNameLength, static_cast<int>(current->data.property_name.length()));
+                    maxStartDateLength = max(maxStartDateLength, static_cast<int>(current->data.start_date.length()));
+                    maxDurationLength = max(maxDurationLength, static_cast<int>(current->data.duration.length()));
+                    maxEndDateLength = max(maxEndDateLength, static_cast<int>(current->data.end_date.length()));
+                    maxRentalLength = max(maxRentalLength, static_cast<int>(current->data.rental.length()));
+                    maxStatusLength = max(maxStatusLength, static_cast<int>(current->data.status.length()));
+                }
+                current = current->next;
+            }
+
+            // Print the header
+            cout << "Tenancy Requests Pending Manager Approval:\n";
+            cout << string(maxTenancyIDLength + maxUsernameLength + maxTenantNameLength + maxPropertyIDLength + maxPropertyNameLength + maxStartDateLength + maxDurationLength + maxEndDateLength + maxRentalLength + maxStatusLength + 55, '=') << '\n';
+            cout << left << setw(maxTenancyIDLength + 5) << "Tenancy ID" << setw(maxUsernameLength + 5) << "Username" << setw(maxTenantNameLength + 5) << "Tenant Name" << setw(maxPropertyIDLength + 5) << "Property ID" << setw(maxPropertyNameLength + 5) << "Property Name" << setw(maxStartDateLength + 5) << "Start Date" << setw(maxDurationLength + 5) << "Duration" << setw(maxEndDateLength + 5) << "End Date" << setw(maxRentalLength + 5) << "Rental" << setw(maxStatusLength + 5) << "Status" << '\n';
+            cout << string(maxTenancyIDLength + maxUsernameLength + maxTenantNameLength + maxPropertyIDLength + maxPropertyNameLength + maxStartDateLength + maxDurationLength + maxEndDateLength + maxRentalLength + maxStatusLength + 55, '=') << '\n';
+
+            // Print the rows
+            current = tenancy_root;
+            while (current != nullptr) {
+                if (current->data.status == "Pending Manager Approval") {
+                    cout << left << setw(maxTenancyIDLength + 5) << current->data.tenancyID << setw(maxUsernameLength + 5) << current->data.username << setw(maxTenantNameLength + 5) << current->data.tenant_name << setw(maxPropertyIDLength + 5) << current->data.property_id << setw(maxPropertyNameLength + 5) << current->data.property_name << setw(maxStartDateLength + 5) << current->data.start_date << setw(maxDurationLength + 5) << current->data.duration << setw(maxEndDateLength + 5) << current->data.end_date << setw(maxRentalLength + 5) << current->data.rental << setw(maxStatusLength + 5) << current->data.status << '\n';
+                }
+                current = current->next;
+            }
+
+            cout << "\n1. Select a Tenancy to Manage\n";
+            cout << "2. Back to Manager Dashboard\n";
+            cout << "Please choose an option: ";
+            cin >> option;
+            if (cin.fail()) {
+                    cin.clear(); // Clear the error flags
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the remaining input on the line
+                    cout << "Invalid option. Please enter a number.\n";
+                    continue; // Skip the rest of the loop and start again
+            }
+
+            if (option == 1) {
+                string selectedID;
+                cout << "Enter the Tenancy ID you want to manage: ";
+                cin >> selectedID;
+
+                current = tenancy_root;
+                while (current != nullptr) {
+                    if (current->data.tenancyID == selectedID && current->data.status == "Pending Manager Approval") {
+
+                        // Request the manager to enter the end date
+                        cout << "Enter the end date of rental (e.g., \"1 Sept 2023\"): ";
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input stream
+                        getline(cin, current->data.end_date);
+
+                        // Update the status
+                        current->data.status = "Pending Payment";
+                        system("CLS");
+                        cout << "Tenancy request has been updated.\n";
+                        // ... additional management options ...
+                        break;
+                    }
+                    current = current->next;
+                }
+            } else if (option == 2) {
+                // Back to Manager Dashboard
+                system("CLS");
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+            } else {
+                cout << "Invalid option. Please choose again.\n";
+            }
         }
     }
 };

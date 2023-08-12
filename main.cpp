@@ -50,11 +50,11 @@ int main(){
     tenancy.presetData(&tenancy_root, "R02", "hjw02", "Hoong Jhen Wei", "100322962", "Sky Meridien", "1 July 2023", "1 Year", "30 June 2024", "RM 2 900 per month", "Pending Payment");
     tenancy.presetData(&tenancy_root, "R03", "suyinsss", "Teo Su Yin", "100273500", "Desa Villas", "1 June 2023", "1 Year", "31 May 2024", "RM 2 500 per month", "Completed");
     tenancy.presetData(&tenancy_root, "R04", "kante", "Shasivarman", "100322962", "Sky Meridien", "1 August 2023", "1 Year", "30 July 2024", "RM 2 900 per month", "Rejected");
-    tenancy.presetData(&tenancy_root, "R05", "kante", "Shasivarman", "100273500", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
+    tenancy.presetData(&tenancy_root, "R05", "kante", "Shasivarman", "100273500", "Desa Villas", "1 September 2023", "1 Year", "", "RM 2 500 per month", "Pending Manager Approval");
     tenancy.presetData(&tenancy_root, "R06", "shadoww", "Shad Ng", "100273500", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
     tenancy.presetData(&tenancy_root, "R07", "angangpuds", "Ang Chan Fwu", "99923007", "Sentul Point Suite Apartment", "1 October 2023", "1 Year", "30 September 2024", "RM 1 700 per month", "Completed");
     tenancy.presetData(&tenancy_root, "R08", "noobmaster", "Thor Lee", "97468177", "The Hipster @ Taman Desa", "1 February 2024", "1 Year", "31 January 2025", "RM 4 200 per month", "Rejected");
-    tenancy.presetData(&tenancy_root, "R09", "kriko", "Saeshav Subash", "97468177", "The Hipster @ Taman Desa", "1 September 2023", "1 Year", "31 August 2024", "RM 4 200 per month", "Pending Manager Approval");
+    tenancy.presetData(&tenancy_root, "R09", "kriko", "Saeshav Subash", "97468177", "The Hipster @ Taman Desa", "1 September 2023", "1 Year", "", "RM 4 200 per month", "Pending Manager Approval");
     
     // preset data for favourite property list
     FavouritePropertyLinkedList fav;
