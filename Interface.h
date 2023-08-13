@@ -22,7 +22,7 @@ struct TenantInterface {
     FavouritePropertyLinkedList fav;
     TenancyLinkedList tenancy;
     
-    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray, int autoOption = 0) {
+    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, int autoOption = 0) {
         int dashboardOption = autoOption;
         if (dashboardOption == 0) {
             cout << " Welcome to Tenant Dashboard\n";
@@ -49,29 +49,32 @@ struct TenantInterface {
 
             if (dashboardOption == 1) {                 // Display All Properties
                 system("CLS");
-                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, 1, propSortArray);
+                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, 1, propName_root, location_root, propSortArray);
 
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
-                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, 1, propSortArray);
+                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, 1, propName_root, location_root, propSortArray);
 
                 } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
-                    
+                searchOptionMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root,propSortArray);
+    
 
             } else if (dashboardOption == 4) {          // View Favourite + Option to place rent request
-                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
 
             } else if (dashboardOption == 5) {          // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
                 system("CLS");
-                rentRequestStatusMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                string username = getCurrentUsername();
+                tenancy.displayTenancy(tenancy_root, username);
+                tenancyOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray);
 
             } else if (dashboardOption == 6) {          // view all completed status
                 system("CLS");
                 string username = getCurrentUsername();
                 tenancy.displayCompletedTenancy(tenancy_root, username);
-                completedTenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                completedTenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
 
             } else if (dashboardOption == 7) {
-                tenantDeactivateMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                tenantDeactivateMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
             }
             break;
             }
@@ -79,7 +82,7 @@ struct TenantInterface {
     }
 
     // display propety data
-    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray) {
+    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         // int page = 1;
         int page = currentPage; // Initialize with the currentPage argument
         int totalPages = (prop_root->countProperties(prop_root) + 9) / 10; // Calculate the total number of pages
@@ -103,19 +106,19 @@ struct TenantInterface {
                 page--;
             }
             else if (choice == 3) {
-                addFavouritePropertyMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, page, propSortArray);
+                addFavouritePropertyMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, page, propName_root, location_root, propSortArray);
                 break;
             }
             else if (choice == 4) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                 break;
             }
         }
     }
 
     // Sort properties menu
-    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int current_page, vector<Property>& propSortArray) {
+    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int current_page, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         system("CLS");
 
         // Quick Sort
@@ -126,13 +129,13 @@ struct TenantInterface {
 
         // Tree Sort
         // auto start = chrono::high_resolution_clock::now();
-        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray);
+        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root);
 
         
     }
 
     // Display tree sorted properties (prop id, name, rent, location, size)
-    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray) {
+    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray, PropertyTree* propName_root, PropertyTree* location_root) {
         int page = currentPage;
         int totalPages = (prop.countProperties(sort_root) + 29) / 30;       // get to know total of pages if 30 properties per page (+29 to include the page that is not full with properties)
 
@@ -157,18 +160,18 @@ struct TenantInterface {
             } else if (choice == 2 && page > 1) {
                 page--;
             } else if (choice == 3) {
-                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page, propSortArray);
+                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page,  propName_root, location_root, propSortArray);
                 break;
             } else if (choice == 4) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                 break;
             }
         }
     }
 
     // Display Quick Sorted properties (prop id, name, rent, location, size)
-    void dispQuickSortProp(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray) {
+    void dispQuickSortProp(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray, PropertyTree* propName_root, PropertyTree* location_root) {
         int page = currentPage;
         int totalPages = (propSortArray.size() + 29) / 30;
 
@@ -193,11 +196,11 @@ struct TenantInterface {
             } else if (choice == 2 && page > 1) {
                 page--;
             } else if (choice == 3) {
-                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page, propSortArray);
+                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page, propName_root, location_root, propSortArray);
                 break;
             } else if (choice == 4) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                 break;
             }
         }
@@ -235,7 +238,7 @@ struct TenantInterface {
         return username;
     }
 
-    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray) {
+    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         string username = getCurrentUsername();
         string propertyID;
         bool propertyExists;
@@ -258,9 +261,8 @@ struct TenantInterface {
                     #ifdef _WIN32
                     Sleep(2000); // Sleep for 2000 milliseconds (2 seconds) on Windows
                     #else
-                    // You can add sleep code for other platforms here if needed
                     #endif
-                    displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, currentPage, propSortArray); // Return to the same page
+                    displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, currentPage, propName_root, location_root, propSortArray); // Return to the same page
                     break; // Exit the loop as the property has been added to favorites
                 }
             } else {
@@ -269,7 +271,7 @@ struct TenantInterface {
         }
     }
 
-    void addFavouritePropertyMenu2(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray) {
+    void addFavouritePropertyMenu2(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         string username = getCurrentUsername();
         string propertyID;
         bool propertyExists;
@@ -294,7 +296,7 @@ struct TenantInterface {
                     #else
                     // You can add sleep code for other platforms here if needed
                     #endif
-                    dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, currentPage, propSortArray); // Return to the same page
+                    dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, currentPage, propSortArray,  propName_root, location_root); // Return to the same page
                     break; // Exit the loop as the property has been added to favorites
                 }
             } else {
@@ -305,7 +307,7 @@ struct TenantInterface {
 
 
     // display favourite property for current user
-    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray) {
+    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         string username = getCurrentUsername();
         if (!username.empty()) {
             system("CLS");
@@ -318,14 +320,14 @@ struct TenantInterface {
                 cin >> choice;
 
                 if (toupper(choice) == 'Y') {
-                    placeRentRequest(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                    placeRentRequest(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                     // put place request function
 
                     break; // Exit the loop as the choice has been handled
                 } else if (toupper(choice) == 'N') {
                     // back to main menu
                     system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propSortArray);
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                     break; // Exit the loop as the choice has been handled
                 } else {
                     cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
@@ -338,7 +340,7 @@ struct TenantInterface {
     }
 
     // Current user place rent request
-    void placeRentRequest(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray) {
+    void placeRentRequest(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         string username = getCurrentUsername();
         if (!username.empty()) {
             system("CLS");
@@ -363,23 +365,21 @@ struct TenantInterface {
                     cin >> choice;
 
                     if (toupper(choice) == 'Y') {
-                        favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root, sort_root, propSortArray);
+                        favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root, sort_root, propName_root, location_root, propSortArray);
                         // put place request function
 
                         break; // Exit the loop as the choice has been handled
                     } else if (toupper(choice) == 'N') {
                         // back to main menu
                         system("CLS");
-                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                         break; // Exit the loop as the choice has been handled
                     } else {
                         cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
                         // Continue to prompt the user until a valid input is entered
                     }
                 }
-
-                return;
-            }  
+            }
 
             Property property = getPropertyById(prop_root, propertyID);
             if (!property.propertyID.empty()) { // Check if a valid property was found
@@ -420,7 +420,7 @@ struct TenantInterface {
                 }
 
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                 break;
             }
         } else {
@@ -428,142 +428,48 @@ struct TenantInterface {
         }
     }
 
-
-    // view renting request status menu
-    void rentRequestStatusMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray) {
-        int choice;
-
-        while (true) { // Infinite loop to keep prompting the user until valid input
-            cout << "\nChoose an option to view rent request status:\n";
-            cout << "1. Pending Manager Approval\n";
-            cout << "2. Rejected\n";
-            cout << "3. Pending Payment\n";
-            cout << "4. Pending Verification\n";
-            cout << "5. Back to Main Menu\n\n";
-            cout << "Please enter your choice (1 to 5): ";
-            cin >> choice;
-            string username = getCurrentUsername();
-            if (cin.fail() || choice < 1 || choice > 5) {
-                system("CLS");
-                cout << "Invalid input. Please enter a number between 1 and 5.\n";
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                
-            } else {
-                if (choice == 1) {
-                    system("CLS");
-                    // Call the function to display rent requests with "Pending Manager Approval" status
-                    tenancy.displayPendingApprovalTenancy(tenancy_root, username);
-                    tenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
-                    break;
-
-                } else if (choice == 2) {
-                    system("CLS");
-                    // Call the function to display rent requests with "Rejected" status
-                    tenancy.displayRejectedTenancy(tenancy_root, username);
-                    tenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
-                    break;
-
-                } else if (choice == 3) {
-                    system("CLS");
-                    // Call the function to display rent requests with "Pending Payment" status
-                    tenancy.displayPendingPaymentTenancy(tenancy_root, username);
-                    pendingPaymentOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
-                    break;
-
-                } else if (choice == 4) {
-                    system("CLS");
-                    // Call the function to display rent requests with "Pending Verification" status
-                    tenancy.displayPendingPaymentVerificationTenancy(tenancy_root, username);
-                    tenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray,  tenant_root, sort_root, propSortArray);
-                    break;
-
-                } else {
-                    system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray); // go back to main menu
-                    break;
-                }
-            }
-        }
-    }
-
-    // navigation for pending manager approval, rejected, and pending payment verification
-    void tenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray) {
-        string choiceStr;
-        char otherStatus;
-        while (true) { // Infinite loop to keep prompting the user until valid input
-            cout << "\nWould you like to see other tenancy status? (Y/N): ";
-            cin >> ws; // Ignore leading whitespace
-            getline(cin, choiceStr); // Read the entire line
-            if (!choiceStr.empty()) {
-                otherStatus = toupper(choiceStr[0]); // Consider the first character only
-                if (otherStatus == 'N') {
-                    system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
-                    break;
-                } else if (otherStatus == 'Y') {
-                    system("CLS");
-                    rentRequestStatusMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
-                    break; // Break out of the inner loop to return to the gender filter options
-                } else {
-                    cout << "\nInvalid input. Please enter Y or N.";
-                }
-            } else {
-                cout << "\nInvalid input. Please enter Y or N.";
-                // Continue to prompt the user until a valid input is entered
-            }
-        }
-    }
-
     // navigation for pending payment menu
-    void pendingPaymentOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray){
+    void tenancyOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray){
         int option;
         cout << "\n\n1. Make Payment\n";
-        cout << "2. Back to Previos Page\n";
-        cout << "3. Back to Main Menu\n\n";
+        cout << "2. Back to Main Menu\n\n";
 
         while (true) { // Inner loop for the otherFilter input
-            cout << "Please enter your choice (1 to 3): ";
+            cout << "Please enter your choice (1 to 2): ";
             cin >> option;
 
             if (cin.fail() || option < 1 || option > 3) {
-                cout << "\n\nInvalid input. Please enter a number between 1 and 3 only.\n";
+                cout << "\n\nInvalid input. Please enter a number between 1 and 2 only.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
             }
-
-             if (option == 1) {
+            else if (option == 1) {
                 //make payment
                 break;
 
             } else if (option == 2) {
                 system("CLS");
-                rentRequestStatusMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
-                break; // Break out of the inner loop to return to the gender filter options
-
-            } else if (option == 3) {
-                system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                 break;
             }
         }
     }
 
     // navigation for completed tenancy menu
-    void completedTenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray) {
+    void completedTenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         string choiceStr;
         char otherStatus;
         while (true) { // Infinite loop to keep prompting the user until valid input
             cout << "\nDo you want to go back to main menu? (Enter y to go back):";
             cin >> ws; // Ignore leading whitespace
             getline(cin, choiceStr); // Read the entire line
-            
+
             if (!choiceStr.empty()) {
                 otherStatus = toupper(choiceStr[0]); // Consider the first character only
                 if (otherStatus == 'Y') {
                     system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                     break;
                 } else {
                     cout << "\nInvalid input. Please enter Y only.";
@@ -575,7 +481,7 @@ struct TenantInterface {
         }
     }
 
-    void tenantDeactivateMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, vector<Property>& propSortArray) {
+    void tenantDeactivateMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
         string username = getCurrentUsername(); // Assume this function gets the currently logged-in username
         if (username.empty()) {
             cout << "No user is currently logged in.\n";
@@ -590,13 +496,117 @@ struct TenantInterface {
             if (tenant.deactivateTenantAccount(tenant_root, username)) {
                 system("CLS");
                 cout << "Account deactivated successfully.\n";
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propSortArray, 8);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, 8);
             } else {
                 cout << "Failed to deactivate account.\n";
             }
         } else {
             system("CLS");
-            tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propSortArray);
+            tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray);
+        }
+    }
+
+    // Search option menu
+        void searchOptionMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+        int choice;
+
+        while (true) {
+            system("CLS");
+            cout << "\nChoose an option to search properties:\n";
+            cout << "1. Search by Property Name\n";
+            cout << "2. Search by Location\n";
+            cout << "3. Go Back to Main Menu\n";
+            cout << "Please enter your choice (1 to 3): ";
+            cin >> choice;
+
+            // Clear the newline character from the input stream
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            if (cin.fail() || choice < 1 || choice > 5) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number between 1 and 3.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            } else {
+                if (choice == 1) {
+                    system("CLS");
+
+                    cout << "Please enter a property name you want to search: ";
+                    string targetName;
+                    getline(cin, targetName);
+
+                    cout << "\nProperty found with name '" << targetName << "':\n";
+                    cout << "...........................................................\n\n";
+
+                    cout << "Result for Binary Search Tree Search:\n ";
+                    cout << "============================\n ";
+                    auto start1 = chrono::high_resolution_clock::now();
+                    prop.bstSearchByPropName(propName_root, targetName);
+                    auto end1 = chrono::high_resolution_clock::now();
+                    chrono::duration<double, milli> binarySearchTime = end1 - start1;
+
+                    cout << "Result for Linear Search:\n ";
+                    cout << "============================\n ";
+                    auto start2 = chrono::high_resolution_clock::now();
+                    prop.linearSearchPropertiesByName(propertyArray, targetName);
+                    auto end2 = chrono::high_resolution_clock::now();
+                    chrono::duration<double, milli> linearSearchTime = end2 - start2;
+
+                    cout << "==================================================================================================\n";
+                    cout << "Time taken by binary search: " << binarySearchTime.count() << " milliseconds" << endl;
+                    cout << "Time taken by linear search: " << linearSearchTime.count() << " milliseconds" << endl;
+                    cout << "==================================================================================================\n\n";
+
+                } else if (choice == 2) {
+                    // Call the function to search properties by location
+                    system("CLS");
+
+                    cout << "Please enter the location you want to search: ";
+                    string targetLocation;
+                    getline(cin, targetLocation);
+
+                    cout << "\nProperty found with location '" << targetLocation << "' :\n";
+                    cout << "...........................................................\n\n";
+
+                    auto start1 = chrono::high_resolution_clock::now();
+                    prop.bstSearchByLocation(location_root, targetLocation);
+                    auto end1 = chrono::high_resolution_clock::now();
+                    chrono::duration<double, milli> binarySearchTime = end1 - start1;
+
+                    auto start2 = chrono::high_resolution_clock::now();
+                    prop.linearSearchPropertiesByLocation(propertyArray, targetLocation);
+                    auto end2 = chrono::high_resolution_clock::now();
+                    chrono::duration<double, milli> linearSearchTime = end2 - start2;
+
+                    cout << "==================================================================================================\n";
+                    // cout << "Time taken by binary search: " << binarySearchTime.count() << " microseconds" << endl;
+                    cout << "Time taken by linear search: " << linearSearchTime.count() << " microseconds" << endl;
+
+                } else if (choice == 3) {
+                    system("CLS");
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray); // Go back to main menu
+                    break;
+                }
+
+                char otherSearch;
+                while (true) {
+                    cout << "Would you like to search again? (Y/N): ";
+                    cin >> otherSearch;
+                    otherSearch = toupper(otherSearch);
+
+                    if (otherSearch == 'N') {
+                        system("CLS");
+                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        break;
+                    } else if (otherSearch == 'Y') {
+                        system("CLS");
+                        searchOptionMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        break;
+                    } else {
+                        cout << "\nInvalid input. Please enter Y or N only.\n";
+                    }
+                }break;
+            }
         }
     }
 };
