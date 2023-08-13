@@ -2,6 +2,11 @@
 #include <string>
 #include <stdlib.h>
 #include <limits>
+#include <chrono>
+#include <thread>
+#ifdef _WIN32
+#include <windows.h> // For Sleep on Windows
+#endif
 
 #include "Tenant.h"
 #include "Manager.h"
@@ -42,7 +47,7 @@ struct TenantInterface {
 
             if (dashboardOption == 1) {                 // Display All Properties
                 system("CLS");
-                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, 1);
 
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
                 sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray);
@@ -68,8 +73,10 @@ struct TenantInterface {
         }
     }
 
-    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
-        int page = 1;
+    // display propety data
+    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, int currentPage) {
+        // int page = 1;
+        int page = currentPage; // Initialize with the currentPage argument
         int totalPages = (prop_root->countProperties(prop_root) + 9) / 10; // Calculate the total number of pages
 
         while (true) {
@@ -91,7 +98,7 @@ struct TenantInterface {
                 page--;
             }
             else if (choice == 3) {
-                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root);
+                addFavouritePropertyMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, page);
                 break;
             }
             else if (choice == 4) {
@@ -206,29 +213,40 @@ struct TenantInterface {
         return username;
     }
 
-    // Tenant add favourite property menu
-    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root) {
+    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, int currentPage) {
         string username = getCurrentUsername();
         string propertyID;
         bool propertyExists;
 
         while (true) { // Infinite loop to keep prompting the user
             propertyExists = false; // Reset propertyExists for each iteration
-            cout << "Enter the Property ID to add to favorites: ";
+            cout << "\nEnter the Property ID to add to favorites: ";
             cin >> propertyID;
 
             // Search for the property in the PropertyTree
             propertyExists = prop.searchProperty(prop_root, propertyID);
 
             if (propertyExists) {
-                fav.presetData(&fav_root, username, propertyID);
-                cout << "Property added to favorites!\n";
-                break; // Exit the loop as the property has been added to favorites
+                // Check if the property ID is already in the favorite list for this user
+                if (fav_root->isInFavouriteList(fav_root, username, propertyID)) {
+                    cout << "\nThis property is already in your favorite list.\n";
+                } else {
+                    fav_root->presetData(&fav_root, username, propertyID); // Use fav_root to call the method
+                    cout << "Property added to favorites!\n";
+                    #ifdef _WIN32
+                    Sleep(2000); // Sleep for 2000 milliseconds (2 seconds) on Windows
+                    #else
+                    // You can add sleep code for other platforms here if needed
+                    #endif
+                    displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, currentPage); // Return to the same page
+                    break; // Exit the loop as the property has been added to favorites
+                }
             } else {
                 cout << "Property not found. Please enter a valid Property ID.\n";
             }
         }
     }
+
 
     // display favourite property for current user
     void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root) {
@@ -758,6 +776,7 @@ struct AdminInterface {
     TenantTree tenant;
     ManagerTree manager;
     Admin admin;
+    PropertyTree prop;
     
     void adminDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
         int dashboardOption;
@@ -793,7 +812,9 @@ struct AdminInterface {
                 system("CLS");
                 filterTenantMenu(tenant_root, manager_root, prop_root, propertyArray);  // Display All Tenant + Filtering Criteria
 
-            } else if (dashboardOption == 5) {                                              // Displat All Property + Filtering Criteria
+            } else if (dashboardOption == 5) {        
+                system("CLS");                                      // Displat All Property + Filtering Criteria
+                filterPropertyMenu(tenant_root, manager_root, prop_root, propertyArray);
 
             } 
             break;
@@ -1019,4 +1040,278 @@ struct AdminInterface {
             }
         }
     }
+
+void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray){
+    int filterChoice;
+
+    while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nDo you want to filter properties by:\n";
+            cout << "1. Property Type\n";
+            cout << "2. Monthly Rental\n";
+            cout << "3. Location\n";
+            cout << "4. Number of Rooms\n";
+            cout << "5. Number of Parking\n";
+            cout << "6. Furnishing Status\n";
+            cout << "7. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 7): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 7) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number from 1 to 7.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            } else {
+                system("CLS");
+                switch (filterChoice) {
+                    case 1:
+                        // Call the function to filter by Property Type
+                        system("CLS");
+                        filterPropertyByTypeMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        break;
+                    case 2:
+                        // Call the function to filter by Monthly Rental
+                        
+                        break;
+                    case 3:
+                        // Call the function to filter by Location
+                        system("CLS");
+                        filterPropertyByLocationMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        break;
+                    case 4:
+                        // Call the function to filter by Number of Rooms
+                        system("CLS");
+                        filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        
+                        break;
+                    case 5:
+                        // Call the function to filter by Number of Parking
+                        filterPropertyByParkingMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        
+                        break;
+                    case 6:
+                        // Call the function to filter by Furnishing Status
+                        filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        
+                        break;
+                    case 7:
+                        // Call the function to go back to the main menu (Assuming you have a function for this)
+                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                        break;
+                }
+                break; // Exit the loop as the choice has been handled
+            } break;
+        }
+    }
+
+    void filterPropertyByTypeMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+        int filterChoice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nFilter properties by type:\n";
+            cout << "1. Apartment\n";
+            cout << "2. Condominium\n";
+            cout << "3. Flat\n";
+            cout << "4. Duplex\n";
+            cout << "5. Studio\n";
+            cout << "6. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 6): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 7) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number from 1 to 7.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            } else {
+                string type;
+                switch (filterChoice) {
+                    case 1: type = "Apartment"; break;
+                    case 2: type = "Condominium"; break;
+                    case 3: type = "Flat"; break;
+                    case 4: type = "Duplex"; break;
+                    case 5: type = "Studio"; break;
+                    case 6:
+                        system("CLS");
+                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu (Assuming you have a function for this)
+                        return;
+                }
+                // Call the function to filter by the selected type
+                bool goBack = prop.navigatePropertiesByType(prop_root, type);
+                if (goBack) {
+                    // If navigatePropertiesByType returned true, recall filterPropertyByTypeMenu
+                    system("CLS");
+                    filterPropertyByTypeMenu(tenant_root, manager_root, prop_root, propertyArray);
+                    break;
+                }
+            }
+        }
+    }
+
+    void filterPropertyByLocationMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+        int filterChoice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nFilter properties by location:\n";
+            cout << "1. Kuala Lumpur\n";
+            cout << "2. Selangor\n";
+            cout << "3. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 3): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 4) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number from 1 to 3.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            } else {
+                string location;
+                switch (filterChoice) {
+                    case 1: location = "Kuala Lumpur"; break;
+                    case 2: location = "Selangor"; break;
+                    case 3:
+                        system("CLS");
+                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                        return;
+                }
+                // Call the function to filter by the selected location
+                bool goBack = prop.navigatePropertiesByLocation(prop_root, location); // Make sure to implement this function
+                if (goBack) {
+                    // If navigatePropertiesByLocation returned true, recall filterPropertyByLocationMenu
+                    system("CLS");
+                    filterPropertyByLocationMenu(tenant_root, manager_root, prop_root, propertyArray);
+                    break;
+                } break;
+            }
+        }
+    }
+
+    // filter property by number of rooms menu
+    void filterPropertyByRoomsMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+        int filterChoice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nFilter properties by the number of rooms:\n";
+            cout << "1. 1 Room\n";
+            cout << "2. 2 Rooms\n";
+            cout << "3. 3 Rooms\n";
+            cout << "4. 4 Rooms\n";
+            cout << "5. 5 Rooms\n";
+            cout << "6. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 6): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 6) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number from 1 to 6.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
+
+            string numberOfRooms;
+            if (filterChoice >= 1 && filterChoice <= 5) {
+                numberOfRooms = to_string(filterChoice);
+            } else if (filterChoice == 6) {
+                system("CLS");
+                adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                return;
+            }
+
+            // Call the function to filter by the selected number of rooms
+            bool goBack = prop.navigatePropertiesByRooms(prop_root, numberOfRooms);
+            if (goBack) {
+                // If navigatePropertiesByRooms returned true, recall filterPropertyByRoomsMenu
+                system("CLS");
+                filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root, propertyArray);
+                break;
+            }
+        }
+    }
+
+    // Filter property by number of parking spaces menu
+    void filterPropertyByParkingMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+        int filterChoice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nFilter properties by the number of parking spaces:\n";
+            cout << "1. 1\n";
+            cout << "2. 2\n";
+            cout << "3. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 3): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number from 1 to 3.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
+
+           string numberOfParking;
+            if (filterChoice >= 1 && filterChoice <= 2) {
+                numberOfParking = to_string(filterChoice);
+            } else if (filterChoice == 3) {
+                system("CLS");
+                adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                return;
+            }
+
+            // Call the function to filter by the selected number of parking spaces
+            bool goBack = prop.navigatePropertiesByParking(prop_root, numberOfParking);
+            if (goBack) {
+                // If navigatePropertiesByParking returned true, recall filterPropertyByParkingMenu
+                system("CLS");
+                filterPropertyByParkingMenu(tenant_root, manager_root, prop_root, propertyArray);
+                break;
+            }
+        }
+    }
+
+    // Filter property by furnished status menu
+    void filterPropertyByFurnishedMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+        int filterChoice;
+
+        while (true) { // Infinite loop to keep prompting the user until valid input
+            cout << "\nFilter properties by furnished status:\n";
+            cout << "1. Fully Furnished\n";
+            cout << "2. Partially Furnished\n";
+            cout << "3. Not Furnished\n";
+            cout << "4. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 4): ";
+            cin >> filterChoice;
+
+            if (cin.fail() || filterChoice < 1 || filterChoice > 4) {
+                system("CLS");
+                cout << "Invalid input. Please enter a number from 1 to 4.\n";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+            }
+
+            string furnishedStatus;
+            switch (filterChoice) {
+                case 1: furnishedStatus = "Fully Furnished"; break;
+                case 2: furnishedStatus = "Partially Furnished"; break;
+                case 3: furnishedStatus = "Not Furnished"; break;
+                case 4:
+                    system("CLS");
+                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                    return;
+            }
+
+            // Call the function to filter by the selected furnished status
+            bool goBack = prop.navigatePropertiesByFurnished(prop_root, furnishedStatus);
+            if (goBack) {
+                // If navigatePropertiesByFurnished returned true, recall filterPropertyByFurnishedMenu
+                system("CLS");
+                filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root, propertyArray);
+                break;
+            }
+        }
+    }
+
+
 };

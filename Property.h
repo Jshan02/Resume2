@@ -254,6 +254,425 @@ struct PropertyTree{
         return getPropertyInfo(root->rightChild, propertyID);
     }
 
+    // Function to filter and display properties by type
+    void displayPropertiesByType(PropertyTree* node, string propertyType, int start, int end, int& totalTypeCount, int& pageCount) {
+        if (node == nullptr || pageCount >= (end - start)) return;
+
+        displayPropertiesByType(node->leftChild, propertyType, start, end, totalTypeCount, pageCount);
+
+        if (node->data.propertyType == propertyType) {
+            totalTypeCount++;
+            if (totalTypeCount > start && totalTypeCount <= end) {
+                // Display the property information
+                cout << "Property ID: " << node->data.propertyID << endl
+                    << "Property Name: " << node->data.propertyName << endl
+                    << "Completion Year: " << node->data.completion_year << endl
+                    << "Monthly Rental: " << node->data.monthly_rental << endl
+                    << "Location: " << node->data.location << endl
+                    << "Property Type: " << node->data.propertyType << endl
+                    << "Rooms: " << node->data.rooms << endl
+                    << "Parking: " << node->data.parking << endl
+                    << "Bathroom: " << node->data.bathroom << endl
+                    << "Size: " << node->data.size << endl
+                    << "Furnished: " << node->data.furnished << endl
+                    << "Facilities: " << node->data.facilities << endl
+                    << "Additional Facilities: " << node->data.additional_facilities << endl
+                    << "Region: " << node->data.region << endl
+                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
+                pageCount++;
+            }
+        }
+
+        displayPropertiesByType(node->rightChild, propertyType, start, end, totalTypeCount, pageCount);
+    }
+
+    bool navigatePropertiesByType(PropertyTree* prop_root, const string& propertyType) {
+        const int propertiesPerPage = 10; // Number of properties to display per page
+        int page = 1;
+
+        while (true) {
+            system("CLS"); // Clear the screen for a new page
+            int totalTypeCount = 0; // Total number of properties of the specified type
+            int pageCount = 0; // Number of properties displayed on the current page
+
+            cout << "=========================================\n";
+            cout << "    Properties of Type: " << propertyType << "\n";
+            cout << "    Page: " << page << "\n";
+            cout << "=========================================\n";
+
+            displayPropertiesByType(prop_root, propertyType, (page - 1) * propertiesPerPage, page * propertiesPerPage, totalTypeCount, pageCount);
+
+            if (pageCount == 0) {
+                cout << "No properties found for this type on the current page.\n";
+            }
+
+            cout << "\n1. Next 10 properties\n";
+            cout << "2. Previous 10 Properties\n";
+            cout << "3. Back to Previous Page\n\n";
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (cin.fail() || choice < 1 || choice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Next, 2 for Previous, or 3 for Main Menu.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (choice == 1) {
+                if (pageCount < propertiesPerPage) {
+                    cout << "No more properties to display. Press Enter to continue.";
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.get();
+                } else {
+                    page++;
+                }
+            } else if (choice == 2 && page > 1) {
+                page--;
+            } else if (choice == 3) {
+                return true;
+                break;
+            }
+        }
+    }
+
+    // Function to filter and display properties by location
+    void displayPropertiesByLocation(PropertyTree* node, string location, int start, int end, int& totalLocationCount, int& pageCount) {
+        if (node == nullptr || pageCount >= (end - start)) return;
+
+        displayPropertiesByLocation(node->leftChild, location, start, end, totalLocationCount, pageCount);
+
+        if (node->data.region == location) {
+            totalLocationCount++;
+            if (totalLocationCount > start && totalLocationCount <= end) {
+                // Display the property information
+                cout << "Property ID: " << node->data.propertyID << endl
+                    << "Property Name: " << node->data.propertyName << endl
+                    << "Completion Year: " << node->data.completion_year << endl
+                    << "Monthly Rental: " << node->data.monthly_rental << endl
+                    << "Location: " << node->data.location << endl
+                    << "Property Type: " << node->data.propertyType << endl
+                    << "Rooms: " << node->data.rooms << endl
+                    << "Parking: " << node->data.parking << endl
+                    << "Bathroom: " << node->data.bathroom << endl
+                    << "Size: " << node->data.size << endl
+                    << "Furnished: " << node->data.furnished << endl
+                    << "Facilities: " << node->data.facilities << endl
+                    << "Additional Facilities: " << node->data.additional_facilities << endl
+                    << "Region: " << node->data.region << endl
+                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
+                pageCount++;
+            }
+        }
+
+        displayPropertiesByLocation(node->rightChild, location, start, end, totalLocationCount, pageCount);
+    }
+
+    bool navigatePropertiesByLocation(PropertyTree* prop_root, const string& location) {
+        const int propertiesPerPage = 10; // Number of properties to display per page
+        int page = 1;
+
+        while (true) {
+            system("CLS"); // Clear the screen for a new page
+            int totalLocationCount = 0; // Total number of properties in the specified location
+            int pageCount = 0; // Number of properties displayed on the current page
+
+            cout << "=========================================\n";
+            cout << "    Properties in Location: " << location << "\n";
+            cout << "    Page: " << page << "\n";
+            cout << "=========================================\n";
+
+            displayPropertiesByLocation(prop_root, location, (page - 1) * propertiesPerPage, page * propertiesPerPage, totalLocationCount, pageCount);
+
+            if (pageCount == 0) {
+                cout << "No properties found for this location on the current page.\n";
+            }
+
+            cout << "\n1. Next 10 properties\n";
+            cout << "2. Previous 10 Properties\n";
+            cout << "3. Back to Previous Page\n\n";
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (cin.fail() || choice < 1 || choice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Next, 2 for Previous, or 3 for Main Menu.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (choice == 1) {
+                if (pageCount < propertiesPerPage) {
+                    cout << "No more properties to display. Press Enter to continue.";
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.get();
+                } else {
+                    page++;
+                }
+            } else if (choice == 2 && page > 1) {
+                page--;
+            } else if (choice == 3) {
+                return true;
+                break;
+            }
+        }
+    }
+
+    // Function to filter and display properties by the number of rooms
+    void displayPropertiesByRooms(PropertyTree* node, string numberOfRooms, int start, int end, int& totalRoomCount, int& pageCount) {
+        if (node == nullptr || pageCount >= (end - start)) return;
+
+        displayPropertiesByRooms(node->leftChild, numberOfRooms, start, end, totalRoomCount, pageCount);
+
+        if (node->data.rooms == numberOfRooms) {
+            totalRoomCount++;
+            if (totalRoomCount > start && totalRoomCount <= end) {
+                // Display the property information
+                cout << "Property ID: " << node->data.propertyID << endl
+                    << "Property Name: " << node->data.propertyName << endl
+                    << "Completion Year: " << node->data.completion_year << endl
+                    << "Monthly Rental: " << node->data.monthly_rental << endl
+                    << "Location: " << node->data.location << endl
+                    << "Property Type: " << node->data.propertyType << endl
+                    << "Rooms: " << node->data.rooms << endl
+                    << "Parking: " << node->data.parking << endl
+                    << "Bathroom: " << node->data.bathroom << endl
+                    << "Size: " << node->data.size << endl
+                    << "Furnished: " << node->data.furnished << endl
+                    << "Facilities: " << node->data.facilities << endl
+                    << "Additional Facilities: " << node->data.additional_facilities << endl
+                    << "Region: " << node->data.region << endl
+                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
+                pageCount++;
+            }
+        }
+
+        displayPropertiesByRooms(node->rightChild, numberOfRooms, start, end, totalRoomCount, pageCount);
+    }
+
+    bool navigatePropertiesByRooms(PropertyTree* prop_root, const string& numberOfRooms) {
+        const int propertiesPerPage = 10; // Number of properties to display per page
+        int page = 1;
+
+        while (true) {
+            system("CLS"); // Clear the screen for a new page
+            int totalRoomCount = 0; // Total number of properties with the specified number of rooms
+            int pageCount = 0; // Number of properties displayed on the current page
+
+            cout << "=========================================\n";
+            cout << "    Properties with Rooms: " << numberOfRooms << "\n";
+            cout << "    Page: " << page << "\n";
+            cout << "=========================================\n";
+
+            displayPropertiesByRooms(prop_root, numberOfRooms, (page - 1) * propertiesPerPage, page * propertiesPerPage, totalRoomCount, pageCount);
+
+            if (pageCount == 0) {
+                cout << "No properties found with this number of rooms on the current page.\n";
+            }
+
+            cout << "\n1. Next 10 properties\n";
+            cout << "2. Previous 10 Properties\n";
+            cout << "3. Back to Previous Page\n\n";
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (cin.fail() || choice < 1 || choice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Next, 2 for Previous, or 3 for Main Menu.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (choice == 1) {
+                if (pageCount < propertiesPerPage) {
+                    cout << "No more properties to display. Press Enter to continue.";
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.get();
+                } else {
+                    page++;
+                }
+            } else if (choice == 2 && page > 1) {
+                page--;
+            } else if (choice == 3) {
+                return true;
+                break;
+            }
+        }
+    }
+
+    // Function to filter and display properties by the number of parking spaces
+    void displayPropertiesByParking(PropertyTree* node, string numberOfParking, int start, int end, int& totalParkingCount, int& pageCount) {
+        if (node == nullptr || pageCount >= (end - start)) return;
+
+        displayPropertiesByParking(node->leftChild, numberOfParking, start, end, totalParkingCount, pageCount);
+
+        if (node->data.parking == numberOfParking) {
+            totalParkingCount++;
+            if (totalParkingCount > start && totalParkingCount <= end) {
+                // Display the property information
+                cout << "Property ID: " << node->data.propertyID << endl
+                    << "Property Name: " << node->data.propertyName << endl
+                    << "Completion Year: " << node->data.completion_year << endl
+                    << "Monthly Rental: " << node->data.monthly_rental << endl
+                    << "Location: " << node->data.location << endl
+                    << "Property Type: " << node->data.propertyType << endl
+                    << "Rooms: " << node->data.rooms << endl
+                    << "Parking: " << node->data.parking << endl
+                    << "Bathroom: " << node->data.bathroom << endl
+                    << "Size: " << node->data.size << endl
+                    << "Furnished: " << node->data.furnished << endl
+                    << "Facilities: " << node->data.facilities << endl
+                    << "Additional Facilities: " << node->data.additional_facilities << endl
+                    << "Region: " << node->data.region << endl
+                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
+                pageCount++;
+            }
+        }
+
+        displayPropertiesByParking(node->rightChild, numberOfParking, start, end, totalParkingCount, pageCount);
+    }
+
+    bool navigatePropertiesByParking(PropertyTree* prop_root, const string& numberOfParking) {
+        const int propertiesPerPage = 10; // Number of properties to display per page
+        int page = 1;
+
+        while (true) {
+            system("CLS"); // Clear the screen for a new page
+            int totalParkingCount = 0; // Total number of properties with the specified number of parking spaces
+            int pageCount = 0; // Number of properties displayed on the current page
+
+            cout << "=========================================\n";
+            cout << "    Properties with Parking: " << numberOfParking << "\n";
+            cout << "    Page: " << page << "\n";
+            cout << "=========================================\n";
+
+            displayPropertiesByParking(prop_root, numberOfParking, (page - 1) * propertiesPerPage, page * propertiesPerPage, totalParkingCount, pageCount);
+
+           if (pageCount == 0) {
+                cout << "No properties found for this location on the current page.\n";
+            }
+
+            cout << "\n1. Next 10 properties\n";
+            cout << "2. Previous 10 Properties\n";
+            cout << "3. Back to Previous Page\n\n";
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (cin.fail() || choice < 1 || choice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Next, 2 for Previous, or 3 for Main Menu.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (choice == 1) {
+                if (pageCount < propertiesPerPage) {
+                    cout << "No more properties to display. Press Enter to continue.";
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.get();
+                } else {
+                    page++;
+                }
+            } else if (choice == 2 && page > 1) {
+                page--;
+            } else if (choice == 3) {
+                return true;
+                break;
+            }
+        }
+    }
+
+    // Function to filter and display properties by furnished status
+    void displayPropertiesByFurnished(PropertyTree* node, string furnishedStatus, int start, int end, int& totalFurnishedCount, int& pageCount) {
+        if (node == nullptr || pageCount >= (end - start)) return;
+
+        displayPropertiesByFurnished(node->leftChild, furnishedStatus, start, end, totalFurnishedCount, pageCount);
+
+        if (node->data.furnished == furnishedStatus) {
+            totalFurnishedCount++;
+            if (totalFurnishedCount > start && totalFurnishedCount <= end) {
+                // Display the property information
+                cout << "Property ID: " << node->data.propertyID << endl
+                    << "Property Name: " << node->data.propertyName << endl
+                    << "Completion Year: " << node->data.completion_year << endl
+                    << "Monthly Rental: " << node->data.monthly_rental << endl
+                    << "Location: " << node->data.location << endl
+                    << "Property Type: " << node->data.propertyType << endl
+                    << "Rooms: " << node->data.rooms << endl
+                    << "Parking: " << node->data.parking << endl
+                    << "Bathroom: " << node->data.bathroom << endl
+                    << "Size: " << node->data.size << endl
+                    << "Furnished: " << node->data.furnished << endl
+                    << "Facilities: " << node->data.facilities << endl
+                    << "Additional Facilities: " << node->data.additional_facilities << endl
+                    << "Region: " << node->data.region << endl
+                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
+                pageCount++;
+            }
+        }
+
+        displayPropertiesByFurnished(node->rightChild, furnishedStatus, start, end, totalFurnishedCount, pageCount);
+    }
+
+    bool navigatePropertiesByFurnished(PropertyTree* prop_root, const string& furnishedStatus) {
+        const int propertiesPerPage = 10; // Number of properties to display per page
+        int page = 1;
+
+        while (true) {
+            system("CLS"); // Clear the screen for a new page
+            int totalFurnishedCount = 0; // Total number of properties with the specified furnished status
+            int pageCount = 0; // Number of properties displayed on the current page
+
+            cout << "=========================================\n";
+            cout << "    Properties with Furnished Status: " << furnishedStatus << "\n";
+            cout << "    Page: " << page << "\n";
+            cout << "=========================================\n";
+
+            displayPropertiesByFurnished(prop_root, furnishedStatus, (page - 1) * propertiesPerPage, page * propertiesPerPage, totalFurnishedCount, pageCount);
+
+            if (pageCount == 0) {
+                cout << "No properties found with this furnished status on the current page.\n";
+            }
+
+            cout << "\n1. Next 10 properties\n";
+            cout << "2. Previous 10 Properties\n";
+            cout << "3. Back to Previous Page\n\n";
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (cin.fail() || choice < 1 || choice > 3) {
+                system("CLS");
+                cout << "Invalid input. Please enter 1 for Next, 2 for Previous, or 3 for Main Menu.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (choice == 1) {
+                if (pageCount < propertiesPerPage) {
+                    cout << "No more properties to display. Press Enter to continue.";
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.get();
+                } else {
+                    page++;
+                }
+            } else if (choice == 2 && page > 1) {
+                page--;
+            } else if (choice == 3) {
+                return true;
+                break;
+            }
+        }
+    }
 
 
     //  ---------- Search Algorithm ----------

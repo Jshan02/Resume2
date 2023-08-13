@@ -136,7 +136,7 @@ struct FavouritePropertyLinkedList
         }
     }
 
-    bool isInFavouriteList(FavouritePropertyLinkedList* fav_root, const string& username, const string& propertyID) {
+    bool isInFavouriteList(FavouritePropertyLinkedList* fav_root, string username, string propertyID) {
         FavouritePropertyLinkedList* current = fav_root;
 
         while (current != nullptr) {
