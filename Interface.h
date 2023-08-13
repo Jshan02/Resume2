@@ -36,7 +36,7 @@ struct TenantInterface {
             if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
                 cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
                 cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
@@ -45,6 +45,7 @@ struct TenantInterface {
                 displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
 
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
+                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray);
 
             } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
                 
@@ -96,6 +97,97 @@ struct TenantInterface {
             else if (choice == 4) {
                 system("CLS");
                 tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                break;
+            }
+        }
+    }
+
+    // Sort properties menu -- Js
+    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+        system("CLS");
+        int opt;
+        cout << " Sort Properties\n";
+        cout << "-----------------\n";
+        cout << "1. Monthly Rent\n";
+        cout << "2. Location\n";
+        cout << "3. Size as Per Square Feet\n\n";
+
+        while (true) {
+            cout << "Please enter your option: ";
+            cin >> opt;
+
+            if (cin.fail() || opt < 1 || opt > 3) {
+                cout << "\nInvalid input. Please enter a number between 1 and 3.\n";
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (opt == 1) {
+                cout << " Sort by Monthly Rent\n";
+                cout << "======================\n\n";
+
+            } else if (opt == 2) {
+                system("CLS");
+                cout << " Sort by Location\n";
+                cout << "==================\n\n";
+                PropertyTree* prop_location_root = nullptr;
+                prop_location_root = prop.locationSort(prop_root, prop_location_root);
+                dispProperties(tenant_root, prop_location_root, fav_root, tenancy_root, propertyArray);
+
+            } else {
+                cout << " Sort by Size As Per Square Feet\n";
+                cout << "=================================\n\n";
+
+            }
+            break;
+        }
+    }
+
+    // Display sorted properties (prop id, name, location, rental, size) -- Js
+    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+        int page = 1;       // initial page = 1
+        int totalPages = (prop.countProperties(prop_root) + 29) / 30;       // get to know total of pages if 30 properties per page (+29 to include the page that is not full with properties)
+
+        while (true) {
+            prop.navProperties(prop_root, page);
+            cout << "Page " << page << " of " << totalPages << endl << endl;
+            cout << "1. Next 30 Properties\n";
+            cout << "2. Previous 30 Properties\n";
+            cout << "3. Add to Favourite\n";
+            cout << "4. Back to Main Menu\n\n";
+
+            int choice = checkOpt();
+            if (choice == 1 && page < totalPages) {
+                page++;
+            } else if (choice == 2 && page > 1) {
+                page--;
+            } else if (choice == 3) {
+                system("CLS");
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root);
+                break;
+            } else if (choice == 4) {
+                system("CLS");
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root);
+                break;
+            }
+        }
+    }
+
+    // second while loop for display sorted properties (for input validation) -- JS
+    int checkOpt() {
+        while (true) {
+            cout << "Please select an option: ";
+            int choice;
+            cin >> choice;
+
+            if (cin.fail() || choice < 1 || choice > 4) {
+                cout << "\nInvalid input. Please enter a number between 1 and 4.\n";
+                cin.clear();
+                cin.ignore(numeric_limits <streamsize> :: max(), '\n');
+                continue;
+            } else {
+                return choice;
                 break;
             }
         }

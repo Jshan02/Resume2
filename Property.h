@@ -68,6 +68,9 @@ struct PropertyTree{
         }
 
         string line;
+
+        getline(file, line);
+
         while (getline(file, line)) {
             stringstream ss(line);
             Property property;
@@ -492,6 +495,132 @@ struct PropertyTree{
             cout << "Property not found." << endl;
         }
     }
+
+
+
+    //  ---------- Sorting Algorithm ----------
+    // Display Sorted Properties
+    void navProperties(PropertyTree* root, int page) {
+        system("CLS");
+        int propPerPage = 30;
+        int start = (page - 1) * propPerPage;
+        int end = start + propPerPage;
+        int count = 0;
+        dispPropTitle(root, start, end, count);
+    }
+
+    void dispPropTitle(PropertyTree* root, int start, int end, int& count) {
+        int maxPropId = 0, maxPropName = 0, maxLocation = 0, maxSize = 0;
+        calculateMaxLength(root, maxPropId, maxPropName, maxLocation, maxSize);
+        cout << "\n\n=================================================================================================================================================================================================\n";
+        cout << "                                                                      Properties in Descending Order by Location\n";
+        cout << "=================================================================================================================================================================================================\n\n";
+        cout << left;
+        cout << setw(maxPropId + 5) << "Property ID";
+        cout << setw(maxPropName + 5) << "Property Name";
+        cout << setw(maxLocation + 5) << "Location";
+        cout << setw(25) << "Monthly Rent";
+        cout << setw(maxSize + 5) << "Size as per Square Feet\n";
+        cout << "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+        dispThirtyProp(root, maxPropId, maxPropName, maxLocation, maxSize, start, end, count);
+    }
+
+    void calculateMaxLength(PropertyTree* root, int& maxPropId, int& maxPropName, int& maxLocation, int& maxSize) {
+        if (root == nullptr) return;
+        maxPropId = max(maxPropId, (int)root->data.propertyID.length());
+        maxPropName = max(maxPropName, (int)root->data.propertyName.length());
+        maxLocation = max(maxLocation, (int)root->data.location.length());
+        maxSize = max(maxSize, (int)root->data.size.length());
+
+        calculateMaxLength(root->leftChild, maxPropId, maxPropName, maxLocation, maxSize);
+        calculateMaxLength(root->rightChild, maxPropId, maxPropName, maxLocation, maxSize);
+    }
+
+    void dispThirtyProp(PropertyTree* root, int& maxPropId, int& maxPropName, int& maxLocation, int& maxSize, int start, int end, int& count) {
+        if (root == nullptr || count >= end) return;
+        dispThirtyProp(root->rightChild, maxPropId, maxPropName, maxLocation, maxSize, start, end, count);
+
+        if (count >= start && count < end) {
+            cout << left;
+            cout << setw(maxPropId + 5) << root->data.propertyID;
+            cout << setw(maxPropName + 5) << root->data.propertyName;
+            cout << setw(maxLocation + 5) << root->data.location;
+            cout << setw(25) << root->data.monthly_rental;
+            cout << setw(maxSize + 5) << root->data.size << endl;
+        }
+
+        if (count >= end) return;
+        count++;
+
+        dispThirtyProp(root->leftChild, maxPropId, maxPropName, maxLocation, maxSize, start, end, count);
+    }
+
+    // ========== Tree Sort ==========
+    // Tree Sort by Location
+    // inorder traversal of original prop tree (id) to insert its data into another BST (location)
+    PropertyTree* locationSort(PropertyTree* prop_root, PropertyTree* prop_location_root) {
+        if (prop_root == nullptr) return prop_location_root;
+
+        prop_location_root = locationSort(prop_root->leftChild, prop_location_root);
+        prop_location_root = bstInsertByLocation(prop_location_root, prop_root->data);
+        prop_location_root = locationSort(prop_root->rightChild, prop_location_root);
+        return prop_location_root;
+    }
+
+    // insert data from ID Bst to Location BST
+    PropertyTree* bstInsertByLocation(PropertyTree* prop_location_root, Property data) {
+
+        // get lowercase of location to prevent result affected by upper and lower case
+        string originalLocationLower = data.location;
+        transform(originalLocationLower.begin(), originalLocationLower.end(), originalLocationLower.begin(), ::tolower);
+        
+        if (prop_location_root == nullptr) {
+            prop_location_root = new PropertyTree();
+            prop_location_root->data.propertyID = data.propertyID;
+            prop_location_root->data.propertyName = data.propertyName;
+            prop_location_root->data.completion_year = data.completion_year;
+            prop_location_root->data.monthly_rental = data.monthly_rental;
+            prop_location_root->data.location = data.location;
+            prop_location_root->data.propertyType = data.propertyType;
+            prop_location_root->data.rooms = data.rooms;
+            prop_location_root->data.parking = data.parking;
+            prop_location_root->data.bathroom = data.bathroom;
+            prop_location_root->data.size = data.size;
+            prop_location_root->data.furnished = data.furnished;
+            prop_location_root->data.facilities = data.facilities;
+            prop_location_root->data.additional_facilities = data.additional_facilities;
+            prop_location_root->data.region = data.region;
+
+            prop_location_root->leftChild = prop_location_root->rightChild = nullptr;
+
+        } else {
+
+            // get lowercase of data in prop_location_root also to compare with the original one
+            string newLocationLower = prop_location_root->data.location;
+            transform(newLocationLower.begin(), newLocationLower.end(), newLocationLower.begin(),::tolower);
+            
+            if (originalLocationLower < newLocationLower) {
+                prop_location_root->leftChild = bstInsertByLocation(prop_location_root->leftChild, data);
+
+            } else {
+                prop_location_root->rightChild = bstInsertByLocation(prop_location_root->rightChild, data);
+            }
+        }
+        return prop_location_root;
+    }
+
+    
+    // Tree Sort by Size
+    // Tree Sort by Rental
+    // Tree Sort for All Three
+
+
+    // ========== Quick Sort ==========
+    
+    // Quick Sort by Location
+    // Quick Sort by Size
+    // Quick Sort by Rental
+    // Quick Sort by All Three
 
 
 };
