@@ -377,6 +377,8 @@ struct TenantInterface {
                         // Continue to prompt the user until a valid input is entered
                     }
                 }
+
+                return;
             }  
 
             Property property = getPropertyById(prop_root, propertyID);
