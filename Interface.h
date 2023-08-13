@@ -52,7 +52,7 @@ struct TenantInterface {
                 displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, 1);
 
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
-                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root);
+                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, 1);
 
                 } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
                     
@@ -115,16 +115,16 @@ struct TenantInterface {
     }
 
     // Sort properties menu
-    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root) {
+    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int current_page) {
         system("CLS");
         // vector<Property> propertySortArray = propertyArray;
         // prop.quickSort(propertySortArray, 0, propertyArray.size()-1);
-        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root);
+        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page);
     }
 
     // Display sorted properties (prop id, name, location, rental, size)
-    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root) {
-        int page = 1;       // initial page = 1
+    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage) {
+        int page = currentPage;       // initial page = 1
         int totalPages = (prop.countProperties(sort_root) + 29) / 30;       // get to know total of pages if 30 properties per page (+29 to include the page that is not full with properties)
 
         while (true) {
@@ -141,8 +141,7 @@ struct TenantInterface {
             } else if (choice == 2 && page > 1) {
                 page--;
             } else if (choice == 3) {
-                system("CLS");
-                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root, sort_root);
+                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page);
                 break;
             } else if (choice == 4) {
                 system("CLS");
@@ -210,6 +209,40 @@ struct TenantInterface {
                     // You can add sleep code for other platforms here if needed
                     #endif
                     displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, currentPage); // Return to the same page
+                    break; // Exit the loop as the property has been added to favorites
+                }
+            } else {
+                cout << "Property not found. Please enter a valid Property ID.\n";
+            }
+        }
+    }
+
+    void addFavouritePropertyMenu2(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage) {
+        string username = getCurrentUsername();
+        string propertyID;
+        bool propertyExists;
+
+        while (true) { // Infinite loop to keep prompting the user
+            propertyExists = false; // Reset propertyExists for each iteration
+            cout << "\nEnter the Property ID to add to favorites: ";
+            cin >> propertyID;
+
+            // Search for the property in the PropertyTree
+            propertyExists = prop.searchProperty(prop_root, propertyID);
+
+            if (propertyExists) {
+                // Check if the property ID is already in the favorite list for this user
+                if (fav_root->isInFavouriteList(fav_root, username, propertyID)) {
+                    cout << "\nThis property is already in your favorite list.\n";
+                } else {
+                    fav_root->presetData(&fav_root, username, propertyID); // Use fav_root to call the method
+                    cout << "Property added to favorites!\n";
+                    #ifdef _WIN32
+                    Sleep(2000); // Sleep for 2000 milliseconds (2 seconds) on Windows
+                    #else
+                    // You can add sleep code for other platforms here if needed
+                    #endif
+                    dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, currentPage); // Return to the same page
                     break; // Exit the loop as the property has been added to favorites
                 }
             } else {
