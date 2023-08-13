@@ -17,10 +17,15 @@ int main(){
     PropertyTree prop;
     PropertyTree* prop_root = nullptr;
     PropertyTree* sort_root = nullptr;
+    PropertyTree* propName_root = nullptr;
+    PropertyTree* location_root = nullptr;
+    PropertyTree* rental_root = nullptr;
     vector<Property> propertyArray;
     vector<Property> propSortArray;
     prop_root = prop.importProperty(prop_root, "mudah-apartment-kl-selangor.csv", propertyArray, "General", propSortArray);
     sort_root = prop.importProperty(sort_root, "mudah-apartment-kl-selangor.csv", propertyArray, "Sort", propSortArray);
+    propName_root = prop.importProperty(propName_root, "mudah-apartment-kl-selangor.csv", propertyArray, "Property Name", propSortArray);
+    location_root = prop.importProperty(location_root, "mudah-apartment-kl-selangor.csv", propertyArray, "Location", propSortArray);
 
     // preset data for tenant account
     TenantTree tenant;
@@ -39,13 +44,8 @@ int main(){
     // preset data for manager account
     ManagerTree manager;
     ManagerTree* manager_root = nullptr;
-    manager_root = manager.bstNewManager(manager_root, "hua27", "27", "M001", "Hua Chen Yu", "011-9092313", "chenyu@gmail.com", "Inactive", "Resigned");
-    manager_root = manager.bstNewManager(manager_root, "liu03", "0315", "M002", "Liu Shi Shi", "011-8882313", "cecelia@gmail.com", "Active", "Manager");
-    manager_root = manager.bstNewManager(manager_root, "hjw02", "1234", "M003", "Ho Je Li", "012-3243912", "hjwaa@gmail.com", "Active", "Manager");
-    manager_root = manager.bstNewManager(manager_root, "ctf15", "5678", "M004", "Chan Tai Fu", "014-9952342", "ctfbb@gmail.com", "Active", "Resigned");
-    manager_root = manager.bstNewManager(manager_root, "lbc33", "1235", "M005", "Liu Ban Chuan", "011-9940578", "lbccc@gmail.com", "Active", "Manager");
-    manager_root = manager.bstNewManager(manager_root, "hlo21", "6789", "M006", "Hao Lai Wo", "011-3348964", "hlwdd@gmail.com", "Active", "Resigned");
-    manager_root = manager.bstNewManager(manager_root, "edw22", "1238", "M007", "Edwin Wong", "011-2287932", "edwee@gmail.com", "Active", "Manager");
+    manager_root = manager.bstNewManager(manager_root, "hua27", "27", "M001", "Hua Chen Yu", "011-9092313", "chenyu@gmail.com", "Inactive");
+    manager_root = manager.bstNewManager(manager_root, "liu03", "0315", "M002", "Liu Shi Shi", "011-8882313", "cecelia@gmail.com", "Active");
 
     // preset data for admin account
     Admin admin;
@@ -56,7 +56,7 @@ int main(){
     TenancyLinkedList* tenancy_root = nullptr;
     tenancy.presetData(&tenancy_root, "R01", "js0207", "Low Jye Shan", "100203973", "Segar Courts", "1 June 2023", "1 Year", "31 May 2024", "RM 2 300 per month", "Completed");
     tenancy.presetData(&tenancy_root, "R02", "hjw02", "Hoong Jhen Wei", "100322962", "Sky Meridien", "1 July 2023", "1 Year", "30 June 2024", "RM 2 900 per month", "Pending Payment");
-    tenancy.presetData(&tenancy_root, "R03", "suyinsss", "Teo Su Yin", "100273500", "Desa Villas", "1 June 2023", "1 Year", "31 May 2024", "RM 2 500 per month", "Completed");
+    tenancy.presetData(&tenancy_root, "R03", "suyinsss", "Teo Su Yin", "100273500", "Desa Villas", "1 June 2023", "1 Year", "31 May 2024", "RM 2 500 per month", "Pending Payment");
     tenancy.presetData(&tenancy_root, "R04", "kante", "Shasivarman", "100322962", "Sky Meridien", "1 August 2023", "1 Year", "30 July 2024", "RM 2 900 per month", "Rejected");
     tenancy.presetData(&tenancy_root, "R05", "kante", "Shasivarman", "100273500", "Desa Villas", "1 September 2023", "1 Year", "", "RM 2 500 per month", "Pending Manager Approval");
     tenancy.presetData(&tenancy_root, "R06", "shadoww", "Shad Ng", "100273500", "Desa Villas", "1 September 2023", "1 Year", "31 August 2024", "RM 2 500 per month", "Pending Payment Verification");
@@ -121,7 +121,7 @@ int main(){
                 authenticated = general_interface.tenantLogIn(tenant_root);     // Verify Username and Password
 
                 if (authenticated) {                                            // Correct
-                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray); // Call Tenant Dashboard
+                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray); // Call Tenant Dashboard
                     general_interface.logOut();                                 // If log out is selected
                     quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
                     if (quitOpt == 0) {                                         // Quit Program is Selected
@@ -189,7 +189,7 @@ int main(){
                 if (goLogin) {                                                  // go login
                     authenticated = general_interface.tenantLogIn(tenant_root);
                     if (authenticated) {
-                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
+                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
                         general_interface.logOut();
                         quitOpt = general_interface.backHomepage();
                         if (quitOpt == 0) {
