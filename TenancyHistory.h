@@ -74,47 +74,15 @@ struct TenancyLinkedList
         }
     }
 
-    // Display specific tenant's renting history with "Pending Manager Approval" status
-    void displayPendingApprovalTenancy(TenancyLinkedList* head, string username) {
+    // Display specific tenant's renting history, excluding "Rejected" status
+    void displayTenancy(TenancyLinkedList* head, string username) {
         TenancyLinkedList* current = head;
-        cout << "\nPending Manager Approval Tenancy\n";
+        cout << "\nTenancy Status\n";
         cout << "=============================================\n\n";
         bool found = false;
 
         while (current != nullptr) {
-            if (current->data.username == username && current->data.status == "Pending Manager Approval") {
-                cout << "Tenancy ID\t\t: " << current->data.tenancyID << endl;
-                cout << "Tenant Username\t\t: " << current->data.username << endl;
-                cout << "Tenant Name\t\t: " << current->data.tenant_name << endl;
-                cout << "Property ID\t\t: " << current->data.property_id << endl;
-                cout << "Property Name\t\t: " << current->data.property_name << endl;
-                cout << "Start Date\t\t: " << current->data.start_date << endl;
-                cout << "Duration\t\t: " << current->data.duration << endl;
-                cout << "End Date\t\t: " << current->data.end_date << endl;
-                cout << "Rental\t\t\t: " << current->data.rental << endl;
-                cout << "Tenancy Status\t\t: " << current->data.status << endl;
-                cout << "----------------------------------------\n\n";
-                found = true;
-            }
-            current = current->next;
-            //add at menu
-            // tenancy.displayUserToBeApproveTenancy(tenancy_root, "kante");
-        }
-
-        if (!found) {
-            cout << "\nNo pending manager approval tenancy found.\n";
-        }
-    }
-
-    // Display specific tenant's renting history with "Rejected" status
-    void displayRejectedTenancy(TenancyLinkedList* head, string username) {
-        TenancyLinkedList* current = head;
-        cout << "\nRejected Tenancy\n";
-        cout << "=============================================\n\n";
-        bool found = false;
-
-        while (current != nullptr) {
-            if (current->data.username == username && current->data.status == "Rejected") {
+            if (current->data.username == username && current->data.status != "Completed") {
                 cout << "Tenancy ID\t\t: " << current->data.tenancyID << endl;
                 cout << "Tenant Username\t\t: " << current->data.username << endl;
                 cout << "Tenant Name\t\t: " << current->data.tenant_name << endl;
@@ -132,67 +100,7 @@ struct TenancyLinkedList
         }
 
         if (!found) {
-            cout << "\nNo rejected tenancy found.\n";
-        }
-    }
-
-    // Display specific tenant's renting history with "Pending Payment" status
-    void displayPendingPaymentTenancy(TenancyLinkedList* head, string username) {
-        TenancyLinkedList* current = head;
-        cout << "\nPending Payment Tenancy\n";
-        cout << "=============================================\n\n";
-        bool found = false;
-
-        while (current != nullptr) {
-            if (current->data.username == username && current->data.status == "Pending Payment") {
-                cout << "Tenancy ID\t\t: " << current->data.tenancyID << endl;
-                cout << "Tenant Username\t\t: " << current->data.username << endl;
-                cout << "Tenant Name\t\t: " << current->data.tenant_name << endl;
-                cout << "Property ID\t\t: " << current->data.property_id << endl;
-                cout << "Property Name\t\t: " << current->data.property_name << endl;
-                cout << "Start Date\t\t: " << current->data.start_date << endl;
-                cout << "Duration\t\t: " << current->data.duration << endl;
-                cout << "End Date\t\t: " << current->data.end_date << endl;
-                cout << "Rental\t\t\t: " << current->data.rental << endl;
-                cout << "Tenancy Status\t\t: " << current->data.status << endl;
-                cout << "----------------------------------------\n\n";
-                found = true;
-            }
-            current = current->next;
-        }
-
-        if (!found) {
-            cout << "\nNo pending payment tenancy found.\n";
-        }
-    }
-
-    // Display specific tenant's renting history with "Pending Payment Verification" status
-    void displayPendingPaymentVerificationTenancy(TenancyLinkedList* head, string username) {
-        TenancyLinkedList* current = head;
-        cout << "\nPending Payment Verification Tenancy\n";
-        cout << "=============================================\n\n";
-        bool found = false;
-
-        while (current != nullptr) {
-            if (current->data.username == username && current->data.status == "Pending Payment Verification") {
-                cout << "Tenancy ID\t\t: " << current->data.tenancyID << endl;
-                cout << "Tenant Username\t\t: " << current->data.username << endl;
-                cout << "Tenant Name\t\t: " << current->data.tenant_name << endl;
-                cout << "Property ID\t\t: " << current->data.property_id << endl;
-                cout << "Property Name\t\t: " << current->data.property_name << endl;
-                cout << "Start Date\t\t: " << current->data.start_date << endl;
-                cout << "Duration\t\t: " << current->data.duration << endl;
-                cout << "End Date\t\t: " << current->data.end_date << endl;
-                cout << "Rental\t\t\t: " << current->data.rental << endl;
-                cout << "Tenancy Status\t\t: " << current->data.status << endl;
-                cout << "----------------------------------------\n\n";
-                found = true;
-            }
-            current = current->next;
-        }
-
-        if (!found) {
-            cout << "\nNo pending payment verification tenancy found.\n";
+            cout << "\nNo tenancy found.\n";
         }
     }
 
