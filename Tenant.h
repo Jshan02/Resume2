@@ -380,5 +380,65 @@ string toLower(const std::string &input) {
             return getTenantName(root->rightChild, username);
         }
     }
+
+    TenantTree* minValueNode(TenantTree* node) {
+        TenantTree* current = node;
+
+        // Loop down to find the leftmost leaf (smallest value)
+        while (current && current->leftChild != nullptr) {
+            current = current->leftChild;
+        }
+
+        return current;
+    }
+
+    bool deleteTenantByUsername(TenantTree*& root, const string& username) {
+        if (root == nullptr) return false;
+
+        if (username < root->data.username) {
+            return deleteTenantByUsername(root->leftChild, username);
+        } else if (username > root->data.username) {
+            return deleteTenantByUsername(root->rightChild, username);
+        } else {
+            // Node with one child or no child
+            if (root->leftChild == nullptr) {
+                TenantTree* temp = root->rightChild;
+                delete root;
+                root = temp;
+            } else if (root->rightChild == nullptr) {
+                TenantTree* temp = root->leftChild;
+                delete root;
+                root = temp;
+            } else {
+                // Node with two children: Get the inorder successor (smallest in the right subtree)
+                TenantTree* temp = minValueNode(root->rightChild);
+
+                // Copy the inorder successor's content to this node
+                root->data = temp->data;
+
+                // Delete the inorder successor
+                return deleteTenantByUsername(root->rightChild, temp->data.username);
+            }
+            return true;
+        }
+    }
+
+    bool deactivateTenantAccount(TenantTree*& root, const string& username) {
+        if (root == nullptr) return false;
+
+        if (username < root->data.username) {
+            return deactivateTenantAccount(root->leftChild, username);
+        } else if (username > root->data.username) {
+            return deactivateTenantAccount(root->rightChild, username);
+        } else {
+            if (root->data.tenantStatus == "Active") {
+                root->data.tenantStatus = "Inactive";
+                return true;
+            } else {
+                cout << "Account is already inactive or status is invalid.\n";
+                return false;
+            }
+        }
+    }
 };
 

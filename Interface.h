@@ -22,28 +22,30 @@ struct TenantInterface {
     FavouritePropertyLinkedList fav;
     TenancyLinkedList tenancy;
     
-    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root) {
-        int dashboardOption;
-        cout << " Welcome to Tenant Dashboard\n";
-        cout << "=============================\n\n";
-        cout << "1. View All Properties\n";
-        cout << "2. Sort Properties by Monthly Rent, Location, and Size as per Square Feet in Descending Order\n";
-        cout << "3. Search and Display Properties\n";
-        cout << "4. View Favourite Properties\n";
-        cout << "5. View Rent Request Status\n";
-        cout << "6. View Property Renting History\n";
-        cout << "7. Logout\n\n";
+    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int autoOption = 0) {
+        int dashboardOption = autoOption;
+        if (dashboardOption == 0) {
+            cout << " Welcome to Tenant Dashboard\n";
+            cout << "=============================\n\n";
+            cout << "1. View All Properties\n";
+            cout << "2. Sort Properties by Monthly Rent, Location, and Size as per Square Feet in Descending Order\n";
+            cout << "3. Search and Display Properties\n";
+            cout << "4. View Favourite Properties\n";
+            cout << "5. View Rent Request Status\n";
+            cout << "6. View Property Renting History\n";
+            cout << "7. Deactivate Account\n";
+            cout << "8. Logout\n\n";
 
-        while (true) {
-            cout << "Please enter your option: ";
-            cin >> dashboardOption;
+            while (true) {
+                cout << "Please enter your option: ";
+                cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
-                cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                continue;
-            }
+                if (cin.fail() || dashboardOption < 1 || dashboardOption > 8) {
+                    cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    continue;
+                }
 
             if (dashboardOption == 1) {                 // Display All Properties
                 system("CLS");
@@ -52,8 +54,8 @@ struct TenantInterface {
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
                 sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root);
 
-            } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
-                
+                } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
+                    
 
             } else if (dashboardOption == 4) {          // View Favourite + Option to place rent request
                 favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root);
@@ -68,8 +70,11 @@ struct TenantInterface {
                 tenancy.displayCompletedTenancy(tenancy_root, username);
                 completedTenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root);
 
+                } else if (dashboardOption == 7) {
+                    tenantDeactivateMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root);
+                }
+                break;
             }
-            break;
         }
     }
 
@@ -311,7 +316,26 @@ struct TenantInterface {
 
             string tenancyID = tenancy.generateTenancyID(tenancy_root);
             tenancy.presetData(&tenancy_root, tenancyID, username, tenantName, propertyID, property.propertyName, startDate, Duration, "", property.monthly_rental, "Pending Manager Approval");
+            system("CLS");
             tenancy.displayPendingApprovalTenancy(tenancy_root, username);
+            cout << "\n1. Back to Dashboard\n\n";
+            int opt;
+
+            while (true) {
+                cout << "Select an option: ";
+                cin >> opt;
+
+                if (cin.fail() || opt != 1) {
+                    cout << "\nInvalid input. Only 1 is allowed.\n";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    continue;
+                }
+
+                system("CLS");
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root);
+                break;
+            }
         } else {
             cout << "No user is currently logged in. \n";
         }
@@ -463,6 +487,31 @@ struct TenantInterface {
             }
         }
     }
+
+    void tenantDeactivateMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root) {
+        string username = getCurrentUsername(); // Assume this function gets the currently logged-in username
+        if (username.empty()) {
+            cout << "No user is currently logged in.\n";
+            return;
+        }
+
+        char choice;
+        cout << "Are you sure you want to deactivate your account? (Y/N): ";
+        cin >> choice;
+
+        if (toupper(choice) == 'Y') {
+            if (tenant.deactivateTenantAccount(tenant_root, username)) {
+                system("CLS");
+                cout << "Account deactivated successfully.\n";
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, 8);
+            } else {
+                cout << "Failed to deactivate account.\n";
+            }
+        } else {
+            system("CLS");
+            tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root);
+        }
+    }
 };
 
 
@@ -499,7 +548,8 @@ struct ManagerInterface {
             } else if (dashboardOption == 2) {                                                                                  // Search Tenant
                 managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
 
-            } else if (dashboardOption == 3) {                                                                                  // Delete Inactive Tenant
+            } else if (dashboardOption == 3) {                    
+                manageInactiveUsers(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);                                                              // Delete Inactive Tenant
 
             } else if (dashboardOption == 4) {                                                                                  // View All Rent Request + Confirm Them (Give RentID...)
                 manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
@@ -642,6 +692,42 @@ struct ManagerInterface {
             }
 
             break;
+        }
+    }
+
+    void manageInactiveUsers(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root,  const vector<Property>& propertyArray) {
+        system("CLS");
+        cout << "Inactive Users:\n";
+        cout << "----------------\n";
+
+        // Display all inactive users
+        tenant.filterInactive(tenant_root);
+
+        int option = 0;
+        while (option != 2) {
+            cout << "\n1. Delete an Inactive User\n";
+            cout << "2. Back to Manager Dashboard\n";
+            cout << "Please choose an option: ";
+            cin >> option;
+
+            if (option == 1) {
+                string username;
+                cout << "Enter the Username of the user you want to delete: ";
+                cin >> username;
+
+                if (tenant.deleteTenantByUsername(tenant_root, username)) {
+                    tenant.filterInactive(tenant_root);
+                    cout << "User deleted successfully.\n";
+                } else {
+                    cout << "User not found or user is not inactive.\n";
+                }
+            } else if (option == 2) {
+                // Back to Manager Dashboard
+                system("CLS");
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+            } else {
+                cout << "Invalid option. Please choose again.\n";
+            }
         }
     }
 
