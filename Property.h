@@ -30,7 +30,7 @@ struct PropertyTree{
     PropertyTree* leftChild;
     PropertyTree* rightChild;
 
-    // BST Insertion
+    // BST Insertion based pn Property ID
     PropertyTree* bstInsert(PropertyTree* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
         if (root == nullptr) {
             root = new PropertyTree();
@@ -60,7 +60,7 @@ struct PropertyTree{
     }
 
     // import property data from csv file
-    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray) {
+    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray, string type) {
         ifstream file(filename);
         if (!file.is_open()) {
             cout << "Failed to open the file: " << filename << endl;
@@ -90,15 +90,97 @@ struct PropertyTree{
             property.additional_facilities = getNextField(ss);
             property.region = getNextField(ss);
 
-            // Insert the property into the BST
-            root = bstInsert(root, property.propertyID, property.propertyName, property.completion_year, property.monthly_rental, property.location, property.propertyType, property.rooms, property.parking, property.bathroom, property.size, property.furnished, property.facilities, property.additional_facilities, property.region);
+            // BST Insert based on Property ID
+            if (type == "General") {
+                root = bstInsert(root, property.propertyID, property.propertyName, property.completion_year, property.monthly_rental, property.location, property.propertyType, property.rooms, property.parking, property.bathroom, property.size, property.furnished, property.facilities, property.additional_facilities, property.region);
+                propertyArray.push_back(property);      // Store Data in Array
 
-            // Push the property object into the array
-            propertyArray.push_back(property);
+            // BST Insert based on Monthly Rent, Location, Size as Per Square Feet
+            } else if (type == "Sort") {
+                root = bstByRentLocationSize(root, property);
+            }
         }
 
         file.close();
         return root;
+    }
+
+    // build binary search tree for further sorting
+    PropertyTree* bstByRentLocationSize(PropertyTree* sort_root, Property prop_data) {
+        if (sort_root == nullptr) {
+            sort_root = new PropertyTree();
+            sort_root->data = prop_data;
+            sort_root->leftChild = sort_root->rightChild = nullptr;
+        } else {
+            if (compareProp(prop_data, sort_root->data)) {      // compare property's details, if smaller insert to left
+                sort_root->leftChild = bstByRentLocationSize(sort_root->leftChild, prop_data);
+            } else {
+                sort_root->rightChild = bstByRentLocationSize(sort_root->rightChild, prop_data);
+            }
+        }
+        return sort_root;
+    }
+
+    // Compare rental, location and size for tree sort
+    bool compareProp(const Property& a, const Property& b) {
+
+        // a = prop_data, b = sort_root->data
+        // Sort Monthly Rent (Extract Integer for Comparison, Eliminate Alphabet and Spacing)
+        string RentA = a.monthly_rental, RentB = b.monthly_rental;
+        string ExtractA, ExtractB;
+        int rentValueA, rentValueB;
+
+        // For prop_data
+        for (char c : RentA){
+            if (isdigit(c)) {
+                ExtractA.push_back(c);
+            }
+        }
+        stringstream(ExtractA) >> rentValueA;
+
+        // For sort_root->data
+        for (char c : RentB){
+            if (isdigit(c)) {
+                ExtractB.push_back(c);
+            }
+        }
+        stringstream(ExtractB) >> rentValueB;
+
+        // Compare Rent, if different return value for insertion
+        if (rentValueA != rentValueB) return rentValueA < rentValueB;
+        // ---------------------------------------------------------------------------------
+
+        // Sort Location (transform to lowercase to prevent uppercase and lowercase affect the result)
+        string locationA = a.location;
+        string locationB = b.location;
+        transform(locationA.begin(), locationA.end(), locationA.begin(), ::tolower);
+        transform(locationB.begin(), locationB.end(), locationB.begin(), ::tolower);
+
+        // Compare Location, if different return value for insertion
+        if (locationA != locationB) return locationA < locationB;
+        // -----------------------------------------------------------------------------------
+
+        // Sort Size (Extract Integer for Comparison, Eliminate Alphabet and Spacing)
+        string SizeA = a.size, SizeB = b.size;
+        string charA, charB;
+        int sizeValueA, sizeValueB;
+
+        for (char c : SizeA) {
+            if (isdigit(c)) {
+                charA.push_back(c);
+            }
+        }
+        stringstream(charA) >> sizeValueA;
+
+        for (char c : SizeB) {
+            if (isdigit(c)) {
+                charB.push_back(c);
+            }
+        }
+        stringstream(charB) >> sizeValueB;
+
+        // Compare Size, if different return value for insertion
+        return sizeValueA < sizeValueB;
     }
 
 
@@ -918,7 +1000,7 @@ struct PropertyTree{
 
 
     //  ---------- Sorting Algorithm ----------
-    // Display Sorted Properties
+    // ========== Tree Sort ==========
     void navProperties(PropertyTree* root, int page) {
         system("CLS");
         int propPerPage = 30;
@@ -932,13 +1014,13 @@ struct PropertyTree{
         int maxPropId = 0, maxPropName = 0, maxLocation = 0, maxSize = 0;
         calculateMaxLength(root, maxPropId, maxPropName, maxLocation, maxSize);
         cout << "\n\n=================================================================================================================================================================================================\n";
-        cout << "                                                                      Properties in Descending Order by Location\n";
+        cout << "                                                        Properties in Monthly Rent, Location, Size as per Square Feet Descending Order\n";
         cout << "=================================================================================================================================================================================================\n\n";
         cout << left;
         cout << setw(maxPropId + 5) << "Property ID";
         cout << setw(maxPropName + 5) << "Property Name";
-        cout << setw(maxLocation + 5) << "Location";
         cout << setw(25) << "Monthly Rent";
+        cout << setw(maxLocation + 5) << "Location";
         cout << setw(maxSize + 5) << "Size as per Square Feet\n";
         cout << "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
         dispThirtyProp(root, maxPropId, maxPropName, maxLocation, maxSize, start, end, count);
@@ -963,8 +1045,8 @@ struct PropertyTree{
             cout << left;
             cout << setw(maxPropId + 5) << root->data.propertyID;
             cout << setw(maxPropName + 5) << root->data.propertyName;
-            cout << setw(maxLocation + 5) << root->data.location;
             cout << setw(25) << root->data.monthly_rental;
+            cout << setw(maxLocation + 5) << root->data.location;
             cout << setw(maxSize + 5) << root->data.size << endl;
         }
 
@@ -974,72 +1056,87 @@ struct PropertyTree{
         dispThirtyProp(root->leftChild, maxPropId, maxPropName, maxLocation, maxSize, start, end, count);
     }
 
-    // ========== Tree Sort ==========
-    // Tree Sort by Location
-    // inorder traversal of original prop tree (id) to insert its data into another BST (location)
-    PropertyTree* locationSort(PropertyTree* prop_root, PropertyTree* prop_location_root) {
-        if (prop_root == nullptr) return prop_location_root;
+    // ========== Quick Sort ==========
+    void quickSort(vector<Property>& propertyArray, int low, int high) {
+        if (low < high) {
+            int pi = partition(propertyArray, low, high);
 
-        prop_location_root = locationSort(prop_root->leftChild, prop_location_root);
-        prop_location_root = bstInsertByLocation(prop_location_root, prop_root->data);
-        prop_location_root = locationSort(prop_root->rightChild, prop_location_root);
-        return prop_location_root;
+            quickSort(propertyArray, low, pi-1);
+            quickSort(propertyArray, pi + 1, high);
+        }
     }
 
-    // insert data from ID Bst to Location BST
-    PropertyTree* bstInsertByLocation(PropertyTree* prop_location_root, Property data) {
+    int partition(vector<Property>& propertyArray, int low, int high) {
+        Property pivot  = propertyArray[high];
+        int i = (low - 1);
 
-        // get lowercase of location to prevent result affected by upper and lower case
-        string originalLocationLower = data.location;
-        transform(originalLocationLower.begin(), originalLocationLower.end(), originalLocationLower.begin(), ::tolower);
-        
-        if (prop_location_root == nullptr) {
-            prop_location_root = new PropertyTree();
-            prop_location_root->data.propertyID = data.propertyID;
-            prop_location_root->data.propertyName = data.propertyName;
-            prop_location_root->data.completion_year = data.completion_year;
-            prop_location_root->data.monthly_rental = data.monthly_rental;
-            prop_location_root->data.location = data.location;
-            prop_location_root->data.propertyType = data.propertyType;
-            prop_location_root->data.rooms = data.rooms;
-            prop_location_root->data.parking = data.parking;
-            prop_location_root->data.bathroom = data.bathroom;
-            prop_location_root->data.size = data.size;
-            prop_location_root->data.furnished = data.furnished;
-            prop_location_root->data.facilities = data.facilities;
-            prop_location_root->data.additional_facilities = data.additional_facilities;
-            prop_location_root->data.region = data.region;
-
-            prop_location_root->leftChild = prop_location_root->rightChild = nullptr;
-
-        } else {
-
-            // get lowercase of data in prop_location_root also to compare with the original one
-            string newLocationLower = prop_location_root->data.location;
-            transform(newLocationLower.begin(), newLocationLower.end(), newLocationLower.begin(),::tolower);
-            
-            if (originalLocationLower < newLocationLower) {
-                prop_location_root->leftChild = bstInsertByLocation(prop_location_root->leftChild, data);
-
-            } else {
-                prop_location_root->rightChild = bstInsertByLocation(prop_location_root->rightChild, data);
+        for (int j = low; j <= high-1; j++) {
+            if (quickSortCompare(propertyArray[j], pivot)) {
+                i++;
+                swap(propertyArray[i], propertyArray[j]);
             }
         }
-        return prop_location_root;
+        swap(propertyArray[i+1], propertyArray[high]);
+        return (i+1);
     }
 
-    
-    // Tree Sort by Size
-    // Tree Sort by Rental
-    // Tree Sort for All Three
+    bool quickSortCompare(const Property& a, const Property& b) {
+        string RentA = a.monthly_rental, RentB = b.monthly_rental;
+        string ExtractA, ExtractB;
+        int rentValueA, rentValueB;
 
+        // For prop_data
+        for (char c : RentA){
+            if (isdigit(c)) {
+                ExtractA.push_back(c);
+            }
+        }
+        stringstream(ExtractA) >> rentValueA;
 
-    // ========== Quick Sort ==========
-    
-    // Quick Sort by Location
-    // Quick Sort by Size
-    // Quick Sort by Rental
-    // Quick Sort by All Three
+        // For sort_root->data
+        for (char c : RentB){
+            if (isdigit(c)) {
+                ExtractB.push_back(c);
+            }
+        }
+        stringstream(ExtractB) >> rentValueB;
+
+        // Compare Rent, if different return value for insertion
+        if (rentValueA != rentValueB) return rentValueA < rentValueB;
+        // ---------------------------------------------------------------------------------
+
+        // Sort Location (transform to lowercase to prevent uppercase and lowercase affect the result)
+        string locationA = a.location;
+        string locationB = b.location;
+        transform(locationA.begin(), locationA.end(), locationA.begin(), ::tolower);
+        transform(locationB.begin(), locationB.end(), locationB.begin(), ::tolower);
+
+        // Compare Location, if different return value for insertion
+        if (locationA != locationB) return locationA < locationB;
+        // -----------------------------------------------------------------------------------
+
+        // Sort Size (Extract Integer for Comparison, Eliminate Alphabet and Spacing)
+        string SizeA = a.size, SizeB = b.size;
+        string charA, charB;
+        int sizeValueA, sizeValueB;
+
+        for (char c : SizeA) {
+            if (isdigit(c)) {
+                charA.push_back(c);
+            }
+        }
+        stringstream(charA) >> sizeValueA;
+
+        for (char c : SizeB) {
+            if (isdigit(c)) {
+                charB.push_back(c);
+            }
+        }
+        stringstream(charB) >> sizeValueB;
+
+        // Compare Size, if different return value for insertion
+        return sizeValueA < sizeValueB;
+    }
 
 
 };
