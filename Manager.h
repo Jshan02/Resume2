@@ -13,6 +13,7 @@ struct Manager {
     string managerTel;
     string managerEmail;
     string managerStatus;
+    string managerPosition;
 };
 
 struct ManagerTree {
@@ -21,7 +22,7 @@ struct ManagerTree {
     ManagerTree* rightChild;
 
     // Create new manager account
-    ManagerTree* bstNewManager(ManagerTree* root, string mUName, string mPassword, string empId, string mName, string mTel, string mEmail, string mStatus) {
+    ManagerTree* bstNewManager(ManagerTree* root, string mUName, string mPassword, string empId, string mName, string mTel, string mEmail, string mStatus, string mPosition) {
 
         if (root == nullptr) {
             root = new ManagerTree();
@@ -32,12 +33,13 @@ struct ManagerTree {
             root->data.managerTel = mTel;
             root->data.managerEmail = mEmail;
             root->data.managerStatus = mStatus;
+            root->data.managerPosition = mPosition;
 
         } else if (mUName < root->data.username) {
-            root->leftChild = bstNewManager(root->leftChild, mUName, mPassword, empId, mName, mTel, mEmail, mStatus);
+            root->leftChild = bstNewManager(root->leftChild, mUName, mPassword, empId, mName, mTel, mEmail, mStatus, mPosition);
 
         } else {
-            root->rightChild= bstNewManager(root->rightChild, mUName, mPassword, empId, mName, mTel, mEmail, mStatus);
+            root->rightChild= bstNewManager(root->rightChild, mUName, mPassword, empId, mName, mTel, mEmail, mStatus, mPosition);
         }
         return root;
     }
@@ -92,5 +94,51 @@ struct ManagerTree {
         } else {
             return bstGetManagerPassword(root->rightChild, uname);
         }
+    }
+
+    bool resignManager(ManagerTree*& root, const string& username) {
+        if (root == nullptr) return false;
+
+        if (username < root->data.username) {
+            return resignManager(root->leftChild, username);
+        } else if (username > root->data.username) {
+            return resignManager(root->rightChild, username);
+        } else {
+            // Found the manager's record; updating the Position field
+            root->data.managerPosition = "Resigned";
+            return true;
+        }
+    }
+
+    void filterResignedManagers(ManagerTree* root) {
+        if (root == nullptr) return;
+        filterResignedManagers(root->leftChild);
+        if (root->data.managerPosition == "Resigned" && root->data.managerStatus == "Active") {
+            cout << "Username: " << root->data.username << endl;
+            cout << "Employee ID: " << root->data.employeeID << endl;
+            cout << "Name: " << root->data.managerName << endl;
+            cout << "Contact Number: " << root->data.managerTel << endl;
+            cout << "Email: " << root->data.managerEmail << endl;
+            cout << "Status: " << root->data.managerStatus << endl;
+            cout << "Position: " << root->data.managerPosition << endl;
+            cout << "---------------------------------------\n\n";
+
+        }
+        filterResignedManagers(root->rightChild);
+    }
+
+    bool setManagerToInactive(ManagerTree*& root, const string& username) {
+        if (root == nullptr) return false;
+
+        if (username < root->data.username) {
+            return setManagerToInactive(root->leftChild, username);
+        } else if (username > root->data.username) {
+            return setManagerToInactive(root->rightChild, username);
+        } else if (root->data.managerPosition == "Resigned") {
+            // Found the manager's record with "Resigned" position; updating the status to "Inactive"
+            root->data.managerStatus = "Inactive";
+            return true;
+        }
+        return false;
     }
 };

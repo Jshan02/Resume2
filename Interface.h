@@ -605,6 +605,8 @@ struct TenantInterface {
 struct ManagerInterface {
     TenantTree tenant;
     FavouritePropertyLinkedList favorite;
+    TenantInterface interfaceT;
+    ManagerTree manager;
 
     void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         int dashboardOption;
@@ -616,14 +618,15 @@ struct ManagerInterface {
         cout << "4. Manage Tenancy\n";
         cout << "5. Manage Payment\n";
         cout << "6. View Report\n";
-        cout << "7. Logout\n\n";
+        cout << "7. Submit Resignation\n";
+        cout << "8. Logout\n\n";
         while (true) {
             
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 7) {
-                cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 8) {
+                cout << "\nInvalid input. Please enter a number between 1 and 8.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
@@ -642,12 +645,15 @@ struct ManagerInterface {
                 manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             } else if (dashboardOption == 5) {                                                                                  // View Tenant Payment + Confirm Them
                 
+                // Pending manage payment 
 
             } else if (dashboardOption == 6) {                                                                                  // View Report
                 managerViewTop10Report(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
+            } else if (dashboardOption == 7 ) {
+                managerSubmitResignation(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             }
-            
+
             break;
         }
     }
@@ -796,12 +802,20 @@ struct ManagerInterface {
             cout << "Please choose an option: ";
             cin >> option;
 
+            if (cin.fail()) {
+                cin.clear(); // Clear the error state
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore the remaining characters in the buffer
+                cout << "Invalid input. Please enter a number between 1 and 2.\n";
+                continue; // Skip the rest of the loop and prompt the user again
+            }
+
             if (option == 1) {
                 string username;
                 cout << "Enter the Username of the user you want to delete: ";
                 cin >> username;
 
                 if (tenant.deleteTenantByUsername(tenant_root, username)) {
+                    system("CLS");
                     tenant.filterInactive(tenant_root);
                     cout << "User deleted successfully.\n";
                 } else {
@@ -908,6 +922,31 @@ struct ManagerInterface {
             }
         }
     }
+
+    void managerSubmitResignation(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
+        string username = interfaceT.getCurrentUsername(); // Assume this function gets the currently logged-in manager username
+        if (username.empty()) {
+            cout << "No manager is currently logged in.\n";
+            return;
+        }
+
+        char choice;
+        cout << "Are you sure you want to submit your resignation? (Y/N): ";
+        cin >> choice;
+
+        if (toupper(choice) == 'Y') {
+            if (manager.resignManager(manager_root, username)) {
+                system("CLS");
+                cout << "Resignation submitted successfully.\n";
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+            } else {
+                cout << "Failed to submit resignation.\n";
+            }
+        } else {
+            system("CLS");
+            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+        }
+    }
 };
 
 struct AdminInterface {
@@ -942,7 +981,7 @@ struct AdminInterface {
                 addManagerIf(tenant_root, manager_root, prop_root);
 
             } else if (dashboardOption == 2) {                                              // Modify Manager Status (Resigned)
-
+                manageResignedManagers(tenant_root, manager_root, prop_root);
             } else if (dashboardOption == 3) {
                 system("CLS");
                 filterTenantMenu(tenant_root, manager_root, prop_root);  // Display All Tenant + Filtering Criteria
@@ -980,7 +1019,7 @@ struct AdminInterface {
 
         transform(uname.begin(), uname.end(), uname.begin(), ::tolower);
 
-        addSuccess = manager.bstNewManager(manager_root, uname, pw, eid, name, tel, email, "Active");       // Call Add Manager Algorithm
+        addSuccess = manager.bstNewManager(manager_root, uname, pw, eid, name, tel, email, "Active", "Manager");       // Call Add Manager Algorithm
 
         if (addSuccess) {                                       // Add Success
             cout << "\n==========================================================\n";
@@ -1448,5 +1487,47 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
         }
     }
 
+    void manageResignedManagers(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root ) {
+        system("CLS");
+        cout << "Resigned Managers:\n";
+        cout << "------------------\n";
 
+        // Display all resigned managers
+        manager.filterResignedManagers(manager_root);
+
+        int option = 0;
+        while (option != 2) {
+            cout << "\n1. Set a Resigned Manager to Inactive\n";
+            cout << "2. Back to Admin Dashboard\n";
+            cout << "Please choose an option: ";
+            cin >> option;
+
+            if (cin.fail()) {
+                cin.clear(); // Clear the error state
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore the remaining characters in the buffer
+                cout << "Invalid input. Please enter a number between 1 and 2.\n";
+                continue; // Skip the rest of the loop and prompt the user again
+            }
+
+            if (option == 1) {
+                string username;
+                cout << "Enter the Username of the manager you want to set to inactive: ";
+                cin >> username;
+
+                if (manager.setManagerToInactive(manager_root, username)) {
+                    system("CLS");
+                    manager.filterResignedManagers(manager_root);
+                    cout << "Manager set to inactive successfully.\n";
+                } else {
+                    cout << "Manager not found or manager is not resigned.\n";
+                }
+            } else if (option == 2) {
+                // Back to Admin Dashboard
+                system("CLS");
+                adminDashboard(tenant_root, manager_root, prop_root);
+            } else {
+                cout << "Invalid option. Please choose again.\n";
+            }
+        }
+    }
 };
