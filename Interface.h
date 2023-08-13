@@ -1414,45 +1414,6 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
         }
     }
 
-    // Filter property by number of parking spaces menu
-    void filterPropertyByParkingMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
-        int filterChoice;
-
-        while (true) { // Infinite loop to keep prompting the user until valid input
-            cout << "\nFilter properties by the number of parking spaces:\n";
-            cout << "1. 1\n";
-            cout << "2. 2\n";
-            cout << "3. Back to Main Menu\n\n";
-            cout << "Please enter your choice (1 to 3): ";
-            cin >> filterChoice;
-
-            if (cin.fail() || filterChoice < 1 || filterChoice > 3) {
-                system("CLS");
-                cout << "Invalid input. Please enter a number from 1 to 3.\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                continue;
-            }
-
-           string numberOfParking;
-            if (filterChoice >= 1 && filterChoice <= 2) {
-                numberOfParking = to_string(filterChoice);
-            } else if (filterChoice == 3) {
-                system("CLS");
-                adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu
-                return;
-            }
-
-            // Call the function to filter by the selected number of parking spaces
-            bool goBack = prop.navigatePropertiesByParking(prop_root, numberOfParking);
-            if (goBack) {
-                // If navigatePropertiesByParking returned true, recall filterPropertyByParkingMenu
-                system("CLS");
-                filterPropertyByParkingMenu(tenant_root, manager_root, prop_root);
-                break;
-            }
-        }
-    }
 
     // Filter property by furnished status menu
     void filterPropertyByFurnishedMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
