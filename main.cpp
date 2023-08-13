@@ -44,8 +44,13 @@ int main(){
     // preset data for manager account
     ManagerTree manager;
     ManagerTree* manager_root = nullptr;
-    manager_root = manager.bstNewManager(manager_root, "hua27", "27", "M001", "Hua Chen Yu", "011-9092313", "chenyu@gmail.com", "Inactive");
-    manager_root = manager.bstNewManager(manager_root, "liu03", "0315", "M002", "Liu Shi Shi", "011-8882313", "cecelia@gmail.com", "Active");
+    manager_root = manager.bstNewManager(manager_root, "hua27", "27", "M001", "Hua Chen Yu", "011-9092313", "chenyu@gmail.com", "Inactive", "Resigned");
+    manager_root = manager.bstNewManager(manager_root, "liu03", "0315", "M002", "Liu Shi Shi", "011-8882313", "cecelia@gmail.com", "Active", "Manager");
+    manager_root = manager.bstNewManager(manager_root, "hjw02", "1234", "M003", "Ho Je Li", "012-3243912", "hjwaa@gmail.com", "Active", "Manager");
+    manager_root = manager.bstNewManager(manager_root, "ctf15", "5678", "M004", "Chan Tai Fu", "014-9952342", "ctfbb@gmail.com", "Active", "Resigned");
+    manager_root = manager.bstNewManager(manager_root, "lbc33", "1235", "M005", "Liu Ban Chuan", "011-9940578", "lbccc@gmail.com", "Active", "Manager");
+    manager_root = manager.bstNewManager(manager_root, "hlo21", "6789", "M006", "Hao Lai Wo", "011-3348964", "hlwdd@gmail.com", "Active", "Resigned");
+    manager_root = manager.bstNewManager(manager_root, "edw22", "1238", "M007", "Edwin Wong", "011-2287932", "edwee@gmail.com", "Active", "Manager");
 
     // preset data for admin account
     Admin admin;
