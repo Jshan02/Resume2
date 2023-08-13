@@ -101,6 +101,10 @@ struct PropertyTree{
             // BST Insert based on Monthly Rent, Location, Size as Per Square Feet
             } else if (type == "Sort") {
                 root = bstByRentLocationSize(root, property);
+            } else if (type == "Property Name"){
+                root = bstByPropName(root, property);
+            } else if (type == "Location"){
+                root = bstLocation(root, property);
             }
         }
 
@@ -184,6 +188,38 @@ struct PropertyTree{
 
         // Compare Size, if different return value for insertion
         return sizeValueA < sizeValueB;
+    }
+
+    // create a tree acording to property name
+    PropertyTree* bstByPropName(PropertyTree* propName_root, Property prop_data) {
+        if (propName_root == nullptr) {
+            propName_root = new PropertyTree();
+            propName_root->data = prop_data;
+            propName_root->leftChild = propName_root->rightChild = nullptr;
+        }
+        else if (prop_data.propertyName < propName_root->data.propertyName) {
+            propName_root->leftChild = bstByPropName(propName_root->leftChild, prop_data);
+        }
+        else {
+            propName_root->rightChild = bstByPropName(propName_root->rightChild, prop_data);
+        }
+        return propName_root;
+    }
+
+    // Create a tree according to location
+    PropertyTree* bstLocation(PropertyTree* location_root, Property prop_data) {
+        if (location_root == nullptr) {
+            location_root = new PropertyTree();
+            location_root->data = prop_data;
+            location_root->leftChild = location_root->rightChild = nullptr;
+        }
+        else if (prop_data.location < location_root->data.location) {
+            location_root->leftChild = bstLocation(location_root->leftChild, prop_data);
+        }
+        else {
+            location_root->rightChild = bstLocation(location_root->rightChild, prop_data);
+        }
+        return location_root;
     }
 
 
@@ -759,192 +795,101 @@ struct PropertyTree{
         }
     }
 
-
     //  ---------- Search Algorithm ----------
     // ========== Binary Search ==========
     // Binary Search by Property Name
-    void binarySearchPropertiesByName(vector<Property>& propertyArray, string targetName) {
-        int leftChild = 0;
-        int rightChild = propertyArray.size() - 1;
-        bool found = false;
-        
-        while (leftChild <= rightChild) {
-            int mid = (leftChild + rightChild) / 2;
-            if (propertyArray[mid].propertyName.find(targetName) != string::npos) {
-                // Found the property; print its information.
-                cout << "Property found with name '" << targetName << "':\n";
-                cout << "Property ID: " << propertyArray[mid].propertyID << endl
-                    << "Property Name: " << propertyArray[mid].propertyName << endl
-                    << "Completion Year: " << propertyArray[mid].completion_year << endl
-                    << "Monthly Rental: " << propertyArray[mid].monthly_rental << endl
-                    << "Location: " << propertyArray[mid].location << endl
-                    << "Property Type: " << propertyArray[mid].propertyType << endl
-                    << "Rooms: " << propertyArray[mid].rooms << endl
-                    << "Parking: " << propertyArray[mid].parking << endl
-                    << "Bathroom: " << propertyArray[mid].bathroom << endl
-                    << "Size: " << propertyArray[mid].size << endl
-                    << "Furnished: " << propertyArray[mid].furnished << endl
-                    << "Facilities: " << propertyArray[mid].facilities << endl
-                    << "Additional Facilities: " << propertyArray[mid].additional_facilities << endl
-                    << "Region: " << propertyArray[mid].region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-
-                // Search for and print any other properties with the same name
-                // in both directions from the found index
-                int i = mid - 1;
-                while (i >= 0 && propertyArray[i].propertyName.find(targetName) != string::npos) {
-                    cout << "Property ID: " << propertyArray[i].propertyID << endl
-                    << "Property Name: " << propertyArray[i].propertyName << endl
-                    << "Completion Year: " << propertyArray[i].completion_year << endl
-                    << "Monthly Rental: " << propertyArray[i].monthly_rental << endl
-                    << "Location: " << propertyArray[i].location << endl
-                    << "Property Type: " << propertyArray[i].propertyType << endl
-                    << "Rooms: " << propertyArray[i].rooms << endl
-                    << "Parking: " << propertyArray[i].parking << endl
-                    << "Bathroom: " << propertyArray[i].bathroom << endl
-                    << "Size: " << propertyArray[i].size << endl
-                    << "Furnished: " << propertyArray[i].furnished << endl
-                    << "Facilities: " << propertyArray[i].facilities << endl
-                    << "Additional Facilities: " << propertyArray[i].additional_facilities << endl
-                    << "Region: " << propertyArray[i].region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-
-                    i--;
-                }
-                i = mid + 1;
-                while (i < propertyArray.size() && propertyArray[i].propertyName.find(targetName) != string::npos) {
-                    cout << "Property ID: " << propertyArray[i].propertyID << endl
-                    << "Property Name: " << propertyArray[i].propertyName << endl
-                    << "Completion Year: " << propertyArray[i].completion_year << endl
-                    << "Monthly Rental: " << propertyArray[i].monthly_rental << endl
-                    << "Location: " << propertyArray[i].location << endl
-                    << "Property Type: " << propertyArray[i].propertyType << endl
-                    << "Rooms: " << propertyArray[i].rooms << endl
-                    << "Parking: " << propertyArray[i].parking << endl
-                    << "Bathroom: " << propertyArray[i].bathroom << endl
-                    << "Size: " << propertyArray[i].size << endl
-                    << "Furnished: " << propertyArray[i].furnished << endl
-                    << "Facilities: " << propertyArray[i].facilities << endl
-                    << "Additional Facilities: " << propertyArray[i].additional_facilities << endl
-                    << "Region: " << propertyArray[i].region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-
-                    i++;
-                }
-
-                found = true;
-                break; // Exit the loop since we've found and printed all matching properties
-            }
-            else if (propertyArray[mid].propertyName < targetName) {
-                leftChild = mid + 1;
-            }
-            else {
-                rightChild = mid - 1;
-            }
+    void bstSearchByPropNameHelper(PropertyTree* root, const string& searchName, bool& found) {
+        if (root == nullptr) {
+            return; // Base case: If the node is null, return
         }
+
+        // Check if the searchName is a substring of the property name in the current node
+        if (root->data.propertyName.find(searchName) != string::npos) {
+            // Print the property details
+            cout << "Property found with name containing '" << searchName << "':\n";
+            cout << "Property ID: " << root->data.propertyID << endl
+                << "Property Name: " << root->data.propertyName << endl
+                << "Completion Year: " << root->data.completion_year << endl
+                << "Monthly Rental: " << root->data.monthly_rental << endl
+                << "Location: " << root->data.location << endl
+                << "Property Type: " << root->data.propertyType << endl
+                << "Rooms: " << root->data.rooms << endl
+                << "Parking: " << root->data.parking << endl
+                << "Bathroom: " << root->data.bathroom << endl
+                << "Size: " << root->data.size << endl
+                << "Furnished: " << root->data.furnished << endl
+                << "Facilities: " << root->data.facilities << endl
+                << "Additional Facilities: " << root->data.additional_facilities << endl
+                << "Region: " << root->data.region << endl
+                << "----------------------------------------------------------------------------------------------------------------------\n\n";
+                found = true;
+        }
+
+        // Recursively search in the left and right subtrees
+        bstSearchByPropNameHelper(root->leftChild, searchName, found);
+        bstSearchByPropNameHelper(root->rightChild, searchName, found);
+    }
+
+    void bstSearchByPropName(PropertyTree* root, string searchName) {
+        bool found = false;
+        bstSearchByPropNameHelper(root, searchName, found);
 
         if (!found) {
             cout << "Property not found." << endl;
         }
     }
 
-
-    // Binary search by rental
-    void binarySearchPropertiesByRental(vector<Property>& propertyArray, string searchRental) {
-        int leftChild = 0;
-        int rightChild = propertyArray.size() - 1;
-        bool found = false;
-        
-        while (leftChild <= rightChild) {
-            int mid = (leftChild + rightChild) / 2;
-            if (propertyArray[mid].monthly_rental.find(searchRental) != string::npos) {
-                // Found the property; print its information.
-                cout << "Property found with month rental with '" << searchRental << "':\n";
-                cout << "Property ID: " << propertyArray[mid].propertyID << endl
-                    << "Property Name: " << propertyArray[mid].propertyName << endl
-                    << "Completion Year: " << propertyArray[mid].completion_year << endl
-                    << "Monthly Rental: " << propertyArray[mid].monthly_rental << endl
-                    << "Location: " << propertyArray[mid].location << endl
-                    << "Property Type: " << propertyArray[mid].propertyType << endl
-                    << "Rooms: " << propertyArray[mid].rooms << endl
-                    << "Parking: " << propertyArray[mid].parking << endl
-                    << "Bathroom: " << propertyArray[mid].bathroom << endl
-                    << "Size: " << propertyArray[mid].size << endl
-                    << "Furnished: " << propertyArray[mid].furnished << endl
-                    << "Facilities: " << propertyArray[mid].facilities << endl
-                    << "Additional Facilities: " << propertyArray[mid].additional_facilities << endl
-                    << "Region: " << propertyArray[mid].region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-
-                // Search for and print any other properties with the same name
-                // in both directions from the found index
-                int i = mid - 1;
-                while (i >= 0 && propertyArray[i].monthly_rental.find(searchRental) != string::npos) {
-                    cout << "Property ID: " << propertyArray[i].propertyID << endl
-                    << "Property Name: " << propertyArray[i].propertyName << endl
-                    << "Completion Year: " << propertyArray[i].completion_year << endl
-                    << "Monthly Rental: " << propertyArray[i].monthly_rental << endl
-                    << "Location: " << propertyArray[i].location << endl
-                    << "Property Type: " << propertyArray[i].propertyType << endl
-                    << "Rooms: " << propertyArray[i].rooms << endl
-                    << "Parking: " << propertyArray[i].parking << endl
-                    << "Bathroom: " << propertyArray[i].bathroom << endl
-                    << "Size: " << propertyArray[i].size << endl
-                    << "Furnished: " << propertyArray[i].furnished << endl
-                    << "Facilities: " << propertyArray[i].facilities << endl
-                    << "Additional Facilities: " << propertyArray[i].additional_facilities << endl
-                    << "Region: " << propertyArray[i].region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-
-                    i--;
-                }
-                i = mid + 1;
-                while (i < propertyArray.size() && propertyArray[i].monthly_rental.find(searchRental) != string::npos) {
-                    cout << "Property ID: " << propertyArray[i].propertyID << endl
-                    << "Property Name: " << propertyArray[i].propertyName << endl
-                    << "Completion Year: " << propertyArray[i].completion_year << endl
-                    << "Monthly Rental: " << propertyArray[i].monthly_rental << endl
-                    << "Location: " << propertyArray[i].location << endl
-                    << "Property Type: " << propertyArray[i].propertyType << endl
-                    << "Rooms: " << propertyArray[i].rooms << endl
-                    << "Parking: " << propertyArray[i].parking << endl
-                    << "Bathroom: " << propertyArray[i].bathroom << endl
-                    << "Size: " << propertyArray[i].size << endl
-                    << "Furnished: " << propertyArray[i].furnished << endl
-                    << "Facilities: " << propertyArray[i].facilities << endl
-                    << "Additional Facilities: " << propertyArray[i].additional_facilities << endl
-                    << "Region: " << propertyArray[i].region << endl
-                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
-
-                    i++;
-                }
-
-                found = true;
-                break; // Exit the loop since we've found and printed all matching properties
-            }
-            else if (propertyArray[mid].monthly_rental < searchRental) {
-                leftChild = mid + 1;
-            }
-            else {
-                rightChild = mid - 1;
-            }
+    // Binary search by monthly rental
+    // Binary search by location
+    void bstSearchByLocationHelper(PropertyTree* root, string searchLocation, bool& found) {
+        if (root == nullptr) {
+            return; // Base case: If the node is null, return
         }
+
+        // Check if the searchLocation is a substring of the location in the current node
+        if (root->data.location.find(searchLocation) != string::npos) {
+            // Print the property details
+            cout << "Property found with location containing '" << searchLocation << "':\n";
+            cout << "Property ID: " << root->data.propertyID << endl
+                << "Property Name: " << root->data.propertyName << endl
+                << "Completion Year: " << root->data.completion_year << endl
+                << "Monthly Rental: " << root->data.monthly_rental << endl
+                << "Location: " << root->data.location << endl
+                << "Property Type: " << root->data.propertyType << endl
+                << "Rooms: " << root->data.rooms << endl
+                << "Parking: " << root->data.parking << endl
+                << "Bathroom: " << root->data.bathroom << endl
+                << "Size: " << root->data.size << endl
+                << "Furnished: " << root->data.furnished << endl
+                << "Facilities: " << root->data.facilities << endl
+                << "Additional Facilities: " << root->data.additional_facilities << endl
+                << "Region: " << root->data.region << endl
+                << "----------------------------------------------------------------------------------------------------------------------\n\n";
+            found = true;
+        }
+
+        // Recursively search in the left and right subtrees
+        bstSearchByLocationHelper(root->leftChild, searchLocation, found);
+        bstSearchByLocationHelper(root->rightChild, searchLocation, found);
+    }
+
+    void bstSearchByLocation(PropertyTree* root, string searchLocation) {
+        bool found = false;
+        bstSearchByLocationHelper(root, searchLocation, found);
 
         if (!found) {
             cout << "Property not found." << endl;
         }
     }
-
 
     // ========== Linear Search ==========
     // Linear search by property name
-    void linearSearchPropertiesByName(vector<Property>& propertyArray, string targetName) {
+    void linearSearchPropertiesByName(const vector<Property>& propertyArray, string targetName) {
         bool found = false;
         
         for (int i = 0; i < propertyArray.size(); i++) {
             if (propertyArray[i].propertyName.find(targetName) != string::npos) {
                 // Found a property; print its information.
-                cout << "Property found with monthly rental '" << targetName << "':\n";
                 cout << "Property ID: " << propertyArray[i].propertyID << endl
                     << "Property Name: " << propertyArray[i].propertyName << endl
                     << "Completion Year: " << propertyArray[i].completion_year << endl
@@ -959,7 +904,7 @@ struct PropertyTree{
                     << "Facilities: " << propertyArray[i].facilities << endl
                     << "Additional Facilities: " << propertyArray[i].additional_facilities << endl
                     << "Region: " << propertyArray[i].region << endl
-                    << "---------------------------------------------\n";
+                    << "----------------------------------------------------------------------------------------------------------------------\n\n";
                 found = true;
             }
         }
@@ -969,14 +914,14 @@ struct PropertyTree{
         }
     }
 
-    // Linear search by rental
-    void linearSearchPropertiesByRental(vector<Property>& propertyArray, string targetRental) {
+    // Linear search by location
+    void linearSearchPropertiesByLocation(const vector<Property>& propertyArray, string targetLocation) {
         bool found = false;
         
         for (int i = 0; i < propertyArray.size(); i++) {
-            if (propertyArray[i].monthly_rental.find(targetRental) != string::npos) {
+            if (propertyArray[i].location.find(targetLocation) != string::npos) {
                 // Found the property; print its information.
-                cout << "Property found with monthly rental '" << targetRental << "':\n";
+                cout << "Property found with location containing '" << targetLocation << "':\n";
                 cout << "Property ID: " << propertyArray[i].propertyID << endl
                     << "Property Name: " << propertyArray[i].propertyName << endl
                     << "Completion Year: " << propertyArray[i].completion_year << endl
@@ -991,7 +936,7 @@ struct PropertyTree{
                     << "Facilities: " << propertyArray[i].facilities << endl
                     << "Additional Facilities: " << propertyArray[i].additional_facilities << endl
                     << "Region: " << propertyArray[i].region << endl
-                    << "---------------------------------------------\n";
+                    << "---------------------------------------------\n\n";
                 found = true;
             }
         }
@@ -999,6 +944,7 @@ struct PropertyTree{
             cout << "Property not found." << endl;
         }
     }
+
 
 
 
@@ -1180,24 +1126,7 @@ struct PropertyTree{
         }
     }
 
-    // Comparison function to compare two Property objects by their propertyName
-    bool compareByName(const Property& a, const Property& b) {
-        return a.propertyName < b.propertyName;
-    }
 
-    // Function to sort the propertyArray by propertyName
-    void sortPropertiesByName(vector<Property>& propertyArray) {
-        sort(propertyArray.begin(), propertyArray.end(), compareByName);
-    }
 
-    // Comparator function to sort properties by monthly rental
-    bool compareByRental(const Property& a, const Property& b) {
-        return a.monthly_rental < b.monthly_rental;
-        }
-
-    // Function to sort the properties by monthly rental
-    void sortPropertiesByRental(vector<Property>& propertyArray) {
-        sort(propertyArray.begin(), propertyArray.end(), compareByRental);
-    }
 
 
