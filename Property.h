@@ -60,7 +60,7 @@ struct PropertyTree{
     }
 
     // import property data from csv file
-    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray, string type) {
+    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray, string type, vector<Property>& propSortArray) {
         ifstream file(filename);
         if (!file.is_open()) {
             cout << "Failed to open the file: " << filename << endl;
@@ -94,6 +94,7 @@ struct PropertyTree{
             if (type == "General") {
                 root = bstInsert(root, property.propertyID, property.propertyName, property.completion_year, property.monthly_rental, property.location, property.propertyType, property.rooms, property.parking, property.bathroom, property.size, property.furnished, property.facilities, property.additional_facilities, property.region);
                 propertyArray.push_back(property);      // Store Data in Array
+                propSortArray.push_back(property);
 
             // BST Insert based on Monthly Rent, Location, Size as Per Square Feet
             } else if (type == "Sort") {
@@ -1084,61 +1085,80 @@ struct PropertyTree{
         string RentA = a.monthly_rental, RentB = b.monthly_rental;
         string ExtractA, ExtractB;
         int rentValueA, rentValueB;
-
-        // For prop_data
         for (char c : RentA){
             if (isdigit(c)) {
                 ExtractA.push_back(c);
             }
         }
         stringstream(ExtractA) >> rentValueA;
-
-        // For sort_root->data
         for (char c : RentB){
             if (isdigit(c)) {
                 ExtractB.push_back(c);
             }
         }
         stringstream(ExtractB) >> rentValueB;
+        if (rentValueA != rentValueB) return rentValueA > rentValueB;
 
-        // Compare Rent, if different return value for insertion
-        if (rentValueA != rentValueB) return rentValueA < rentValueB;
-        // ---------------------------------------------------------------------------------
-
-        // Sort Location (transform to lowercase to prevent uppercase and lowercase affect the result)
         string locationA = a.location;
         string locationB = b.location;
         transform(locationA.begin(), locationA.end(), locationA.begin(), ::tolower);
         transform(locationB.begin(), locationB.end(), locationB.begin(), ::tolower);
+        if (locationA != locationB) return locationA > locationB;
 
-        // Compare Location, if different return value for insertion
-        if (locationA != locationB) return locationA < locationB;
-        // -----------------------------------------------------------------------------------
-
-        // Sort Size (Extract Integer for Comparison, Eliminate Alphabet and Spacing)
         string SizeA = a.size, SizeB = b.size;
         string charA, charB;
         int sizeValueA, sizeValueB;
-
         for (char c : SizeA) {
             if (isdigit(c)) {
                 charA.push_back(c);
             }
         }
         stringstream(charA) >> sizeValueA;
-
         for (char c : SizeB) {
             if (isdigit(c)) {
                 charB.push_back(c);
             }
         }
         stringstream(charB) >> sizeValueB;
-
-        // Compare Size, if different return value for insertion
-        return sizeValueA < sizeValueB;
+        return sizeValueA > sizeValueB;
     }
 
+    void navQuickSortProp(vector<Property>& propSortArray, int page) {
+        system("CLS");
+        int propPerPage = 30;
+        int start = (page - 1) * propPerPage;
+        int end = start + propPerPage;
 
+        int maxPropId = 0, maxPropName = 0, maxLocation = 0, maxSize = 0;
+        for (const Property& property : propSortArray) {
+            if (property.propertyID.length() > maxPropId) maxPropId = property.propertyID.length();
+            if (property.propertyName.length() > maxPropName) maxPropName = property.propertyName.length();
+            if (property.location.length() > maxLocation) maxLocation = property.location.length();
+            if (property.size.length() > maxSize) maxSize = property.size.length();
+        }
+
+        cout << "\n\n=================================================================================================================================================================================================\n";
+        cout << "                                                        Properties in Monthly Rent, Location, Size as per Square Feet Descending Order\n";
+        cout << "=================================================================================================================================================================================================\n\n";
+        cout << left;
+        cout << setw(maxPropId + 5) << "Property ID";
+        cout << setw(maxPropName + 5) << "Property Name";
+        cout << setw(25) << "Monthly Rent";
+        cout << setw(maxLocation + 5) << "Location";
+        cout << setw(maxSize + 5) << "Size as per Square Feet\n";
+        cout << "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+
+        for (int i = start; i < end && i < propSortArray.size(); i++) {
+            const Property& prop2 = propSortArray[i];
+            cout << left;
+            cout << setw(maxPropId + 5) << prop2.propertyID;
+            cout << setw(maxPropName + 5) << prop2.propertyName;
+            cout << setw(25) << prop2.monthly_rental;
+            cout << setw(maxLocation + 5) << prop2.location;
+            cout << setw(maxSize + 5) << prop2.size;
+            cout << endl;
+        }
+    }
 };
 
     Property getPropertyById(PropertyTree* root, const string& propertyID) {

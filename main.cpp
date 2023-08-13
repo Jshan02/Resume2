@@ -18,8 +18,9 @@ int main(){
     PropertyTree* prop_root = nullptr;
     PropertyTree* sort_root = nullptr;
     vector<Property> propertyArray;
-    prop_root = prop.importProperty(prop_root, "mudah-apartment-kl-selangor.csv", propertyArray, "General");
-    sort_root = prop.importProperty(sort_root, "mudah-apartment-kl-selangor.csv", propertyArray, "Sort");
+    vector<Property> propSortArray;
+    prop_root = prop.importProperty(prop_root, "mudah-apartment-kl-selangor.csv", propertyArray, "General", propSortArray);
+    sort_root = prop.importProperty(sort_root, "mudah-apartment-kl-selangor.csv", propertyArray, "Sort", propSortArray);
 
     // preset data for tenant account
     TenantTree tenant;
@@ -115,7 +116,7 @@ int main(){
                 authenticated = general_interface.tenantLogIn(tenant_root);     // Verify Username and Password
 
                 if (authenticated) {                                            // Correct
-                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root); // Call Tenant Dashboard
+                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray); // Call Tenant Dashboard
                     general_interface.logOut();                                 // If log out is selected
                     quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
                     if (quitOpt == 0) {                                         // Quit Program is Selected
@@ -183,7 +184,7 @@ int main(){
                 if (goLogin) {                                                  // go login
                     authenticated = general_interface.tenantLogIn(tenant_root);
                     if (authenticated) {
-                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root);
+                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propSortArray);
                         general_interface.logOut();
                         quitOpt = general_interface.backHomepage();
                         if (quitOpt == 0) {
