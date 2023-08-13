@@ -31,7 +31,9 @@ struct PropertyTree{
     PropertyTree* rightChild;
 
     // BST Insertion based pn Property ID
-    PropertyTree* bstInsert(PropertyTree* root, string propertyID, string propertyName, string completion_year, string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, string size, string furnished, string facilities, string additional_facilities, string region) {
+    PropertyTree* bstInsert(PropertyTree* root, string propertyID, string propertyName, string completion_year, 
+    string monthly_rental, string location, string propertyType, string rooms, string parking, string bathroom, 
+    string size, string furnished, string facilities, string additional_facilities, string region) {
         if (root == nullptr) {
             root = new PropertyTree();
             root->data.propertyID = propertyID;

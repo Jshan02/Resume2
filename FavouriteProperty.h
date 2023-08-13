@@ -11,14 +11,6 @@ struct FavouriteProperty{
     string propId;
 };
 
-map<string, string> createPropertyMap(const vector<Property>& propertyArray) {
-    map<string, string> propertyMap;
-    for (const auto& property : propertyArray) {
-        propertyMap[property.propertyID] = property.propertyName;
-    }
-    return propertyMap;
-}
-
 struct FavouritePropertyLinkedList
 {
     FavouriteProperty data;
@@ -104,16 +96,18 @@ struct FavouritePropertyLinkedList
     // favourite.displayUserFavourite(fav_root, "Suyinsss", prop_root);
 }
 
-    void displayTop10Favourite(FavouritePropertyLinkedList* head, const map<string, string>& propertyNames) {
+    void displayTop10Favourite(FavouritePropertyLinkedList* head, PropertyTree* root) {
         map<string, int> propertyCounts;
-
+        PropertyTree property;
         // Counting the favorites for each property ID
         FavouritePropertyLinkedList* current = head;
         int maxIDLength = 0, maxNameLength = 0;
         while (current != nullptr) {
             propertyCounts[current->data.propId]++; // Increment count for this property ID
             maxIDLength = max(maxIDLength, (int)current->data.propId.length());
-            maxNameLength = max(maxNameLength, (int)propertyNames.at(current->data.propId).length());
+            string propertyID = current->data.propId;
+            PropertyTree* propertyNode = property.getPropertyInfo(root, propertyID);
+            maxNameLength = max(maxNameLength, (int)propertyNode->data.propertyName.length());
             current = current->next;
         }
 
@@ -131,7 +125,8 @@ struct FavouritePropertyLinkedList
         cout << string(maxIDLength + maxNameLength + 25, '=') << '\n';
         for (int i = 0; i < 10 && i < sortedCounts.size(); i++) {
             string propertyID = sortedCounts[i].first;
-            string propertyName = propertyNames.at(propertyID); // Retrieve the property name using the map
+            PropertyTree* propertyNode = property.getPropertyInfo(root, propertyID);
+            string propertyName = propertyNode->data.propertyName;
             cout << left << setw(maxIDLength + 5) << propertyID << setw(maxNameLength + 5) << propertyName << setw(12) << sortedCounts[i].second << endl;
         }
     }

@@ -604,7 +604,7 @@ struct ManagerInterface {
     TenantTree tenant;
     FavouritePropertyLinkedList favorite;
 
-    void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+    void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         int dashboardOption;
         cout << " Welcome to Manager Dashboard\n";
         cout << "==============================\n\n";
@@ -628,21 +628,21 @@ struct ManagerInterface {
             }
 
             if (dashboardOption == 1) {                                                                                         // View All Tenants
-                managerViewAllTenantMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
+                managerViewAllTenantMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
             } else if (dashboardOption == 2) {                                                                                  // Search Tenant
-                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
             } else if (dashboardOption == 3) {                    
-                manageInactiveUsers(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);                                                              // Delete Inactive Tenant
+                manageInactiveUsers(tenant_root, manager_root, prop_root, fav_root, tenancy_root);                                                              // Delete Inactive Tenant
 
             } else if (dashboardOption == 4) {                                                                                  // View All Rent Request + Confirm Them (Give RentID...)
-                manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root,  propertyArray);
+                manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             } else if (dashboardOption == 5) {                                                                                  // View Tenant Payment + Confirm Them
                 
 
             } else if (dashboardOption == 6) {                                                                                  // View Report
-                managerViewTop10Report(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerViewTop10Report(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
             }
             
@@ -650,7 +650,7 @@ struct ManagerInterface {
         }
     }
 
-    void managerViewAllTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root,  const vector<Property>& propertyArray){
+    void managerViewAllTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root){
         system("CLS");
         tenant.dispAllTenant(tenant_root);
 
@@ -662,15 +662,14 @@ struct ManagerInterface {
 
         if (option == 1){
             system("CLS");
-            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
         }
 
     }
 
-    void managerViewTop10Report(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root,  const vector<Property>& propertyArray) {
+    void managerViewTop10Report(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         system("CLS");
-        map<string, string> propertyNames = createPropertyMap(propertyArray);
-        favorite.displayTop10Favourite(fav_root, propertyNames);
+        favorite.displayTop10Favourite(fav_root, prop_root);
 
         cout << "\n1. Back to Dashboard\n\n";
             int opt;
@@ -687,13 +686,13 @@ struct ManagerInterface {
                 }
 
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
                 break;
             }
     }
 
 
-    void managerSearchMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray){
+    void managerSearchMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root){
         int searchOption;
         system("CLS");
         cout << "Search Tenant\n";
@@ -739,7 +738,7 @@ struct ManagerInterface {
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 } 
                 while (toupper(continueSearch) == 'Y');
-                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
                 
                 
             }
@@ -769,18 +768,18 @@ struct ManagerInterface {
 
                 } 
                 while (toupper(continueSearchName) == 'Y');
-                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
 
             } else if (searchOption == 3) {
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             }
 
             break;
         }
     }
 
-    void manageInactiveUsers(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root,  const vector<Property>& propertyArray) {
+    void manageInactiveUsers(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         system("CLS");
         cout << "Inactive Users:\n";
         cout << "----------------\n";
@@ -809,14 +808,14 @@ struct ManagerInterface {
             } else if (option == 2) {
                 // Back to Manager Dashboard
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             } else {
                 cout << "Invalid option. Please choose again.\n";
             }
         }
     }
 
-    void manageTenancy(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray) {
+    void manageTenancy(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
         system("CLS");
         int option = 0;
 
@@ -901,7 +900,7 @@ struct ManagerInterface {
             } else if (option == 2) {
                 // Back to Manager Dashboard
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, propertyArray);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
             } else {
                 cout << "Invalid option. Please choose again.\n";
             }
@@ -915,50 +914,47 @@ struct AdminInterface {
     Admin admin;
     PropertyTree prop;
     
-    void adminDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void adminDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
         int dashboardOption;
 
         cout << " Welcome to Admin Dashboard\n";
         cout << "============================\n\n";
         cout << "1. Add New Manager\n";
         cout << "2. Modify Manager Status\n";
-        cout << "3. Modify Tenant Status\n";
-        cout << "4. View Tenant\n";
-        cout << "5. View Property\n";
-        cout << "6. Log Out\n\n";
+        cout << "3. View Tenant\n";
+        cout << "4. View Property\n";
+        cout << "5. Log Out\n\n";
 
         while (true) {
             cout << "Please enter your option: ";
             cin >> dashboardOption;
 
-            if (cin.fail() || dashboardOption < 1 || dashboardOption > 6) {
-                cout << "\nInvalid input. Please enter a number between 1 and 6.\n";
+            if (cin.fail() || dashboardOption < 1 || dashboardOption > 5) {
+                cout << "\nInvalid input. Please enter a number between 1 and 5.\n";
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
             if (dashboardOption == 1) {                                                     // Add Manager Account
-                addManagerIf(tenant_root, manager_root, prop_root, propertyArray);
+                addManagerIf(tenant_root, manager_root, prop_root);
 
             } else if (dashboardOption == 2) {                                              // Modify Manager Status (Resigned)
 
-            } else if (dashboardOption == 3) {                                              //  Modify Tenant Status (Last Completed Rent Request Date)
-
-            } else if (dashboardOption == 4) {
+            } else if (dashboardOption == 3) {
                 system("CLS");
-                filterTenantMenu(tenant_root, manager_root, prop_root, propertyArray);  // Display All Tenant + Filtering Criteria
+                filterTenantMenu(tenant_root, manager_root, prop_root);  // Display All Tenant + Filtering Criteria
 
-            } else if (dashboardOption == 5) {        
+            } else if (dashboardOption == 4) {        
                 system("CLS");                                      // Displat All Property + Filtering Criteria
-                filterPropertyMenu(tenant_root, manager_root, prop_root, propertyArray);
+                filterPropertyMenu(tenant_root, manager_root, prop_root);
 
             } 
             break;
         }
     }
 
-    void addManagerIf(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void addManagerIf(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
         system("CLS");
         bool addSuccess;
         char tryAgain;
@@ -1003,7 +999,7 @@ struct AdminInterface {
                 }
 
                 system("CLS");
-                adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                adminDashboard(tenant_root, manager_root, prop_root);
                 break;
             }
         } else {                                                // Add Fail
@@ -1012,10 +1008,10 @@ struct AdminInterface {
                 cin >> tryAgain;
 
                 if (toupper(tryAgain) == 'Y') {                 // Call Add Account Again
-                    addManagerIf(tenant_root, manager_root, prop_root, propertyArray);
+                    addManagerIf(tenant_root, manager_root, prop_root);
                     break;
                 } else if (toupper(tryAgain) == 'N') {          // Call Dashboard
-                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                    adminDashboard(tenant_root, manager_root, prop_root);
                     break;
                 } else {
                      cout << "\nInvalid input. Please enter 'Y' or 'N'.\n";
@@ -1025,7 +1021,7 @@ struct AdminInterface {
         }
     }
 
-    void filterTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void filterTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
         int filterChoice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1045,16 +1041,16 @@ struct AdminInterface {
                 if (filterChoice == 1) {
                      // Call the function to filter by gender
                      system("CLS");
-                     filterTenantGenderMenu(tenant_root, manager_root, prop_root, propertyArray);
+                     filterTenantGenderMenu(tenant_root, manager_root, prop_root);
                      break;
                 } else if (filterChoice == 2) {
                     // Call the function to filter by status
                     system("CLS");
-                    filterTenantStatusMenu(tenant_root, manager_root, prop_root, propertyArray);
+                    filterTenantStatusMenu(tenant_root, manager_root, prop_root);
                     break;
                 } else if (filterChoice == 3) {
                     system("CLS");
-                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu (Assuming you have a function for this)
+                    adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu (Assuming you have a function for this)
                     break;
                 }
                 break; // Exit the loop as the choice has been handled
@@ -1063,7 +1059,7 @@ struct AdminInterface {
     }
 
     // filter gender menu
-    void filterTenantGenderMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray){
+    void filterTenantGenderMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root ){
         int choice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1093,7 +1089,7 @@ struct AdminInterface {
                     tenant.filterMale(tenant_root); // Call the function to display only male tenants
                 } else if (choice == 3){
                     system("CLS");
-                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                    adminDashboard(tenant_root, manager_root, prop_root);
                     break; // go back to main menu
                 }
 
@@ -1105,11 +1101,11 @@ struct AdminInterface {
 
                     if (otherFilter == 'N') {
                         system("CLS");
-                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                        adminDashboard(tenant_root, manager_root, prop_root);
                         break;
                     } else if (otherFilter == 'Y') {
                         system("CLS");
-                        filterTenantGenderMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterTenantGenderMenu(tenant_root, manager_root, prop_root);
                         break; // Break out of the inner loop to return to the gender filter options
                     } else {
                         cout << "\nInvalid input. Please enter Y or N.\n";
@@ -1121,7 +1117,7 @@ struct AdminInterface {
     }
 
     // filter status
-    void filterTenantStatusMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray){
+    void filterTenantStatusMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root){
         int choice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1151,7 +1147,7 @@ struct AdminInterface {
                     tenant.filterInactive(tenant_root); // Call the function to display only male tenants
                 } else {
                     system("CLS");
-                    filterTenantMenu(tenant_root, manager_root, prop_root, propertyArray); // go back to main menu
+                    filterTenantMenu(tenant_root, manager_root, prop_root); // go back to main menu
                     break;
                 }
 
@@ -1163,11 +1159,11 @@ struct AdminInterface {
 
                     if (otherFilter == 'N') {
                         system("CLS");
-                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                        adminDashboard(tenant_root, manager_root, prop_root);
                         break;
                     } else if (otherFilter == 'Y') {
                         system("CLS");
-                        filterTenantStatusMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterTenantStatusMenu(tenant_root, manager_root, prop_root);
                         break; // Break out of the inner loop to return to the gender filter options
                     } else {
                         cout << "\nInvalid input. Please enter Y or N.\n";
@@ -1178,7 +1174,7 @@ struct AdminInterface {
         }
     }
 
-void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray){
+void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root){
     int filterChoice;
 
     while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1204,7 +1200,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                     case 1:
                         // Call the function to filter by Property Type
                         system("CLS");
-                        filterPropertyByTypeMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterPropertyByTypeMenu(tenant_root, manager_root, prop_root);
                         break;
                     case 2:
                         // Call the function to filter by Monthly Rental
@@ -1213,27 +1209,27 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                     case 3:
                         // Call the function to filter by Location
                         system("CLS");
-                        filterPropertyByLocationMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterPropertyByLocationMenu(tenant_root, manager_root, prop_root);
                         break;
                     case 4:
                         // Call the function to filter by Number of Rooms
                         system("CLS");
-                        filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root);
                         
                         break;
                     case 5:
                         // Call the function to filter by Number of Parking
-                        filterPropertyByParkingMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterPropertyByParkingMenu(tenant_root, manager_root, prop_root);
                         
                         break;
                     case 6:
                         // Call the function to filter by Furnishing Status
-                        filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root, propertyArray);
+                        filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root);
                         
                         break;
                     case 7:
                         // Call the function to go back to the main menu (Assuming you have a function for this)
-                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray);
+                        adminDashboard(tenant_root, manager_root, prop_root);
                         break;
                 }
                 break; // Exit the loop as the choice has been handled
@@ -1241,7 +1237,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
         }
     }
 
-    void filterPropertyByTypeMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void filterPropertyByTypeMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
         int filterChoice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1270,7 +1266,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                     case 5: type = "Studio"; break;
                     case 6:
                         system("CLS");
-                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu (Assuming you have a function for this)
+                        adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu (Assuming you have a function for this)
                         return;
                 }
                 // Call the function to filter by the selected type
@@ -1278,14 +1274,14 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                 if (goBack) {
                     // If navigatePropertiesByType returned true, recall filterPropertyByTypeMenu
                     system("CLS");
-                    filterPropertyByTypeMenu(tenant_root, manager_root, prop_root, propertyArray);
+                    filterPropertyByTypeMenu(tenant_root, manager_root, prop_root);
                     break;
                 }
             }
         }
     }
 
-    void filterPropertyByLocationMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void filterPropertyByLocationMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root ) {
         int filterChoice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1309,7 +1305,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                     case 2: location = "Selangor"; break;
                     case 3:
                         system("CLS");
-                        adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                        adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu
                         return;
                 }
                 // Call the function to filter by the selected location
@@ -1317,7 +1313,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                 if (goBack) {
                     // If navigatePropertiesByLocation returned true, recall filterPropertyByLocationMenu
                     system("CLS");
-                    filterPropertyByLocationMenu(tenant_root, manager_root, prop_root, propertyArray);
+                    filterPropertyByLocationMenu(tenant_root, manager_root, prop_root);
                     break;
                 } break;
             }
@@ -1325,7 +1321,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
     }
 
     // filter property by number of rooms menu
-    void filterPropertyByRoomsMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void filterPropertyByRoomsMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root ) {
         int filterChoice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1352,7 +1348,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                 numberOfRooms = to_string(filterChoice);
             } else if (filterChoice == 6) {
                 system("CLS");
-                adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu
                 return;
             }
 
@@ -1361,14 +1357,14 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
             if (goBack) {
                 // If navigatePropertiesByRooms returned true, recall filterPropertyByRoomsMenu
                 system("CLS");
-                filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root, propertyArray);
+                filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root);
                 break;
             }
         }
     }
 
     // Filter property by number of parking spaces menu
-    void filterPropertyByParkingMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void filterPropertyByParkingMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
         int filterChoice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1392,7 +1388,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                 numberOfParking = to_string(filterChoice);
             } else if (filterChoice == 3) {
                 system("CLS");
-                adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu
                 return;
             }
 
@@ -1401,14 +1397,14 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
             if (goBack) {
                 // If navigatePropertiesByParking returned true, recall filterPropertyByParkingMenu
                 system("CLS");
-                filterPropertyByParkingMenu(tenant_root, manager_root, prop_root, propertyArray);
+                filterPropertyByParkingMenu(tenant_root, manager_root, prop_root);
                 break;
             }
         }
     }
 
     // Filter property by furnished status menu
-    void filterPropertyByFurnishedMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, const vector<Property>& propertyArray) {
+    void filterPropertyByFurnishedMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root) {
         int filterChoice;
 
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -1435,7 +1431,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                 case 3: furnishedStatus = "Not Furnished"; break;
                 case 4:
                     system("CLS");
-                    adminDashboard(tenant_root, manager_root, prop_root, propertyArray); // Call the function to go back to the main menu
+                    adminDashboard(tenant_root, manager_root, prop_root); // Call the function to go back to the main menu
                     return;
             }
 
@@ -1444,7 +1440,7 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
             if (goBack) {
                 // If navigatePropertiesByFurnished returned true, recall filterPropertyByFurnishedMenu
                 system("CLS");
-                filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root, propertyArray);
+                filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root);
                 break;
             }
         }
