@@ -632,19 +632,19 @@ struct TenantInterface {
                     cout << "\nProperty found with name '" << targetName << "':\n";
                     cout << "...........................................................\n\n";
 
-                    cout << "Result for Binary Search Tree Search:\n ";
-                    cout << "============================\n ";
-                    auto start1 = chrono::high_resolution_clock::now();
-                    prop.bstSearchByPropName(propName_root, targetName);
-                    auto end1 = chrono::high_resolution_clock::now();
-                    chrono::duration<double, milli> binarySearchTime = end1 - start1;
-
                     cout << "Result for Linear Search:\n ";
                     cout << "============================\n ";
                     auto start2 = chrono::high_resolution_clock::now();
                     prop.linearSearchPropertiesByName(propertyArray, targetName);
                     auto end2 = chrono::high_resolution_clock::now();
                     chrono::duration<double, milli> linearSearchTime = end2 - start2;
+
+                    cout << "Result for Binary Search Tree Search:\n ";
+                    cout << "============================\n ";
+                    auto start1 = chrono::high_resolution_clock::now();
+                    prop.bstSearchByPropName(propName_root, targetName);
+                    auto end1 = chrono::high_resolution_clock::now();
+                    chrono::duration<double, milli> binarySearchTime = end1 - start1;
 
                     cout << "==================================================================================================\n";
                     cout << "Time taken by binary search: " << binarySearchTime.count() << " milliseconds" << endl;
@@ -662,15 +662,15 @@ struct TenantInterface {
                     cout << "\nProperty found with location '" << targetLocation << "' :\n";
                     cout << "...........................................................\n\n";
 
-                    auto start1 = chrono::high_resolution_clock::now();
-                    prop.bstSearchByLocation(location_root, targetLocation);
-                    auto end1 = chrono::high_resolution_clock::now();
-                    chrono::duration<double, milli> binarySearchTime = end1 - start1;
-
                     auto start2 = chrono::high_resolution_clock::now();
                     prop.linearSearchPropertiesByLocation(propertyArray, targetLocation);
                     auto end2 = chrono::high_resolution_clock::now();
                     chrono::duration<double, milli> linearSearchTime = end2 - start2;
+
+                    auto start1 = chrono::high_resolution_clock::now();
+                    prop.bstSearchByLocation(location_root, targetLocation);
+                    auto end1 = chrono::high_resolution_clock::now();
+                    chrono::duration<double, milli> binarySearchTime = end1 - start1;
 
                     cout << "==================================================================================================\n";
                     // cout << "Time taken by binary search: " << binarySearchTime.count() << " microseconds" << endl;
