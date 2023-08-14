@@ -68,6 +68,14 @@ int main(){
     tenancy.presetData(&tenancy_root, "R07", "angangpuds", "Ang Chan Fwu", "99923007", "Sentul Point Suite Apartment", "1 October 2023", "1 Year", "30 September 2024", "RM 1 700 per month", "Completed");
     tenancy.presetData(&tenancy_root, "R08", "noobmaster", "Thor Lee", "97468177", "The Hipster @ Taman Desa", "1 February 2024", "1 Year", "31 January 2025", "RM 4 200 per month", "Rejected");
     tenancy.presetData(&tenancy_root, "R09", "kriko", "Saeshav Subash", "97468177", "The Hipster @ Taman Desa", "1 September 2023", "1 Year", "", "RM 4 200 per month", "Pending Manager Approval");
+
+
+    // preset data for payment
+    PaymentLinkedList payment;
+    PaymentLinkedList* payment_root = nullptr;
+    payment.insertNewPayment(&payment_root, "P01", "js0207", "R01", "RM2300", "1 May 2023", "Completed");
+    payment.insertNewPayment(&payment_root, "P02", "shadoww", "R06", "RM2500", "5 August 2023", "Pending");
+    payment.insertNewPayment(&payment_root, "P03", "angangpuds", "R07", "RM1700", "10 August 2023", "Completed");
     
     // preset data for favourite property list
     FavouritePropertyLinkedList fav;
@@ -126,7 +134,7 @@ int main(){
                 authenticated = general_interface.tenantLogIn(tenant_root);     // Verify Username and Password
 
                 if (authenticated) {                                            // Correct
-                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray); // Call Tenant Dashboard
+                    tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root); // Call Tenant Dashboard
                     general_interface.logOut();                                 // If log out is selected
                     quitOpt = general_interface.backHomepage();                 // Prompt User Quit or Back to Homepage
                     if (quitOpt == 0) {                                         // Quit Program is Selected
@@ -147,7 +155,7 @@ int main(){
             } else if (roleOpt == 2) {                                          // Manager Selected
                 authenticated = general_interface.managerLogIn(manager_root);
                 if (authenticated) {
-                    manager_interface.managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                    manager_interface.managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
                     general_interface.logOut();
                     quitOpt = general_interface.backHomepage();
                     if (quitOpt == 0) {
@@ -194,7 +202,7 @@ int main(){
                 if (goLogin) {                                                  // go login
                     authenticated = general_interface.tenantLogIn(tenant_root);
                     if (authenticated) {
-                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        tenant_interface.tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                         general_interface.logOut();
                         quitOpt = general_interface.backHomepage();
                         if (quitOpt == 0) {

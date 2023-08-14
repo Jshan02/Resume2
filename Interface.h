@@ -14,6 +14,7 @@
 #include "Property.h"
 #include "FavouriteProperty.h"
 #include "TenancyHistory.h"
+#include "Payment.h"
 using namespace std;
 
 struct TenantInterface {
@@ -21,8 +22,9 @@ struct TenantInterface {
     PropertyTree prop;
     FavouritePropertyLinkedList fav;
     TenancyLinkedList tenancy;
+    PaymentLinkedList payment;
     
-    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, int autoOption = 0) {
+    void tenantDashboard(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root, int autoOption = 0) {
         int dashboardOption = autoOption;
         if (dashboardOption == 0) {
             cout << " Welcome to Tenant Dashboard\n";
@@ -41,7 +43,7 @@ struct TenantInterface {
                 cin >> dashboardOption;
 
                 if (cin.fail() || dashboardOption < 1 || dashboardOption > 8) {
-                    cout << "\nInvalid input. Please enter a number between 1 and 7.\n";
+                    cout << "\nInvalid input. Please enter a number between 1 and 8.\n";
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     continue;
@@ -49,32 +51,32 @@ struct TenantInterface {
 
             if (dashboardOption == 1) {                 // Display All Properties
                 system("CLS");
-                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, 1, propName_root, location_root, propSortArray);
+                displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, 1, propName_root, location_root, propSortArray, payment_root);
 
             } else if (dashboardOption == 2) {          // Sort n Display + Mark Fav
-                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, 1, propName_root, location_root, propSortArray);
+                sortProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, 1, propName_root, location_root, propSortArray, payment_root);
 
                 } else if (dashboardOption == 3) {          // Search n Display + Mark Fav
-                searchOptionMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root,propSortArray);
+                searchOptionMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root,propSortArray, payment_root);
     
 
             } else if (dashboardOption == 4) {          // View Favourite + Option to place rent request
-                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
 
             } else if (dashboardOption == 5) {          // Check Rent Request Status (Wait for Approval / Wait for Payment) + Option to Make Payment if Wait for Payment
                 system("CLS");
                 string username = getCurrentUsername();
                 tenancy.displayTenancy(tenancy_root, username);
-                tenancyOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray);
+                tenancyOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, payment_root);
 
             } else if (dashboardOption == 6) {          // view all completed status
                 system("CLS");
                 string username = getCurrentUsername();
                 tenancy.displayCompletedTenancy(tenancy_root, username);
-                completedTenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                completedTenancyStatusOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
 
             } else if (dashboardOption == 7) {
-                tenantDeactivateMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                tenantDeactivateMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
             }
             break;
             }
@@ -82,7 +84,7 @@ struct TenantInterface {
     }
 
     // display propety data
-    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void displayAllProperty(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         // int page = 1;
         int page = currentPage; // Initialize with the currentPage argument
         int totalPages = (prop_root->countProperties(prop_root) + 9) / 10; // Calculate the total number of pages
@@ -106,19 +108,19 @@ struct TenantInterface {
                 page--;
             }
             else if (choice == 3) {
-                addFavouritePropertyMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, page, propName_root, location_root, propSortArray);
+                addFavouritePropertyMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, page, propName_root, location_root, propSortArray, payment_root);
                 break;
             }
             else if (choice == 4) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                 break;
             }
         }
     }
 
     // Sort properties menu
-    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int current_page, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void sortProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int current_page, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         system("CLS");
 
         // Quick Sort
@@ -129,13 +131,13 @@ struct TenantInterface {
 
         // Tree Sort
         // auto start = chrono::high_resolution_clock::now();
-        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root);
+        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root, payment_root);
 
         
     }
 
     // Display tree sorted properties (prop id, name, rent, location, size)
-    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray, PropertyTree* propName_root, PropertyTree* location_root) {
+    void dispProperties(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray, PropertyTree* propName_root, PropertyTree* location_root, PaymentLinkedList* payment_root) {
         int page = currentPage;
         int totalPages = (prop.countProperties(sort_root) + 29) / 30;       // get to know total of pages if 30 properties per page (+29 to include the page that is not full with properties)
 
@@ -160,18 +162,18 @@ struct TenantInterface {
             } else if (choice == 2 && page > 1) {
                 page--;
             } else if (choice == 3) {
-                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page,  propName_root, location_root, propSortArray);
+                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page,  propName_root, location_root, propSortArray, payment_root);
                 break;
             } else if (choice == 4) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                 break;
             }
         }
     }
 
     // Display Quick Sorted properties (prop id, name, rent, location, size)
-    void dispQuickSortProp(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray, PropertyTree* propName_root, PropertyTree* location_root) {
+    void dispQuickSortProp(TenantTree* tenant_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, PropertyTree* sort_root, int currentPage, vector<Property>& propSortArray, PropertyTree* propName_root, PropertyTree* location_root, PaymentLinkedList* payment_root) {
         int page = currentPage;
         int totalPages = (propSortArray.size() + 29) / 30;
 
@@ -196,11 +198,11 @@ struct TenantInterface {
             } else if (choice == 2 && page > 1) {
                 page--;
             } else if (choice == 3) {
-                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page, propName_root, location_root, propSortArray);
+                addFavouritePropertyMenu2(prop_root, fav_root, tenancy_root, propertyArray,tenant_root, sort_root, page, propName_root, location_root, propSortArray, payment_root);
                 break;
             } else if (choice == 4) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                 break;
             }
         }
@@ -238,7 +240,7 @@ struct TenantInterface {
         return username;
     }
 
-    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void addFavouritePropertyMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         string username = getCurrentUsername();
         string propertyID;
         bool propertyExists;
@@ -262,7 +264,7 @@ struct TenantInterface {
                     Sleep(2000); // Sleep for 2000 milliseconds (2 seconds) on Windows
                     #else
                     #endif
-                    displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, currentPage, propName_root, location_root, propSortArray); // Return to the same page
+                    displayAllProperty(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, currentPage, propName_root, location_root, propSortArray, payment_root); // Return to the same page
                     break; // Exit the loop as the property has been added to favorites
                 }
             } else {
@@ -271,7 +273,7 @@ struct TenantInterface {
         }
     }
 
-    void addFavouritePropertyMenu2(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void addFavouritePropertyMenu2(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, int currentPage, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         string username = getCurrentUsername();
         string propertyID;
         bool propertyExists;
@@ -296,7 +298,7 @@ struct TenantInterface {
                     #else
                     // You can add sleep code for other platforms here if needed
                     #endif
-                    dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, currentPage, propSortArray,  propName_root, location_root); // Return to the same page
+                    dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, currentPage, propSortArray,  propName_root, location_root, payment_root); // Return to the same page
                     break; // Exit the loop as the property has been added to favorites
                 }
             } else {
@@ -307,7 +309,7 @@ struct TenantInterface {
 
 
     // display favourite property for current user
-    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void favouritePropertyMenu(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         string username = getCurrentUsername();
         if (!username.empty()) {
             system("CLS");
@@ -320,14 +322,14 @@ struct TenantInterface {
                 cin >> choice;
 
                 if (toupper(choice) == 'Y') {
-                    placeRentRequest(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                    placeRentRequest(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                     // put place request function
 
                     break; // Exit the loop as the choice has been handled
                 } else if (toupper(choice) == 'N') {
                     // back to main menu
                     system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                     break; // Exit the loop as the choice has been handled
                 } else {
                     cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
@@ -340,7 +342,7 @@ struct TenantInterface {
     }
 
     // Current user place rent request
-    void placeRentRequest(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void placeRentRequest(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         string username = getCurrentUsername();
         if (!username.empty()) {
             system("CLS");
@@ -365,20 +367,21 @@ struct TenantInterface {
                     cin >> choice;
 
                     if (toupper(choice) == 'Y') {
-                        favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        favouritePropertyMenu(fav_root, prop_root, tenancy_root, propertyArray,tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                         // put place request function
 
                         break; // Exit the loop as the choice has been handled
                     } else if (toupper(choice) == 'N') {
                         // back to main menu
                         system("CLS");
-                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                         break; // Exit the loop as the choice has been handled
                     } else {
                         cout << "Invalid input. Please enter only 'Y' or 'N'.\n";
                         // Continue to prompt the user until a valid input is entered
                     }
                 }
+                return;
             }
 
             Property property = getPropertyById(prop_root, propertyID);
@@ -386,10 +389,8 @@ struct TenantInterface {
                 cout << "Property Name: " << property.propertyName << "\n";
                 cout << "Completion Year: " << property.completion_year << "\n";
                 cout << "Monthly Rental: " << property.monthly_rental << "\n";
-                // Print other property details...
             } else {
                 cout << "Property ID not found.\n";
-                // Handle error...
             }
 
             string startDate;
@@ -420,7 +421,7 @@ struct TenantInterface {
                 }
 
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                 break;
             }
         } else {
@@ -429,7 +430,7 @@ struct TenantInterface {
     }
 
     // navigation for pending payment menu
-    void tenancyOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray){
+    void tenancyOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root){
         int option;
         cout << "\n\n1. Make Payment\n";
         cout << "2. Back to Main Menu\n\n";
@@ -438,26 +439,119 @@ struct TenantInterface {
             cout << "Please enter your choice (1 to 2): ";
             cin >> option;
 
-            if (cin.fail() || option < 1 || option > 3) {
+            if (cin.fail() || option < 1 || option > 2) {
                 cout << "\n\nInvalid input. Please enter a number between 1 and 2 only.\n";
                 cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
-            else if (option == 1) {
-                //make payment
-                break;
+
+            if (option == 1) {
+                string username = getCurrentUsername();
+                if (username == "") {
+                    "You are not yet logged in.\n";
+                } else {
+                    system("CLS");
+                    makePayment(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root, username);
+                }
+                break;        
 
             } else if (option == 2) {
                 system("CLS");
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                 break;
             }
         }
     }
 
+    void makePayment(FavouritePropertyLinkedList* fav_root, PropertyTree* prop_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root, string username){
+        int numOfPendingPayment = tenancy.displayPendingPaymentTenancy(tenancy_root, username);
+        if (numOfPendingPayment == 0) {
+            char yesNo;
+            while (true) {
+                cout << "Go back to view rent request page? (Y/N) - ";
+                cin >> yesNo;
+                yesNo = toupper(yesNo);
+
+                if (cin.fail() || (yesNo != 'Y' && yesNo != 'N')) {
+                    cout << "\n\nInvalid input. Please enter 'Y' or 'N' only.\n";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    continue;
+                }
+
+                if (toupper(yesNo) == 'Y') {
+                    system("CLS");
+                    tenancy.displayTenancy(tenancy_root, username);
+                    tenancyOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, payment_root);
+                    break;
+                } else {
+                    system("CLS");
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
+                    break;
+                }
+            }
+        } else {
+            string id, amount, date;
+            cout << "Tenancy ID: ";
+            cin >> id;
+            if (!tenancy.isPendingPayment(tenancy_root, username, id)) {
+                cout << "The tenancy ID is not pending payment.\n";
+
+                char choice;
+                while (true) {
+                    cout << "Would you like to make payment for the other tenancy? (Y/N) - ";
+                    cin >> choice;
+                    choice = toupper(choice);
+
+                    if (cin.fail() || (choice != 'Y' && choice != 'N')) {
+                        cout << "\nInvalid input. Please enter 'Y' or 'N' only.\n";
+                        cin.clear();
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        continue;
+                    }
+
+                    if (toupper(choice) == 'Y') {
+                        system("CLS");
+                        makePayment(fav_root, prop_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root, username);
+                        break;
+                    } else {
+                        system("CLS");
+                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
+                        break;
+                    }
+                }
+                return;
+            }
+
+            cout << "Amount: ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            getline(cin, amount);
+
+            cout << "Payment date: ";
+            getline(cin, date);
+
+            string paymentId = payment.generatePaymentId(payment_root);
+            
+            payment.insertNewPayment(&payment_root, paymentId, username, id, amount, date, "Pending");
+            tenancy.modifyStatus(&tenancy_root, id, "Pending Payment Verification");
+            cout << "\n===================================================================\n";
+            cout << " Payment submitted successfully! Waiting for manager verification.\n";
+            cout << "===================================================================\n";
+
+            #ifdef _WIN32
+            Sleep(2000); // Sleep for 2000 milliseconds (2 seconds) on Windows
+            #else
+            #endif
+
+            system("CLS");            
+            tenancy.displayTenancy(tenancy_root, username);
+            tenancyOption(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, payment_root);
+        }
+    }
+
     // navigation for completed tenancy menu
-    void completedTenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void completedTenancyStatusOption(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         string choiceStr;
         char otherStatus;
         while (true) { // Infinite loop to keep prompting the user until valid input
@@ -469,7 +563,7 @@ struct TenantInterface {
                 otherStatus = toupper(choiceStr[0]); // Consider the first character only
                 if (otherStatus == 'Y') {
                     system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                     break;
                 } else {
                     cout << "\nInvalid input. Please enter Y only.";
@@ -481,7 +575,7 @@ struct TenantInterface {
         }
     }
 
-    void tenantDeactivateMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+    void tenantDeactivateMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         string username = getCurrentUsername(); // Assume this function gets the currently logged-in username
         if (username.empty()) {
             cout << "No user is currently logged in.\n";
@@ -496,18 +590,18 @@ struct TenantInterface {
             if (tenant.deactivateTenantAccount(tenant_root, username)) {
                 system("CLS");
                 cout << "Account deactivated successfully.\n";
-                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, 8);
+                tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, payment_root, 8);
             } else {
                 cout << "Failed to deactivate account.\n";
             }
         } else {
             system("CLS");
-            tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray);
+            tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root,sort_root, propName_root, location_root, propSortArray, payment_root);
         }
     }
 
     // Search option menu
-        void searchOptionMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray) {
+        void searchOptionMenu(PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, const vector<Property>& propertyArray, TenantTree* tenant_root, PropertyTree* sort_root, PropertyTree* propName_root, PropertyTree* location_root, vector<Property>& propSortArray, PaymentLinkedList* payment_root) {
         int choice;
 
         while (true) {
@@ -584,7 +678,7 @@ struct TenantInterface {
 
                 } else if (choice == 3) {
                     system("CLS");
-                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray); // Go back to main menu
+                    tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root); // Go back to main menu
                     break;
                 }
 
@@ -596,11 +690,11 @@ struct TenantInterface {
 
                     if (otherSearch == 'N') {
                         system("CLS");
-                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        tenantDashboard(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                         break;
                     } else if (otherSearch == 'Y') {
                         system("CLS");
-                        searchOptionMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray);
+                        searchOptionMenu(prop_root, fav_root, tenancy_root, propertyArray, tenant_root, sort_root, propName_root, location_root, propSortArray, payment_root);
                         break;
                     } else {
                         cout << "\nInvalid input. Please enter Y or N only.\n";
@@ -617,8 +711,10 @@ struct ManagerInterface {
     FavouritePropertyLinkedList favorite;
     TenantInterface interfaceT;
     ManagerTree manager;
+    PaymentLinkedList payment;
+    TenancyLinkedList tenancy;
 
-    void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
+    void managerDashboard(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root) {
         int dashboardOption;
         cout << " Welcome to Manager Dashboard\n";
         cout << "==============================\n\n";
@@ -643,32 +739,32 @@ struct ManagerInterface {
             }
 
             if (dashboardOption == 1) {                                                                                         // View All Tenants
-                managerViewAllTenantMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerViewAllTenantMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
 
             } else if (dashboardOption == 2) {                                                                                  // Search Tenant
-                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
 
             } else if (dashboardOption == 3) {                    
-                manageInactiveUsers(tenant_root, manager_root, prop_root, fav_root, tenancy_root);                                                              // Delete Inactive Tenant
+                manageInactiveUsers(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);                                                              // Delete Inactive Tenant
 
             } else if (dashboardOption == 4) {                                                                                  // View All Rent Request + Confirm Them (Give RentID...)
-                manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                manageTenancy(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
+
             } else if (dashboardOption == 5) {                                                                                  // View Tenant Payment + Confirm Them
-                
-                // Pending manage payment 
+                managePayment(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
 
             } else if (dashboardOption == 6) {                                                                                  // View Report
-                managerViewTop10Report(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerViewTop10Report(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
 
             } else if (dashboardOption == 7 ) {
-                managerSubmitResignation(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerSubmitResignation(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
             }
 
             break;
         }
     }
 
-    void managerViewAllTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root){
+    void managerViewAllTenantMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root){
         system("CLS");
         tenant.dispAllTenant(tenant_root);
 
@@ -680,12 +776,12 @@ struct ManagerInterface {
 
         if (option == 1){
             system("CLS");
-            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
         }
 
     }
 
-    void managerViewTop10Report(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
+    void managerViewTop10Report(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root) {
         system("CLS");
         favorite.displayTop10Favourite(fav_root, prop_root);
 
@@ -704,13 +800,13 @@ struct ManagerInterface {
                 }
 
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
                 break;
             }
     }
 
 
-    void managerSearchMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root){
+    void managerSearchMenu(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root){
         int searchOption;
         system("CLS");
         cout << "Search Tenant\n";
@@ -756,7 +852,7 @@ struct ManagerInterface {
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 } 
                 while (toupper(continueSearch) == 'Y');
-                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
                 
                 
             }
@@ -786,18 +882,18 @@ struct ManagerInterface {
 
                 } 
                 while (toupper(continueSearchName) == 'Y');
-                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerSearchMenu(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
 
             } else if (searchOption == 3) {
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
             }
 
             break;
         }
     }
 
-    void manageInactiveUsers(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
+    void manageInactiveUsers(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root) {
         system("CLS");
         cout << "Inactive Users:\n";
         cout << "----------------\n";
@@ -834,14 +930,14 @@ struct ManagerInterface {
             } else if (option == 2) {
                 // Back to Manager Dashboard
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
             } else {
                 cout << "Invalid option. Please choose again.\n";
             }
         }
     }
 
-    void manageTenancy(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
+    void manageTenancy(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root) {
         system("CLS");
         int option = 0;
 
@@ -926,14 +1022,123 @@ struct ManagerInterface {
             } else if (option == 2) {
                 // Back to Manager Dashboard
                 system("CLS");
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
             } else {
                 cout << "Invalid option. Please choose again.\n";
             }
         }
     }
 
-    void managerSubmitResignation(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root) {
+    void managePayment(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root) {
+        system("CLS");
+        int option = 0;
+
+        while (option != 2) {
+            int maxPaymentId = strlen("Payment ID");
+            int maxUsername = strlen("Username");
+            int maxTenancyId = strlen("Tenancy ID");
+            int maxAmount = strlen("Amount");
+            int maxDate = strlen("Payment Date");
+            int maxStat = strlen("Status");
+
+            PaymentLinkedList* current = payment_root;
+            while (current != nullptr) {
+                if (current->data.status == "Pending") {
+                    maxPaymentId = max(maxPaymentId, static_cast<int>(current->data.paymentId.length()));
+                    maxUsername = max(maxUsername, static_cast<int>(current->data.username.length()));
+                    maxTenancyId = max(maxTenancyId, static_cast<int>(current->data.tenancyId.length()));
+                    maxAmount = max(maxAmount, static_cast<int>(current->data.amount.length()));
+                    maxDate = max(maxDate, static_cast<int>(current->data.date.length()));
+                    maxStat = max(maxStat, static_cast<int>(current->data.status.length()));
+                }
+                current = current->next;
+            }
+
+            cout << "Payments Pending Manager Verification: \n";
+            cout << string(maxPaymentId + maxUsername + maxTenancyId + maxAmount + maxTenancyId + maxDate + maxStat + 55, '=') << '\n';
+            cout << left;
+            cout << setw(maxPaymentId + 5) << "Payment ID";
+            cout << setw(maxUsername + 5) << "Username";
+            cout << setw(maxTenancyId + 5) << "Tenancy ID";
+            cout << setw(maxAmount + 5) << "Amount";
+            cout << setw(maxDate + 5) << "Payment Date";
+            cout << setw(maxStat + 5) << "Status" << endl;
+            cout << string(maxPaymentId + maxUsername + maxTenancyId + maxAmount + maxTenancyId + maxDate + maxStat + 55, '=') << '\n';
+
+            current = payment_root;
+            while (current != nullptr) {
+                if (current->data.status == "Pending") {
+                    cout << left;
+                    cout << setw(maxPaymentId + 5) << current->data.paymentId;
+                    cout << setw(maxUsername + 5) << current->data.username;
+                    cout << setw(maxTenancyId + 5) << current->data.tenancyId;
+                    cout << setw(maxAmount + 5) << current->data.amount;
+                    cout << setw(maxDate + 5) << current->data.date;
+                    cout << setw(maxStat + 5) << current->data.status;
+                    cout << endl;
+                }
+                current = current->next;
+            }
+
+            cout << "\n1. Select a Payment to Manage\n";
+            cout << "2. Back to Manager Dashboard\n";
+            cout << "\nPlease choose an option: ";
+            cin >> option;
+            if (cin.fail() || option < 1 || option > 2) {
+                    cin.clear(); // Clear the error flags
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore the remaining input on the line
+                    cout << "Invalid option. Please enter a number between 1 and 2.\n";
+                    continue; // Skip the rest of the loop and start again
+            }
+
+            if (option == 1) {
+                string selectedID;
+                cout << "\nEnter the Payment ID you want to manage: ";
+                cin >> selectedID;
+
+                current = payment_root;
+                while (current != nullptr) {
+                    if (current->data.paymentId == selectedID && current->data.status == "Pending") {
+                        int opt;
+                        cout << "\n1. Accept\n";
+                        cout << "2. Reject\n\n";
+
+                        while (true) {
+                            cout << "Enter your option: ";
+                            cin >> opt;
+                             if (cin.fail() || opt < 1 || opt > 2) {
+                                cin.clear(); // Clear the error flags
+                                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore the remaining input on the line
+                                cout << "Invalid option. Please enter a number between 1 and 2.\n";
+                                continue; // Skip the rest of the loop and start again
+                            }
+
+                            if (opt == 1) {
+                                payment.modifyPaymentStatus(&payment_root, selectedID, "Completed");
+                                tenancy.modifyStatus(&tenancy_root, current->data.tenancyId, "Completed");
+                                system("CLS");
+                                cout << "Payment Verification has been updated.\n";
+                                break;
+                            } else {
+                                payment.modifyPaymentStatus(&payment_root, selectedID, "Rejected");
+                                tenancy.modifyStatus(&tenancy_root, current->data.tenancyId, "Rejected");
+                                system("CLS");
+                                cout << "Payment Verification has been updated.\n";
+                                break;
+                            }
+                        }
+                    }
+                    current = current->next;
+                }
+            } else if (option == 2) {
+                // Back to Manager Dashboard
+                system("CLS");
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
+            } 
+        }
+    }
+
+    void managerSubmitResignation(TenantTree* tenant_root, ManagerTree* manager_root, PropertyTree* prop_root, FavouritePropertyLinkedList* fav_root, TenancyLinkedList* tenancy_root, PaymentLinkedList* payment_root) {
         string username = interfaceT.getCurrentUsername(); // Assume this function gets the currently logged-in manager username
         if (username.empty()) {
             cout << "No manager is currently logged in.\n";
@@ -948,13 +1153,13 @@ struct ManagerInterface {
             if (manager.resignManager(manager_root, username)) {
                 system("CLS");
                 cout << "Resignation submitted successfully.\n";
-                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+                managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
             } else {
                 cout << "Failed to submit resignation.\n";
             }
         } else {
             system("CLS");
-            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root);
+            managerDashboard(tenant_root, manager_root, prop_root, fav_root, tenancy_root, payment_root);
         }
     }
 };
