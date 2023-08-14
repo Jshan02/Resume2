@@ -1436,17 +1436,16 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
     while (true) { // Infinite loop to keep prompting the user until valid input
             cout << "\nDo you want to filter properties by:\n";
             cout << "1. Property Type\n";
-            cout << "2. Monthly Rental\n";
-            cout << "3. Location\n";
-            cout << "4. Number of Rooms\n";
-            cout << "5. Furnishing Status\n";
-            cout << "6. Back to Main Menu\n\n";
-            cout << "Please enter your choice (1 to 7): ";
+            cout << "2. Location\n";
+            cout << "3. Number of Rooms\n";
+            cout << "4. Furnishing Status\n";
+            cout << "5. Back to Main Menu\n\n";
+            cout << "Please enter your choice (1 to 5): ";
             cin >> filterChoice;
 
-            if (cin.fail() || filterChoice < 1 || filterChoice > 7) {
+            if (cin.fail() || filterChoice < 1 || filterChoice > 5) {
                 system("CLS");
-                cout << "Invalid input. Please enter a number from 1 to 7.\n";
+                cout << "Invalid input. Please enter a number from 1 to 5.\n";
                 cin.clear();
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             } else {
@@ -1458,25 +1457,21 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                         filterPropertyByTypeMenu(tenant_root, manager_root, prop_root);
                         break;
                     case 2:
-                        // Call the function to filter by Monthly Rental
-                        
-                        break;
-                    case 3:
                         // Call the function to filter by Location
                         system("CLS");
                         filterPropertyByLocationMenu(tenant_root, manager_root, prop_root);
                         break;
-                    case 4:
+                    case 3:
                         // Call the function to filter by Number of Rooms
                         system("CLS");
                         filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root);
                         break;
-                    case 5:
+                    case 4:
                         // Call the function to filter by Furnishing Status
                         filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root);
                         
                         break;
-                    case 6:
+                    case 5:
                         // Call the function to go back to the main menu (Assuming you have a function for this)
                         adminDashboard(tenant_root, manager_root, prop_root);
                         break;
