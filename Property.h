@@ -68,11 +68,8 @@ struct PropertyTree{
             cout << "Failed to open the file: " << filename << endl;
             return root;
         }
-
         string line;
-
         getline(file, line);
-
         while (getline(file, line)) {
             stringstream ss(line);
             Property property;
@@ -1020,55 +1017,13 @@ struct PropertyTree{
         int i = (low - 1);
 
         for (int j = low; j <= high-1; j++) {
-            if (quickSortCompare(propertyArray[j], pivot)) {
+            if (compareProp(propertyArray[j], pivot)) {
                 i++;
                 swap(propertyArray[i], propertyArray[j]);
             }
         }
         swap(propertyArray[i+1], propertyArray[high]);
         return (i+1);
-    }
-
-    bool quickSortCompare(const Property& a, const Property& b) {
-        string RentA = a.monthly_rental, RentB = b.monthly_rental;
-        string ExtractA, ExtractB;
-        int rentValueA, rentValueB;
-        for (char c : RentA){
-            if (isdigit(c)) {
-                ExtractA.push_back(c);
-            }
-        }
-        stringstream(ExtractA) >> rentValueA;
-        for (char c : RentB){
-            if (isdigit(c)) {
-                ExtractB.push_back(c);
-            }
-        }
-        stringstream(ExtractB) >> rentValueB;
-        if (rentValueA != rentValueB) return rentValueA > rentValueB;
-
-        string locationA = a.location;
-        string locationB = b.location;
-        transform(locationA.begin(), locationA.end(), locationA.begin(), ::tolower);
-        transform(locationB.begin(), locationB.end(), locationB.begin(), ::tolower);
-        if (locationA != locationB) return locationA > locationB;
-
-        string SizeA = a.size, SizeB = b.size;
-        string charA, charB;
-        int sizeValueA, sizeValueB;
-        for (char c : SizeA) {
-            if (isdigit(c)) {
-                charA.push_back(c);
-            }
-        }
-        stringstream(charA) >> sizeValueA;
-        for (char c : SizeB) {
-            if (isdigit(c)) {
-                charB.push_back(c);
-            }
-        }
-        stringstream(charB) >> sizeValueB;
-        return sizeValueA > sizeValueB;
     }
 
     void navQuickSortProp(vector<Property>& propSortArray, int page) {
