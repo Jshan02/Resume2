@@ -1234,9 +1234,8 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
             cout << "2. Monthly Rental\n";
             cout << "3. Location\n";
             cout << "4. Number of Rooms\n";
-            cout << "5. Number of Parking\n";
-            cout << "6. Furnishing Status\n";
-            cout << "7. Back to Main Menu\n\n";
+            cout << "5. Furnishing Status\n";
+            cout << "6. Back to Main Menu\n\n";
             cout << "Please enter your choice (1 to 7): ";
             cin >> filterChoice;
 
@@ -1266,19 +1265,13 @@ void filterPropertyMenu(TenantTree* tenant_root, ManagerTree* manager_root, Prop
                         // Call the function to filter by Number of Rooms
                         system("CLS");
                         filterPropertyByRoomsMenu(tenant_root, manager_root, prop_root);
-                        
                         break;
                     case 5:
-                        // Call the function to filter by Number of Parking
-                        filterPropertyByParkingMenu(tenant_root, manager_root, prop_root);
-                        
-                        break;
-                    case 6:
                         // Call the function to filter by Furnishing Status
                         filterPropertyByFurnishedMenu(tenant_root, manager_root, prop_root);
                         
                         break;
-                    case 7:
+                    case 6:
                         // Call the function to go back to the main menu (Assuming you have a function for this)
                         adminDashboard(tenant_root, manager_root, prop_root);
                         break;
