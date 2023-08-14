@@ -125,13 +125,13 @@ struct TenantInterface {
 
         // Quick Sort
         // auto start = chrono::high_resolution_clock::now();
-        // prop.quickSort(propSortArray, 0, propertyArray.size()-1);
-        // dispQuickSortProp(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root, payment_root);
+        prop.quickSort(propSortArray, 0, propertyArray.size()-1);
+        dispQuickSortProp(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root, payment_root);
         
 
         // Tree Sort
         // auto start = chrono::high_resolution_clock::now();
-        dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root, payment_root);
+        // dispProperties(tenant_root, prop_root, fav_root, tenancy_root, propertyArray, sort_root, current_page, propSortArray, propName_root, location_root, payment_root);
 
         
     }
