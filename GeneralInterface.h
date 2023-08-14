@@ -161,7 +161,7 @@ struct GeneralInterface {
         cout << "Username - ";
         cin >> uname;
         cout << "Password - ";
-        cin >> pw;
+        cin >> pw;        
         cout << "Full Name as per IC - ";
         cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear any remaining characters in the input buffer
         getline(cin, name);
@@ -169,6 +169,7 @@ struct GeneralInterface {
         cin >> email;
         cout << "Contact Number - ";
         cin >> tel;
+        
 
         while (true) {
             cout << "Gender (M/F) - ";
