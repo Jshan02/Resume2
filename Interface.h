@@ -632,12 +632,12 @@ struct TenantInterface {
                     cout << "\nProperty found with name '" << targetName << "':\n";
                     cout << "...........................................................\n\n";
 
-                    cout << "Result for Linear Search:\n ";
-                    cout << "============================\n ";
-                    auto start2 = chrono::high_resolution_clock::now();
-                    prop.linearSearchPropertiesByName(propertyArray, targetName);
-                    auto end2 = chrono::high_resolution_clock::now();
-                    chrono::duration<double, milli> linearSearchTime = end2 - start2;
+                    // cout << "Result for Linear Search:\n ";
+                    // cout << "============================\n ";
+                    // auto start2 = chrono::high_resolution_clock::now();
+                    // prop.linearSearchPropertiesByName(propertyArray, targetName);
+                    // auto end2 = chrono::high_resolution_clock::now();
+                    // chrono::duration<double, milli> linearSearchTime = end2 - start2;
 
                     cout << "Result for Binary Search Tree Search:\n ";
                     cout << "============================\n ";
@@ -648,7 +648,7 @@ struct TenantInterface {
 
                     cout << "==================================================================================================\n";
                     cout << "Time taken by binary search: " << binarySearchTime.count() << " milliseconds" << endl;
-                    cout << "Time taken by linear search: " << linearSearchTime.count() << " milliseconds" << endl;
+                    // cout << "Time taken by linear search: " << linearSearchTime.count() << " milliseconds" << endl;
                     cout << "==================================================================================================\n\n";
 
                 } else if (choice == 2) {
@@ -662,10 +662,10 @@ struct TenantInterface {
                     cout << "\nProperty found with location '" << targetLocation << "' :\n";
                     cout << "...........................................................\n\n";
 
-                    auto start2 = chrono::high_resolution_clock::now();
-                    prop.linearSearchPropertiesByLocation(propertyArray, targetLocation);
-                    auto end2 = chrono::high_resolution_clock::now();
-                    chrono::duration<double, milli> linearSearchTime = end2 - start2;
+                    // auto start2 = chrono::high_resolution_clock::now();
+                    // prop.linearSearchPropertiesByLocation(propertyArray, targetLocation);
+                    // auto end2 = chrono::high_resolution_clock::now();
+                    // chrono::duration<double, milli> linearSearchTime = end2 - start2;
 
                     auto start1 = chrono::high_resolution_clock::now();
                     prop.bstSearchByLocation(location_root, targetLocation);
@@ -673,8 +673,9 @@ struct TenantInterface {
                     chrono::duration<double, milli> binarySearchTime = end1 - start1;
 
                     cout << "==================================================================================================\n";
-                    // cout << "Time taken by binary search: " << binarySearchTime.count() << " microseconds" << endl;
-                    cout << "Time taken by linear search: " << linearSearchTime.count() << " microseconds" << endl;
+                    cout << "Time taken by binary search: " << binarySearchTime.count() << " microseconds" << endl;
+                    // cout << "Time taken by linear search: " << linearSearchTime.count() << " microseconds" << endl;
+                    cout << "==================================================================================================\n";
 
                 } else if (choice == 3) {
                     system("CLS");

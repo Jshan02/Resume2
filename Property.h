@@ -62,7 +62,8 @@ struct PropertyTree{
     }
 
     // import property data from csv file
-    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray, string type, vector<Property>& propSortArray) {
+    PropertyTree* importProperty(PropertyTree* root, string filename, vector<Property>& propertyArray, string type, 
+    vector<Property>& propSortArray) {
         ifstream file(filename);
         if (!file.is_open()) {
             cout << "Failed to open the file: " << filename << endl;
@@ -219,7 +220,6 @@ struct PropertyTree{
         return location_root;
     }
 
-
     // check wthether the comma is inside the double quote, ignore the comma inside the double quote
     string getNextField(stringstream& ss) {
         string field;
@@ -294,59 +294,6 @@ struct PropertyTree{
     void navigateProperties(PropertyTree* root, int page) {
         system("CLS");
         displayPage(root, page); // Function to display the properties for the given page
-    }
-
-    // insert property data from tree to ventor
-    void addPropertiesToArray(PropertyTree* root, vector<Property>& propertyArray) {
-        if (root == nullptr) return;
-
-        // Traverse left subtree
-        addPropertiesToArray(root->leftChild, propertyArray);
-
-        // Create a property object and populate it with the data from the current node
-        Property property;
-        property.propertyID = root->data.propertyID;
-        property.propertyName = root->data.propertyName;
-        property.completion_year = root->data.completion_year;
-        property.monthly_rental = root->data.monthly_rental;
-        property.location = root->data.location;
-        property.propertyType = root->data.propertyType;
-        property.rooms = root->data.rooms;
-        property.parking = root->data.parking;
-        property.bathroom = root->data.bathroom;
-        property.size = root->data.size;
-        property.furnished = root->data.furnished;
-        property.facilities = root->data.facilities;
-        property.additional_facilities = root->data.additional_facilities;
-        property.region = root->data.region;
-
-        // Add the property to the array
-        propertyArray.push_back(property);
-
-        // Traverse right subtree
-        addPropertiesToArray(root->rightChild, propertyArray);
-    }
-
-    // display property data stored in vector
-    void displayPropertiesVector(const vector<Property>& propertyArray) {
-        cout << "Properties:\n";
-        for (const Property& property : propertyArray) {
-            cout << "Property ID: " << property.propertyID << endl
-                << "Property Name: " << property.propertyName << endl
-                << "Completion Year: " << property.completion_year << endl
-                << "Monthly Rental: " << property.monthly_rental << endl
-                << "Location: " << property.location << endl
-                << "Property Type: " << property.propertyType << endl
-                << "Rooms: " << property.rooms << endl
-                << "Parking: " << property.parking << endl
-                << "Bathroom: " << property.bathroom << endl
-                << "Size: " << property.size << endl
-                << "Furnished: " << property.furnished << endl
-                << "Facilities: " << property.facilities << endl
-                << "Additional Facilities: " << property.additional_facilities << endl
-                << "Region: " << property.region << endl
-                << "---------------------------------------------\n\n";
-        }
     }
 
     // Function to search for a property in the PropertyTree by propertyID
